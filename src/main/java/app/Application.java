@@ -10,8 +10,7 @@ public class Application {
 
 	public static HikariDataSource DATA_SOURCE;
 	public static HikariConfig config;
-	public final static String DATABASE_URL = DatabaseController.DATABASE_URL;
-
+	
 	public static void main(String[] args) {
 		System.out.println("SERVER:START");
 		System.out.println("Server is running at port:" + Integer.valueOf(System.getenv("PORT")));
