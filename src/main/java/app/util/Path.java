@@ -64,6 +64,11 @@ public class Path {
 	}
 
 	public static class StaticStrings {
+
+		/**
+		 * ERROR HANDLER VOCABULARIES
+		 */
+		public final static String RETURNLINK = "returnLink";
 		public final static String ERROR = "ERROR";
 
 		/**
@@ -82,5 +87,15 @@ public class Path {
 		public final static String SCRIPT_CREATE_BOARDS = "CREATE TABLE IF NOT EXISTS boards ( boardlink VARCHAR(5), boardname VARCHAR(25), boarddescription VARCHAR(100), PRIMARY KEY(boardlink));";
 		public final static String SCRIPT_CREATE_THREADS = "CREATE TABLE IF NOT EXISTS threads (threadid SERIAL, boardlink VARCHAR(5), PRIMARY KEY (threadid), FOREIGN KEY (threadid) REFERENCES boards(boardlink));";
 		public final static String SCRIPT_CREATE_POSTS = "CREATE TABLE IF NOT EXISTS posts (postid SERIAL, threadid INTEGER, posttext TEXT, PRIMARY KEY (postid), FOREIGN KEY (threadid) REFERENCES threads(threadid));";
+
+		/**
+		 * PATHS CONSTANTS
+		 */
+		public final static String ROOTLINK = "/";
+		public final static String TEXTBOARDLINK = "/textboard/";
+
+		public static String getPREVIOUSBOARDLINK(String previousBoardLink) {
+			return TEXTBOARDLINK + previousBoardLink;
+		}
 	}
 }

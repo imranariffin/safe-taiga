@@ -19,8 +19,12 @@ import spark.Route;
 
 public class TextboardController {
 
+	//////////////////
+	// GET HANDLERS //
+	//////////////////
+
 	/**
-	 * GET HANDLERS
+	 * SERVE TEXTBOARD
 	 */
 	public static Route serveTextboardHome = (Request request, Response response) -> {
 		System.out.println("FROM:TextboardsController.java:START:serveTextboardHome");
@@ -70,6 +74,8 @@ public class TextboardController {
 			System.out.println("END:printing content of arrayOfBoardsFromDatabase");
 
 		} catch (Exception e) {
+			model.put(Path.Template.ERROR, e.getMessage());
+			model.put(Path.StaticStrings.RETURNLINK, Path.StaticStrings.ROOTLINK);
 			return ViewUtil.render(request, model, Path.Template.ERROR, Path.StaticStrings.ERROR, e.getMessage());
 		}
 
@@ -79,6 +85,9 @@ public class TextboardController {
 		return ViewUtil.render(request, model, Path.Template.TEXTBOARD, Path.Web.TEXTBOARD, "OK: default return");
 	};
 
+	/**
+	 * SERVE TEXTBOARD_BOARD
+	 */
 	public static Route serveTextboardBoard = (Request request, Response response) -> {
 		System.out.println("FROM:TextboardController:serveTextboardBoard");
 		Map<String, Object> model = new HashMap<>();
@@ -128,6 +137,8 @@ public class TextboardController {
 			System.out.println("END:printing content of arrayOfThreadsFromDatabase");
 
 		} catch (Exception e) {
+			model.put(Path.Template.ERROR, e.getMessage());
+			model.put(Path.StaticStrings.RETURNLINK, Path.StaticStrings.TEXTBOARDLINK);
 			return ViewUtil.render(request, model, Path.Template.ERROR, Path.StaticStrings.ERROR, e.getMessage());
 		}
 
@@ -198,6 +209,8 @@ public class TextboardController {
 			System.out.println("END:printing content of arrayOfPostsFromDatabase");
 
 		} catch (Exception e) {
+			model.put(Path.Template.ERROR, e.getMessage());
+			model.put(Path.StaticStrings.RETURNLINK, Path.StaticStrings.getPREVIOUSBOARDLINK(boardlink));
 			return ViewUtil.render(request, model, Path.Template.ERROR, Path.StaticStrings.ERROR, e.getMessage());
 		}
 
@@ -209,10 +222,13 @@ public class TextboardController {
 				"OK: default return");
 	};
 
-	/**
-	 * POST HANDLERS
-	 */
+	///////////////////
+	// POST HANDLERS //
+	///////////////////
 
+	/**
+	 * HANDLES CREATE BOARD POST METHOD
+	 */
 	public static Route handleCreateBoard = (Request request, Response response) -> {
 		System.out.println("FROM:TextboardController:handleCreateBoard");
 		Map<String, Object> model = new HashMap<>();
@@ -241,7 +257,7 @@ public class TextboardController {
 		}
 
 		/**
-		 * COPIED FROM serveHomePage
+		 * COPIED FROM serveTextboardHome
 		 */
 		System.out.println("FROM:TextboardsController.java:START:serveTextboardHome");
 		// Map<String, Object> model = new HashMap<>();
@@ -287,6 +303,8 @@ public class TextboardController {
 			System.out.println("END:printing content of output");
 
 		} catch (Exception e) {
+			model.put(Path.Template.ERROR, e.getMessage());
+			model.put(Path.StaticStrings.RETURNLINK, Path.StaticStrings.ROOTLINK);
 			return ViewUtil.render(request, model, Path.Template.ERROR, Path.StaticStrings.ERROR, e.getMessage());
 		}
 
@@ -294,7 +312,7 @@ public class TextboardController {
 		model.put("boardList", arrayOfBoardsFromDatabase);
 		System.out.println("END:serveTextboardHome");
 		/**
-		 * END OF COPY
+		 * END OF COPY from serveTextboardHome
 		 */
 		return ViewUtil.render(request, model, Path.Template.TEXTBOARD, Path.Web.TEXTBOARD,
 				"OK: returned from a post call");
