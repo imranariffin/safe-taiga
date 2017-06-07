@@ -7,21 +7,6 @@ public class Path {
 	// The @Getter methods are needed in order to access
 	// the variables from Velocity Templates
 	public static class Web {
-		@Getter
-		public static final String INDEX = "/index/";
-		@Getter
-		public static final String LOGIN = "/login/";
-		@Getter
-		public static final String LOGOUT = "/logout/";
-		@Getter
-		public static final String BOOKS = "/books/";
-		@Getter
-		public static final String ONE_BOOK = "/books/:isbn/";
-		@Getter
-		public final static String DATABASE = "/database/";
-		@Getter
-		public final static String HOME = "/home/";
-
 		/**
 		 * My GET paths
 		 */
@@ -40,15 +25,7 @@ public class Path {
 		public final static String CREATE_BOARD = "/textboard/";
 	}
 
-	public static class Template {
-		public final static String INDEX = "/velocity/index/index.vm";
-		public final static String LOGIN = "/velocity/login/login.vm";
-		public final static String DATABASE = "/velocity/database/database.vm";
-		public final static String BOOKS_ALL = "/velocity/book/all.vm";
-		public static final String BOOKS_ONE = "/velocity/book/one.vm";
-		public static final String NOT_FOUND = "/velocity/notFound.vm";
-		public static final String HOME = "/velocity/home/home.vm";
-
+	public static class Templates {
 		/**
 		 * My templates
 		 */
@@ -60,15 +37,24 @@ public class Path {
 		/**
 		 * ERROR templates
 		 */
+		public static final String NOT_FOUND = "/velocity/notFound.vm";
 		public final static String ERROR = "/velocity/error.vm";
 	}
 
 	public static class StaticStrings {
-
+		
+		/**
+		 * WEBSITE MAIN VOCABULARIES
+		 */
+		
+		public final static String ROOT = "ROOT";
+		public final static String TEXTBOARD = "Textboard";
+		
 		/**
 		 * ERROR HANDLER VOCABULARIES
 		 */
 		public final static String RETURNLINK = "returnLink";
+		public final static String RETURNNAME = "returnName";
 		public final static String ERROR = "ERROR";
 
 		/**

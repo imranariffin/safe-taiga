@@ -13,20 +13,16 @@ public class ViewUtil {
 	// and to see if the user is logged in
 	public static String render(Request request, Map<String, Object> model, String templatePath, String where,
 			String message) {
-		// model.put("message", new MessageBundle(getSessionLocale(request)));
-		// model.put("currentuser", getSessionCurrentUser(request));
 
 		model.put("where", where);
 		model.put("message", message);
-		model.put("WebPath", Path.Web.class); // Access application URLs from
-												// templates
 		return strictVelocityEngine().render(new ModelAndView(model, templatePath));
 	}
 
 	public static Route notFound = (Request request, Response response) -> {
 		response.status(HttpStatus.NOT_FOUND_404);
 		Map<String, Object> model = new HashMap<>();
-		return render(request, model, Path.Template.NOT_FOUND, Path.StaticStrings.ERROR, "404 NOT FOUND");
+		return render(request, model, Path.Templates.NOT_FOUND, Path.StaticStrings.ERROR, "404 NOT FOUND");
 	};
 
 	private static VelocityTemplateEngine strictVelocityEngine() {
@@ -36,5 +32,16 @@ public class ViewUtil {
 		configuredEngine.setProperty("class.resource.loader.class",
 				"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 		return new VelocityTemplateEngine(configuredEngine);
+	}
+
+	// Renders a template given a model and a request
+	// The request is needed to know where the user is
+	public static String renderErrorMessage(Request request, String errorMessage, String returnLink, String returnName) {
+
+		Map<String, String> model = new HashMap<String, String>();
+		model.put(Path.StaticStrings.ERROR, errorMessage);
+		model.put(Path.StaticStrings.RETURNLINK, returnLink);
+		model.put(Path.StaticStrings.RETURNNAME, returnName);
+		return strictVelocityEngine().render(new ModelAndView(model, Path.Templates.ERROR));
 	}
 }

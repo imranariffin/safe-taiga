@@ -33,8 +33,6 @@ public class Application {
 		 */
 		// get(Path.Web.LOGIN, LoginController.serveLoginPage);
 		get(Path.Web.ROOT, RootController.serveRootPage);
-		get(Path.Web.DATABASE, DatabaseController.serveDatabasePage);
-		get(Path.Web.HOME, HomeController.serveHomePage);
 		get(Path.Web.TEXTBOARD, TextboardController.serveTextboardHome);
 		get(Path.Web.TEXTBOARD_BOARD, TextboardController.serveTextboardBoard);
 		get(Path.Web.TEXTBOARD_BOARD_THREAD, TextboardController.serveTextboardBoardThread);

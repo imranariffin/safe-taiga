@@ -16,6 +16,6 @@ public class RootController {
 		Map<String, Object> model = new HashMap<>();
 		
 		System.out.println("END:serveRootPage");
-		return ViewUtil.render(request, model, Path.Template.ROOT, "ROOT PAGE", "");
+		return ViewUtil.render(request, model, Path.Templates.ROOT, "ROOT PAGE", "");
 	};
 }

@@ -74,15 +74,14 @@ public class TextboardController {
 			System.out.println("END:printing content of arrayOfBoardsFromDatabase");
 
 		} catch (Exception e) {
-			model.put(Path.StaticStrings.ERROR, e.getMessage());
-			model.put(Path.StaticStrings.RETURNLINK, Path.StaticStrings.ROOTLINK);
-			return ViewUtil.render(request, model, Path.Template.ERROR, Path.StaticStrings.ERROR, e.getMessage());
+			return ViewUtil.renderErrorMessage(request, e.getMessage(), Path.StaticStrings.ROOTLINK,
+					Path.StaticStrings.ROOT);
 		}
 
 		// Assign appropriate objects
 		model.put("boardList", arrayOfBoardsFromDatabase);
 		System.out.println("END:serveTextboardHome");
-		return ViewUtil.render(request, model, Path.Template.TEXTBOARD, Path.Web.TEXTBOARD, "OK: default return");
+		return ViewUtil.render(request, model, Path.Templates.TEXTBOARD, Path.Web.TEXTBOARD, "OK: default return");
 	};
 
 	/**
@@ -137,16 +136,15 @@ public class TextboardController {
 			System.out.println("END:printing content of arrayOfThreadsFromDatabase");
 
 		} catch (Exception e) {
-			model.put(Path.StaticStrings.ERROR, e.getMessage());
-			model.put(Path.StaticStrings.RETURNLINK, Path.StaticStrings.TEXTBOARDLINK);
-			return ViewUtil.render(request, model, Path.Template.ERROR, Path.StaticStrings.ERROR, e.getMessage());
+			return ViewUtil.renderErrorMessage(request, e.getMessage(), Path.StaticStrings.TEXTBOARDLINK,
+					Path.StaticStrings.TEXTBOARD);
 		}
 
 		// Assign appropriate objects
 		model.put("threadList", arrayOfThreadsFromDatabase);
 
 		System.out.println("END:serveTextboardBoard");
-		return ViewUtil.render(request, model, Path.Template.TEXTBOARD_BOARD, Path.Web.TEXTBOARD_BOARD,
+		return ViewUtil.render(request, model, Path.Templates.TEXTBOARD_BOARD, Path.Web.TEXTBOARD_BOARD,
 				"OK: default return");
 	};
 
@@ -209,16 +207,15 @@ public class TextboardController {
 			System.out.println("END:printing content of arrayOfPostsFromDatabase");
 
 		} catch (Exception e) {
-			model.put(Path.StaticStrings.ERROR, e.getMessage());
-			model.put(Path.StaticStrings.RETURNLINK, Path.StaticStrings.getPREVIOUSBOARDLINK(boardlink));
-			return ViewUtil.render(request, model, Path.Template.ERROR, Path.StaticStrings.ERROR, e.getMessage());
+			return ViewUtil.renderErrorMessage(request, e.getMessage(),
+					Path.StaticStrings.getPREVIOUSBOARDLINK(boardlink), Path.StaticStrings.TEXTBOARD + "/" + boardlink);
 		}
 
 		// Assign appropriate objects
 		model.put("postList", arrayOfPostsFromDatabase);
 
 		System.out.println("END:serveTextboardBoardThread");
-		return ViewUtil.render(request, model, Path.Template.TEXTBOARD_BOARD_THREAD, Path.Web.TEXTBOARD_BOARD_THREAD,
+		return ViewUtil.render(request, model, Path.Templates.TEXTBOARD_BOARD_THREAD, Path.Web.TEXTBOARD_BOARD_THREAD,
 				"OK: default return");
 	};
 
@@ -249,9 +246,8 @@ public class TextboardController {
 				System.out.println("SCRIPT_INSERT_BOARD:" + SCRIPT_INSERT_BOARD);
 				stmt.executeUpdate(SCRIPT_INSERT_BOARD);
 			} catch (Exception e) {
-				model.put(Path.StaticStrings.ERROR, e.getMessage());
-				model.put(Path.StaticStrings.RETURNLINK, Path.StaticStrings.TEXTBOARDLINK);
-				return ViewUtil.render(request, model, Path.Template.ERROR, Path.StaticStrings.ERROR, e.getMessage());
+				return ViewUtil.renderErrorMessage(request, e.getMessage(), Path.StaticStrings.TEXTBOARDLINK,
+						Path.StaticStrings.TEXTBOARD);
 			}
 		} else {
 			System.out.println("The requested boardlink:" + requestedBoardLink + " is NOT available!");
@@ -304,9 +300,8 @@ public class TextboardController {
 			System.out.println("END:printing content of output");
 
 		} catch (Exception e) {
-			model.put(Path.StaticStrings.ERROR, e.getMessage());
-			model.put(Path.StaticStrings.RETURNLINK, Path.StaticStrings.TEXTBOARDLINK);
-			return ViewUtil.render(request, model, Path.Template.ERROR, Path.StaticStrings.ERROR, e.getMessage());
+			return ViewUtil.renderErrorMessage(request, e.getMessage(), Path.StaticStrings.ROOTLINK,
+					Path.StaticStrings.ROOT);
 		}
 
 		// Assign appropriate objects
@@ -315,7 +310,7 @@ public class TextboardController {
 		/**
 		 * END OF COPY from serveTextboardHome
 		 */
-		return ViewUtil.render(request, model, Path.Template.TEXTBOARD, Path.Web.TEXTBOARD,
+		return ViewUtil.render(request, model, Path.Templates.TEXTBOARD, Path.Web.TEXTBOARD,
 				"OK: returned from a post call");
 	};
 }
