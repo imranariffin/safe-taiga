@@ -64,7 +64,7 @@ public class Path {
 	}
 
 	public static class StaticStrings {
-		public final static String ERROR = "ERROR:";
+		public final static String ERROR = "ERROR";
 
 		/**
 		 * DATABASE TEXTBOARD VOCABULARIES
