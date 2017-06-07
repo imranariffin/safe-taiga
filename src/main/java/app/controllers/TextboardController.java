@@ -74,7 +74,7 @@ public class TextboardController {
 			System.out.println("END:printing content of arrayOfBoardsFromDatabase");
 
 		} catch (Exception e) {
-			model.put(Path.Template.ERROR, e.getMessage());
+			model.put(Path.StaticStrings.ERROR, e.getMessage());
 			model.put(Path.StaticStrings.RETURNLINK, Path.StaticStrings.ROOTLINK);
 			return ViewUtil.render(request, model, Path.Template.ERROR, Path.StaticStrings.ERROR, e.getMessage());
 		}
@@ -137,7 +137,7 @@ public class TextboardController {
 			System.out.println("END:printing content of arrayOfThreadsFromDatabase");
 
 		} catch (Exception e) {
-			model.put(Path.Template.ERROR, e.getMessage());
+			model.put(Path.StaticStrings.ERROR, e.getMessage());
 			model.put(Path.StaticStrings.RETURNLINK, Path.StaticStrings.TEXTBOARDLINK);
 			return ViewUtil.render(request, model, Path.Template.ERROR, Path.StaticStrings.ERROR, e.getMessage());
 		}
@@ -209,7 +209,7 @@ public class TextboardController {
 			System.out.println("END:printing content of arrayOfPostsFromDatabase");
 
 		} catch (Exception e) {
-			model.put(Path.Template.ERROR, e.getMessage());
+			model.put(Path.StaticStrings.ERROR, e.getMessage());
 			model.put(Path.StaticStrings.RETURNLINK, Path.StaticStrings.getPREVIOUSBOARDLINK(boardlink));
 			return ViewUtil.render(request, model, Path.Template.ERROR, Path.StaticStrings.ERROR, e.getMessage());
 		}
@@ -249,7 +249,8 @@ public class TextboardController {
 				System.out.println("SCRIPT_INSERT_BOARD:" + SCRIPT_INSERT_BOARD);
 				stmt.executeUpdate(SCRIPT_INSERT_BOARD);
 			} catch (Exception e) {
-				model.put("ERROR", "There was an error: " + e.getMessage());
+				model.put(Path.StaticStrings.ERROR, e.getMessage());
+				model.put(Path.StaticStrings.RETURNLINK, Path.StaticStrings.TEXTBOARDLINK);
 				return ViewUtil.render(request, model, Path.Template.ERROR, Path.StaticStrings.ERROR, e.getMessage());
 			}
 		} else {
@@ -303,8 +304,8 @@ public class TextboardController {
 			System.out.println("END:printing content of output");
 
 		} catch (Exception e) {
-			model.put(Path.Template.ERROR, e.getMessage());
-			model.put(Path.StaticStrings.RETURNLINK, Path.StaticStrings.ROOTLINK);
+			model.put(Path.StaticStrings.ERROR, e.getMessage());
+			model.put(Path.StaticStrings.RETURNLINK, Path.StaticStrings.TEXTBOARDLINK);
 			return ViewUtil.render(request, model, Path.Template.ERROR, Path.StaticStrings.ERROR, e.getMessage());
 		}
 
