@@ -1,0 +1,5 @@
+#! /bin/dash
+git status
+git add -A
+git commit -m "simple commit from script"
+git push origin master

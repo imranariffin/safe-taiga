@@ -1,0 +1,20 @@
+<a href="/textboard/$boardlink">Textboard</a>
+
+$where
+$message
+
+<ul>
+#foreach( $post in $postList )
+    <li><p>$post.postid : $post.posttext</p></li>
+  #end
+ </ul>
+
+ <div align="center">
+ 	<form  method="post">
+		Post text:
+		<br>
+		<input type="text" name="postText><br>
+		<br>
+		<button type="submit">REPLY</button>
+	</form>
+</div>

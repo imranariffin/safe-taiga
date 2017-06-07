@@ -1,0 +1,22 @@
+<a href="/">ROOT</a>
+
+$where
+$message
+
+<ul>
+#foreach( $board in $boardList )
+    <li><a href="$board.boardlink">$board.boardname</a> -- $board.boarddescription</li>
+  #end
+ </ul>
+
+ <div align="center">
+ 	<form  method="post">
+		Board link:<br>
+		<input type="text" name="boardLinkText"><br>
+		Board name:<br>
+		<input type="text" name="boardNameText"><br>
+		Description:<br>
+		<input type="text" name="boardDescriptionText"><br><br>
+		<button type="submit">CREATE BOARD</button>
+	</form>
+</div>

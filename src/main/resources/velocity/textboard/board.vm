@@ -1,0 +1,20 @@
+<a href="/textboard">Textboard</a>
+
+$where
+$message
+
+<ul>
+#foreach( $thread in $threadList )
+    <li><a href="$thread.threadid">$thread.threadid</a></li>
+  #end
+ </ul>
+
+ <div align="center">
+ 	<form  method="post">
+		Thread text:
+		<br>
+		<input type="text" name="threadText"><br>
+		<br>
+		<button type="submit">CREATE THREAD</button>
+	</form>
+</div>
