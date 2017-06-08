@@ -273,8 +273,7 @@ public class TextboardController {
 		System.out.println("FROM:TextboardController:serveTextboardBoard");
 		// Map<String, Object> model = new HashMap<>();
 
-		// Obtain the request parameters
-		String boardlink = request.params(Path.StaticStrings.BOARDLINK);
+		String boardlink = requestedBoardLink;
 
 		// Put request parameters into the map
 		model.put(Path.StaticStrings.BOARDLINK, boardlink);
