@@ -365,12 +365,13 @@ public class TextboardController {
 				Statement stmt = connection.createStatement();
 
 				// Create threads table if not exist
-				stmt.executeQuery(Path.StaticStrings.SCRIPT_CREATE_THREADS);
+				stmt.executeUpdate(Path.StaticStrings.SCRIPT_CREATE_THREADS);
+				System.out.println("Executing script:" + Path.StaticStrings.SCRIPT_CREATE_THREADS);
 
 				// Create a new thread instance in the threads table
 				final String SCRIPT_INSERT_THREAD = "INSERT INTO threads (boardlink, threadtext) VALUES ('"
 						+ currentBoard + "', '" + requestedThreadText + "');";
-				System.out.println("SCRIPT_INSERT_THREAD:" + SCRIPT_INSERT_THREAD);
+				System.out.println("Executing script:" + SCRIPT_INSERT_THREAD);
 				stmt.executeUpdate(SCRIPT_INSERT_THREAD);
 
 			} catch (Exception e) {
