@@ -226,7 +226,7 @@ public class TextboardController {
 		}
 
 		// Populate with list of posts
-		model.put("postList", arrayOfPostsFromDatabase);
+		model.put(Path.VTLStatics.POSTLIST, arrayOfPostsFromDatabase);
 
 		// Populate html-form
 		model.put(Path.VTLStatics.INPUT_THREADTEXT, Path.VTLStatics.INPUT_THREADTEXT);
