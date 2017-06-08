@@ -12,11 +12,11 @@ $message
  <div align="center">
  	<form  method="post">
 		Board link:<br>
-		<input type="text" name="boardLinkText"><br>
+		<input type="text" name="$INPUT_BOARDLINK"><br>
 		Board name:<br>
-		<input type="text" name="boardNameText"><br>
+		<input type="text" name="$INPUT_BOARDNAME"><br>
 		Description:<br>
-		<input type="text" name="boardDescriptionText"><br><br>
+		<input type="text" name="$INPUT_BOARDDESCRIPTION"><br><br>
 		<button type="submit">CREATE BOARD</button>
 	</form>
 </div>

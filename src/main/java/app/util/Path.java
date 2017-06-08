@@ -60,18 +60,24 @@ public class Path {
 		/**
 		 * DATABASE TEXTBOARD VOCABULARIES
 		 */
-		public final static String BOARDNAME = "boardname";
 		public final static String BOARDLINK = "boardlink";
+		public final static String BOARDNAME = "boardname";
 		public final static String THREADID = "threadid";
 		public final static String POSTID = "postid";
 		public final static String POSTTEXT = "posttext";
 
+		public final static String INPUT_BOARDLINK = "INPUT_boardlink";
+		public final static String INPUT_BOARDNAME = "INPUT_boardname";
+		public final static String INPUT_BOARDDESCRIPTION = "INPUT_boarddescription";
+		public final static String INPUT_THREADTEXT = "INPUT_threadtext";
+		public final static String INPUT_POSTTEXT = "INPUT_posttext";
+
 		/**
-		 * DATABASE TEXTBOARD SCRIPTS
+		 * DATABASE TEXTBOARD SCRIPT
 		 */
 		public final static String BOARDDESCRIPTION = "boarddescription";
 		public final static String SCRIPT_CREATE_BOARDS = "CREATE TABLE IF NOT EXISTS boards ( boardlink VARCHAR(5), boardname VARCHAR(25), boarddescription VARCHAR(100), PRIMARY KEY(boardlink));";
-		public final static String SCRIPT_CREATE_THREADS = "CREATE TABLE IF NOT EXISTS threads (threadid SERIAL, boardlink VARCHAR(5), PRIMARY KEY (threadid), FOREIGN KEY (boardlink) REFERENCES boards(boardlink));";
+		public final static String SCRIPT_CREATE_THREADS = "CREATE TABLE IF NOT EXISTS threads (threadid SERIAL, boardlink VARCHAR(5), threadtext TEXT, PRIMARY KEY (threadid), FOREIGN KEY (boardlink) REFERENCES boards(boardlink));";
 		public final static String SCRIPT_CREATE_POSTS = "CREATE TABLE IF NOT EXISTS posts (postid SERIAL, threadid INTEGER, posttext TEXT, PRIMARY KEY (postid), FOREIGN KEY (threadid) REFERENCES threads(threadid));";
 		/**
 		 * PATHS CONSTANTS
@@ -82,5 +88,14 @@ public class Path {
 		public static String getPREVIOUSBOARDLINK(String previousBoardLink) {
 			return TEXTBOARDLINK + previousBoardLink;
 		}
+	}
+
+	public static class VTLStatics {
+		public final static String INPUT_BOARDLINK = "INPUT_BOARDLINK";
+		public final static String INPUT_BOARDNAME = "INPUT_BOARDNAME";
+		public final static String INPUT_BOARDDESCRIPTION = "INPUT_BOARDDESCRIPTION";
+		public final static String INPUT_THREAD = "INPUT_THREAD";
+		public final static String INPUT_THREADTEXT = "INPUT_THREADTEXT";
+		public final static String INPUT_POSTTEXT = "INPUT_POSTTEXT";
 	}
 }

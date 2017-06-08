@@ -10,10 +10,10 @@ public class TextboardLogic {
 
 	public static boolean checkIfBoardIsAvailable(String boardlink) {
 		System.out.println("FROM:TextboardLogic:START:checkIfBoardIsAvailable");
-		
+
 		final String SCRIPT_SELECT_GIVEN_BOARDLINK = "SELECT * FROM boards WHERE boardlink = '" + boardlink + "';";
 		System.out.println("SCRIPT_SELECT_GIVEN_BOARDLINK:" + SCRIPT_SELECT_GIVEN_BOARDLINK);
-		
+
 		try (Connection connection = DATA_SOURCE.getConnection()) {
 
 			Statement stmt = connection.createStatement();
@@ -32,9 +32,17 @@ public class TextboardLogic {
 		} catch (Exception e) {
 			System.out.println("ERROR:" + e.getMessage());
 		}
-		
-		//connection to database likely experienced an error
+
+		// connection to database likely experienced an error
 		System.out.println("END:checkIfBoardIsAvailable:2");
 		return false;
+	}
+
+	public static boolean checkIfTextIsAcceptable(String givenText) {
+		if (givenText.length() == 0) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 }

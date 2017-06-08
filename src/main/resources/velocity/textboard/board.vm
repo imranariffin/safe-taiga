@@ -13,7 +13,7 @@ $message
  	<form  method="post">
 		Thread text:
 		<br>
-		<input type="text" name="threadText"><br>
+		<input type="text" name="$INPUT_THREADTEXT"><br>
 		<br>
 		<button type="submit">CREATE THREAD</button>
 	</form>

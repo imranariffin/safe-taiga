@@ -13,7 +13,7 @@ $message
  	<form  method="post">
 		Post text:
 		<br>
-		<input type="text" name="postText><br>
+		<input type="text" name="$INPUT_POSTTEXT"><br>
 		<br>
 		<button type="submit">REPLY</button>
 	</form>
