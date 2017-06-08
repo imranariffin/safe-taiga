@@ -10,7 +10,7 @@ $message
  </ul>
 
  <div align="center">
- 	<form  method="get">
+ 	<form  method="post">
 		Board link:<br>
 		<input type="text" name="boardLinkText"><br>
 		Board name:<br>
