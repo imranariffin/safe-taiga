@@ -40,6 +40,7 @@ public class Application {
 		 * POST ROUTES
 		 */
 		post(Path.Web.CREATE_BOARD, TextboardController.handleCreateBoard);
+		post(Path.Web.CREATE_THREAD, TextboardController.handleCreateBoardThread);
 
 		/**
 		 * NOT FOUND

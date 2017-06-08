@@ -23,6 +23,7 @@ public class Path {
 		 * My POST paths
 		 */
 		public final static String CREATE_BOARD = "/textboard/";
+		public final static String CREATE_THREAD = "/textboard/:threadid";
 	}
 
 	public static class Templates {
@@ -93,13 +94,13 @@ public class Path {
 	}
 
 	public static class VTLStatics {
-		
+
 		// VTL list keys
 		public final static String BOARDLIST = "boardList";
 		public final static String THREADLIST = "threadList";
 		public final static String POSTLIST = "postList";
-		
-		//VTL form keys
+
+		// VTL form keys
 		public final static String INPUT_BOARDLINK = "INPUT_BOARDLINK";
 		public final static String INPUT_BOARDNAME = "INPUT_BOARDNAME";
 		public final static String INPUT_BOARDDESCRIPTION = "INPUT_BOARDDESCRIPTION";
