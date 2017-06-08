@@ -279,67 +279,68 @@ public class TextboardController {
 		}
 
 		/**
-		 * COPIED FROM serveTextboardBoard
+		 * COPIED FROM serveTextboardHome
 		 */
-		System.out.println("FROM:TextboardController:serveTextboardBoard");
-		// Map<String, Object> model = new HashMap<>();
-
-		String boardlink = requestedBoardLink;
-
-		// Put request parameters into the map
-		model.put(Path.StaticStrings.BOARDLINK, boardlink);
-
-		// Verify result
-		System.out.println(Path.StaticStrings.BOARDLINK + ":" + boardlink);
+		System.out.println("FROM:TextboardsController.java:START:serveTextboardHome");
 
 		/**
 		 * Get objects from database
 		 */
 		// Prepare arraylist for output from database
 		@SuppressWarnings("rawtypes")
-		ArrayList<Map> arrayOfThreadsFromDatabase = new ArrayList<Map>();
-		final String SCRIPT_SELECT_BOARD_THREAD = "SELECT * FROM threads AS thread WHERE thread.boardlink = '"
-				+ boardlink + "';";
+		ArrayList<Map> arrayOfBoardsFromDatabase = new ArrayList<Map>();
+		final String SCRIPT_SELECT_ALL_BOARD = "SELECT * FROM boards;";
 		try (Connection connection = DATA_SOURCE.getConnection()) {
 
 			Statement stmt = connection.createStatement();
 
 			// Create table if it does not exist
-			System.out.println("Executing script:" + Path.StaticStrings.SCRIPT_CREATE_THREADS);
-			stmt.executeUpdate(Path.StaticStrings.SCRIPT_CREATE_THREADS);
+			System.out.println("Executing script:" + Path.StaticStrings.SCRIPT_CREATE_BOARDS);
+			stmt.executeUpdate(Path.StaticStrings.SCRIPT_CREATE_BOARDS);
 
-			// Select all thread based on the given boardlink
-			System.out.println("Executing script:" + SCRIPT_SELECT_BOARD_THREAD);
-			ResultSet rs = stmt.executeQuery(SCRIPT_SELECT_BOARD_THREAD);
-			// this is how you get a column given the column name in string
+			// Select all the board in the table
+			System.out.println("Executing script:" + SCRIPT_SELECT_ALL_BOARD);
+			ResultSet rs = stmt.executeQuery(SCRIPT_SELECT_ALL_BOARD);
+
+			// this is how you get a column given the colum name in string
+			// rs.getString(columnLabel)
 			while (rs.next()) {
-				// Prepare the map for threadid
-				Map<String, String> thread = new HashMap<String, String>();
+				// Prepare the map for boardlink, boardname and boarddescription
+				Map<String, String> board = new HashMap<String, String>();
 
 				// populate board with the appropriate description of a board
-				thread.put(Path.StaticStrings.THREADID, rs.getString(Path.StaticStrings.THREADID));
-				// put board into the arrayOfThreadsFromDatabase
-				arrayOfThreadsFromDatabase.add(thread);
+				board.put(Path.StaticStrings.BOARDNAME, rs.getString(Path.StaticStrings.BOARDNAME));
+				board.put(Path.StaticStrings.BOARDLINK, rs.getString(Path.StaticStrings.BOARDLINK));
+				board.put(Path.StaticStrings.BOARDDESCRIPTION, rs.getString(Path.StaticStrings.BOARDDESCRIPTION));
+
+				// put board into the arrayOfBoardsFromDatabase
+				arrayOfBoardsFromDatabase.add(board);
 			}
 
-			System.out.println("START:printing content of arrayOfThreadsFromDatabase:");
-			for (int a = 0; a < arrayOfThreadsFromDatabase.size(); a++) {
-				System.out.println(Path.StaticStrings.THREADID + ":"
-						+ arrayOfThreadsFromDatabase.get(a).get(Path.StaticStrings.THREADID));
+			System.out.println("START:printing content of arrayOfBoardsFromDatabase:");
+			for (int a = 0; a < arrayOfBoardsFromDatabase.size(); a++) {
+				System.out.println(Path.StaticStrings.BOARDNAME + ":"
+						+ arrayOfBoardsFromDatabase.get(a).get(Path.StaticStrings.BOARDNAME) + " "
+						+ Path.StaticStrings.BOARDLINK + ":"
+						+ arrayOfBoardsFromDatabase.get(a).get(Path.StaticStrings.BOARDLINK));
 			}
-			System.out.println("END:printing content of arrayOfThreadsFromDatabase");
+			System.out.println("END:printing content of arrayOfBoardsFromDatabase");
 
 		} catch (Exception e) {
-			return ViewUtil.renderErrorMessage(request, e.getMessage(), Path.StaticStrings.TEXTBOARDLINK,
-					Path.StaticStrings.TEXTBOARD);
+			return ViewUtil.renderErrorMessage(request, e.getMessage(), Path.StaticStrings.ROOTLINK,
+					Path.StaticStrings.ROOT);
 		}
 
-		// Assign appropriate objects
-		model.put(Path.VTLStatics.THREADLIST, arrayOfThreadsFromDatabase);
+		// Populate with list of boards
+		model.put(Path.VTLStatics.BOARDLIST, arrayOfBoardsFromDatabase);
 
-		System.out.println("END:serveTextboardBoard");
-		return ViewUtil.render(request, model, Path.Templates.TEXTBOARD_BOARD, Path.Web.TEXTBOARD_BOARD,
-				"OK: returned from a call of creating board");
+		// Populate html-form
+		model.put(Path.VTLStatics.INPUT_BOARDLINK, Path.VTLStatics.INPUT_BOARDLINK);
+		model.put(Path.VTLStatics.INPUT_BOARDNAME, Path.VTLStatics.INPUT_BOARDNAME);
+		model.put(Path.VTLStatics.INPUT_BOARDDESCRIPTION, Path.VTLStatics.INPUT_BOARDDESCRIPTION);
+
+		System.out.println("END:serveTextboardHome");
+		return ViewUtil.render(request, model, Path.Templates.TEXTBOARD, Path.Web.TEXTBOARD, "OK: returned from call to create board");
 	};
 
 	/**
