@@ -79,7 +79,7 @@ public class TextboardController {
 		}
 
 		// Populate with list of boards
-		model.put("boardList", arrayOfBoardsFromDatabase);
+		model.put(Path.VTLStatics.BOARDLIST, arrayOfBoardsFromDatabase);
 
 		// Populate html-form
 		model.put(Path.VTLStatics.INPUT_BOARDLINK, Path.StaticStrings.INPUT_BOARDLINK);
@@ -149,9 +149,11 @@ public class TextboardController {
 					Path.StaticStrings.TEXTBOARD);
 		}
 
-		// Assign appropriate objects
-		model.put("threadList", arrayOfThreadsFromDatabase);
+		// Populate with list of threads
+		model.put(Path.VTLStatics.THREADLIST, arrayOfThreadsFromDatabase);
 
+		// Populate html-forms
+		model.put(Path.VTLStatics.INPUT_THREADTEXT, Path.StaticStrings.INPUT_THREADTEXT);
 		System.out.println("END:serveTextboardBoard");
 		return ViewUtil.render(request, model, Path.Templates.TEXTBOARD_BOARD, Path.Web.TEXTBOARD_BOARD,
 				"OK: default return");
@@ -220,7 +222,7 @@ public class TextboardController {
 					Path.StaticStrings.getPREVIOUSBOARDLINK(boardlink), Path.StaticStrings.TEXTBOARD + "/" + boardlink);
 		}
 
-		// Assign appropriate objects
+		// Populate with list of posts
 		model.put("postList", arrayOfPostsFromDatabase);
 
 		// Populate html-form
@@ -323,7 +325,7 @@ public class TextboardController {
 		}
 
 		// Assign appropriate objects
-		model.put("threadList", arrayOfThreadsFromDatabase);
+		model.put(Path.VTLStatics.THREADLIST, arrayOfThreadsFromDatabase);
 
 		System.out.println("END:serveTextboardBoard");
 		return ViewUtil.render(request, model, Path.Templates.TEXTBOARD_BOARD, Path.Web.TEXTBOARD_BOARD,
@@ -434,7 +436,7 @@ public class TextboardController {
 		}
 
 		// Assign appropriate objects
-		model.put("postList", arrayOfPostsFromDatabase);
+		model.put(Path.VTLStatics.POSTLIST, arrayOfPostsFromDatabase);
 
 		// Populate html-form
 		model.put(Path.VTLStatics.INPUT_THREADTEXT, Path.StaticStrings.INPUT_THREADTEXT);

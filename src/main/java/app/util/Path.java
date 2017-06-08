@@ -60,6 +60,7 @@ public class Path {
 		/**
 		 * DATABASE TEXTBOARD VOCABULARIES
 		 */
+
 		public final static String BOARDLINK = "boardlink";
 		public final static String BOARDNAME = "boardname";
 		public final static String THREADID = "threadid";
@@ -92,6 +93,13 @@ public class Path {
 	}
 
 	public static class VTLStatics {
+		
+		// VTL list keys
+		public final static String BOARDLIST = "boardList";
+		public final static String THREADLIST = "threadList";
+		public final static String POSTLIST = "postList";
+		
+		//VTL form keys
 		public final static String INPUT_BOARDLINK = "INPUT_BOARDLINK";
 		public final static String INPUT_BOARDNAME = "INPUT_BOARDNAME";
 		public final static String INPUT_BOARDDESCRIPTION = "INPUT_BOARDDESCRIPTION";
