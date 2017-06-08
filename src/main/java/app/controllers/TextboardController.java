@@ -354,8 +354,6 @@ public class TextboardController {
 		String requestedThreadText = request.queryParams(Path.VTLStatics.INPUT_THREADTEXT);
 		String currentBoard = request.params(Path.StaticStrings.BOARDLINK);
 
-		String threadid = "NULL_THREAD_DOES_NOT_EXIST";
-
 		// Verify retrieved data
 		System.out.println(Path.VTLStatics.INPUT_THREADTEXT + ":" + requestedThreadText);
 		System.out.println(Path.StaticStrings.BOARDLINK + ":" + currentBoard);
@@ -375,11 +373,6 @@ public class TextboardController {
 				System.out.println("SCRIPT_INSERT_THREAD:" + SCRIPT_INSERT_THREAD);
 				stmt.executeUpdate(SCRIPT_INSERT_THREAD);
 
-				// Get the last created thread
-				final String SCRIPT_SELECT_LAST_THREAD = "SELECT * FROM threads ORDER BY threadid DESC LIMIT 1";
-				ResultSet rs = stmt.executeQuery(SCRIPT_SELECT_LAST_THREAD);
-				threadid = rs.getString(Path.StaticStrings.THREADID);
-
 			} catch (Exception e) {
 				return ViewUtil.renderErrorMessage(request, e.getMessage(),
 						Path.StaticStrings.getPREVIOUSBOARDLINK(currentBoard),
@@ -390,7 +383,7 @@ public class TextboardController {
 		}
 
 		/**
-		 * COPY from serveTextboardBoardBoard
+		 * COPY from serveTextboardBoard
 		 */
 		System.out.println("FROM:TextboardController:serveTextboardBoard");
 
