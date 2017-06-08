@@ -1,26 +1,26 @@
 <!doctype html>
-
 <html lang="en">
+
 <head>
-  <meta charset="utf-8">
-
-  <title>Safe Taiga</title>
-  <meta name="description" content="A website for whatever">
-  <meta name="author" content="OCAkarin">
+	<meta charset="utf-8">
+	<title>Safe Taiga</title>
+	<meta name="description" content="A website for whatever">
+	<meta name="author" content="OCAkarin">
 </head>
+
 <body>
-
-<a href="/">ROOT</a>
-
+<a href="/">ROOT</a>=
 <p>$where : $message</p>
+<div>
+	#foreach( $board in $boardList )
+		<br>
+	    <div>
+	    	<p><a href="$board.boardlink">$board.boardname</a> : $board.boarddescription</p>
+	    </div>
+	#end
+</div>
 
-<ul>
-#foreach( $board in $boardList )
-    <li><a href="$board.boardlink">$board.boardname</a> : $board.boarddescription</li>
-  #end
- </ul>
-
- <div align="center">
+<div align="center">
  	<form  method="post">
 		Board link:<br>
 		<input type="text" name="$INPUT_BOARDLINK"><br>

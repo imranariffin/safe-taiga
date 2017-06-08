@@ -12,13 +12,16 @@
 <a href="/textboard/$boardlink">$boardlink</a>
 
 <p>$where : $message</p>
-
-<ul>
-	<li>$threadid : $threadtext</li>
-#foreach( $post in $postList )
-    <li><p>$post.postid : $post.posttext</p></li>
-  #end
- </ul>
+<div>
+	<p>$threadid : $threadtext</p>
+	<br>
+	#foreach( $post in $postList )
+		<br>
+    	<div>
+    		<p>$post.postid : $post.posttext</p>
+    	</div>
+    #end
+</div>
 
  <div align="center">
  	<form  method="post">

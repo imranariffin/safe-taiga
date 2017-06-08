@@ -17,10 +17,7 @@ public class Application {
 		System.out.println("Server is running at port:" + Integer.valueOf(System.getenv("PORT")));
 		port(Integer.valueOf(System.getenv("PORT")));
 		staticFileLocation("/public");
-
-		// Instantiate your dependencies
-
-		// Initiate databaseHikariConfig config = new HikariConfig();
+		
 		config = new HikariConfig();
 		config.setJdbcUrl(System.getenv("JDBC_DATABASE_URL"));
 		DATA_SOURCE = (config.getJdbcUrl() != null) ? new HikariDataSource(config) : new HikariDataSource();
