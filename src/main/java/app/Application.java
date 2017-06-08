@@ -10,9 +10,9 @@ public class Application {
 
 	public static HikariDataSource DATA_SOURCE;
 	public static HikariConfig config;
-	
+
 	public static void main(String[] args) {
-		System.out.println("SERVER:START");
+		System.out.println("SERVER:STARTs");
 		System.out.println("Server is running at port:" + Integer.valueOf(System.getenv("PORT")));
 		port(Integer.valueOf(System.getenv("PORT")));
 		staticFileLocation("/public");
