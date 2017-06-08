@@ -89,7 +89,11 @@ public class Path {
 		public final static String TEXTBOARDLINK = "/textboard/";
 
 		public static String getPREVIOUSBOARDLINK(String previousBoardLink) {
-			return TEXTBOARDLINK + previousBoardLink;
+			return TEXTBOARDLINK + previousBoardLink + "/";
+		}
+
+		public static String getPREVIOUSBOARDTHREAD(String previousBoardLink, String previousThreadId) {
+			return TEXTBOARDLINK + previousBoardLink + "/" + previousThreadId + "/";
 		}
 	}
 

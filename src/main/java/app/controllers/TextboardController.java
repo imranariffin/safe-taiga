@@ -345,7 +345,7 @@ public class TextboardController {
 	};
 
 	/**
-	 * HANDLES CREATE THREAD POST METHOD
+	 * HANDLES CREATE BOARD THREAD
 	 */
 	public static Route handleCreateBoardThread = (Request request, Response response) -> {
 		System.out.println("FROM:TextboardController:handleCreateBoard");
@@ -447,6 +447,129 @@ public class TextboardController {
 		model.put(Path.VTLStatics.INPUT_THREADTEXT, Path.VTLStatics.INPUT_THREADTEXT);
 		System.out.println("END:serveTextboardBoard");
 		return ViewUtil.render(request, model, Path.Templates.TEXTBOARD_BOARD, Path.Web.TEXTBOARD_BOARD,
+				"OK: returned from a post call of creating thread");
+	};
+
+	/**
+	 * HANDLES CREATE BOARD THREAD POST
+	 */
+	public static Route handleCreateBoardThreadPost = (Request request, Response response) -> {
+		System.out.println("FROM:TextboardController:handleCreateBoardPost");
+		Map<String, Object> model = new HashMap<>();
+
+		String requestedPostText = request.queryParams(Path.VTLStatics.INPUT_POSTTEXT);
+		String currentBoard = request.params(Path.StaticStrings.BOARDLINK);
+		String currentThread = request.params(Path.StaticStrings.THREADID);
+
+		// Verify retrieved data
+		System.out.println(Path.VTLStatics.INPUT_POSTTEXT + ":" + requestedPostText);
+		System.out.println(Path.StaticStrings.BOARDLINK + ":" + currentBoard);
+		System.out.println(Path.StaticStrings.THREADID + ":" + currentThread);
+
+		if (TextboardLogic.checkIfTextIsAcceptable(requestedPostText)) {
+			System.out.println("The requested thread with post:" + requestedPostText + " is acceptable!");
+
+			try (Connection connection = DATA_SOURCE.getConnection()) {
+				Statement stmt = connection.createStatement();
+
+				// Create threads table if not exist
+				stmt.executeUpdate(Path.StaticStrings.SCRIPT_CREATE_THREADS);
+				System.out.println("Executing script:" + Path.StaticStrings.SCRIPT_CREATE_THREADS);
+
+				// Create a new thread instance in the threads table
+				final String SCRIPT_INSERT_POST = "INSERT INTO posts (threadid, posttext) VALUES ('" + currentThread
+						+ "', '" + requestedPostText + "');";
+				System.out.println("Executing script:" + SCRIPT_INSERT_POST);
+				stmt.executeUpdate(SCRIPT_INSERT_POST);
+
+			} catch (Exception e) {
+				return ViewUtil.renderErrorMessage(request, e.getMessage(),
+						Path.StaticStrings.getPREVIOUSBOARDTHREAD(currentBoard, currentThread), currentThread);
+			}
+		} else {
+			System.out.println("The requested thread with post:" + requestedPostText + " is NOT acceptable!");
+		}
+
+		/**
+		 * COPY from serveTextboardBoard
+		 */
+		System.out.println("FROM:TextboardController:serveTextboardBoardThread");
+
+		// Obtain the request parameters
+		String boardlink = request.params(Path.StaticStrings.BOARDLINK);
+		String threadid = request.params(Path.StaticStrings.THREADID);
+
+		// Put request parameters into the map
+		model.put(Path.StaticStrings.BOARDLINK, boardlink);
+		model.put(Path.StaticStrings.THREADID, threadid);
+
+		// Verify result
+		System.out.println(Path.StaticStrings.BOARDLINK + ":" + boardlink);
+		System.out.println(Path.StaticStrings.THREADID + ":" + threadid);
+
+		/**
+		 * Get objects from database
+		 */
+		// Prepare arraylist for output from database
+		@SuppressWarnings("rawtypes")
+		ArrayList<Map> arrayOfPostsFromDatabase = new ArrayList<Map>();
+		String threadtext = "NULL_THREADTEXT_DOES_NOT_EXIST";
+		final String SCRIPT_SELECT_BOARD_THREAD_POST = "SELECT * FROM posts AS post WHERE post.threadid ='" + threadid
+				+ "';";
+		try (Connection connection = DATA_SOURCE.getConnection()) {
+
+			Statement stmt = connection.createStatement();
+
+			// Create table if it does not exist
+			System.out.println("Executing script:" + Path.StaticStrings.SCRIPT_CREATE_POSTS);
+			stmt.executeUpdate(Path.StaticStrings.SCRIPT_CREATE_POSTS);
+
+			// Get the threadtext from the database
+			System.out.println("Executing script:" + Path.StaticStrings.getSCRIPT_GET_THREADTEXT_BY_ID(threadid));
+			ResultSet rs = stmt.executeQuery(Path.StaticStrings.getSCRIPT_GET_THREADTEXT_BY_ID(threadid));
+			rs.next();
+			threadtext = rs.getString(Path.StaticStrings.THREADTEXT);
+			model.put(Path.StaticStrings.THREADID, threadid);
+			model.put(Path.StaticStrings.THREADTEXT, threadtext);
+
+			// Select all thread based on the given boardlink
+			System.out.println("Executing script:" + SCRIPT_SELECT_BOARD_THREAD_POST);
+			rs = stmt.executeQuery(SCRIPT_SELECT_BOARD_THREAD_POST);
+
+			while (rs.next()) {
+				// Prepare the map for threadid
+				Map<String, String> post = new HashMap<String, String>();
+
+				// populate board with the appropriate description of a board
+				post.put(Path.StaticStrings.POSTID, rs.getString(Path.StaticStrings.POSTID));
+				post.put(Path.StaticStrings.POSTTEXT, rs.getString(Path.StaticStrings.POSTTEXT));
+
+				// put board into the arrayOfPostsFromDatabase
+				arrayOfPostsFromDatabase.add(post);
+			}
+
+			System.out.println("START:printing content of arrayOfPostsFromDatabase:");
+			for (int a = 0; a < arrayOfPostsFromDatabase.size(); a++) {
+				System.out.println(Path.StaticStrings.THREADID + ":"
+						+ arrayOfPostsFromDatabase.get(a).get(Path.StaticStrings.THREADID) + " "
+						+ Path.StaticStrings.POSTTEXT + ":"
+						+ arrayOfPostsFromDatabase.get(a).get(Path.StaticStrings.POSTTEXT));
+			}
+			System.out.println("END:printing content of arrayOfPostsFromDatabase");
+
+		} catch (Exception e) {
+			return ViewUtil.renderErrorMessage(request, e.getMessage(),
+					Path.StaticStrings.getPREVIOUSBOARDLINK(boardlink), Path.StaticStrings.TEXTBOARD + "/" + boardlink);
+		}
+
+		// Populate with list of posts
+		model.put(Path.VTLStatics.POSTLIST, arrayOfPostsFromDatabase);
+
+		// Populate html-form
+		model.put(Path.VTLStatics.INPUT_POSTTEXT, Path.VTLStatics.INPUT_POSTTEXT);
+
+		System.out.println("END:serveTextboardBoardThread");
+		return ViewUtil.render(request, model, Path.Templates.TEXTBOARD_BOARD_THREAD, Path.Web.TEXTBOARD_BOARD_THREAD,
 				"OK: returned from a post call of creating thread");
 	};
 }
