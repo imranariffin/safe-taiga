@@ -1,4 +1,17 @@
-$where
-$message
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Safe Taiga</title>
+  <meta name="description" content="A website for whatever">
+  <meta name="author" content="OCAkarin">
+</head>
+<body>
+
+<p>$where : $message</p>
 
 <a href="/textboard">textboard</a>
+
+</body>

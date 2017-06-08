@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Sage Taiga</title>
+  <title>Safe Taiga</title>
   <meta name="description" content="A website for whatever">
   <meta name="author" content="OCAkarin">
 </head>
@@ -12,8 +12,7 @@
 
 <a href="/">ROOT</a>
 
-$where
-$message
+<p>$where : $message</p>
 
 <ul>
 #foreach( $board in $boardList )
