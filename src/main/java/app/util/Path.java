@@ -22,8 +22,12 @@ public class Path {
 		/**
 		 * My POST paths
 		 */
+		@Getter
 		public final static String CREATE_BOARD = "/textboard/";
+		@Getter
 		public final static String CREATE_THREAD = "/textboard/:boardlink/";
+		@Getter
+		public final static String CREATE_POST = "/textboard/:boardlink/:threadid/";
 	}
 
 	public static class Templates {

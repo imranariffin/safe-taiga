@@ -41,6 +41,7 @@ public class Application {
 		 */
 		post(Path.Web.CREATE_BOARD, TextboardController.handleCreateBoard);
 		post(Path.Web.CREATE_THREAD, TextboardController.handleCreateBoardThread);
+		post(Path.Web.CREATE_POST, TextboardController.handleCreateBoardThreadPost);
 
 		/**
 		 * NOT FOUND
