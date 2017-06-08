@@ -10,6 +10,7 @@ public class Application {
 
 	public static HikariDataSource DATA_SOURCE;
 	public static HikariConfig config;
+	public static boolean devmode = false;
 
 	public static void main(String[] args) {
 		System.out.println("SERVER:STARTs");
