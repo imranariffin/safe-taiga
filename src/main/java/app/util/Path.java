@@ -23,7 +23,7 @@ public class Path {
 		 * My POST paths
 		 */
 		public final static String CREATE_BOARD = "/textboard/";
-		public final static String CREATE_THREAD = "/textboard/:boardid/";
+		public final static String CREATE_THREAD = "/textboard/:boardlink/";
 	}
 
 	public static class Templates {
