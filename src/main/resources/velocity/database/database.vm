@@ -1,8 +1,0 @@
-<html>
-  <body>
-  <h1>$msg.get("DATABASE_HEADING")</h1>
-    <p>$msg.get("DATABASE_INSTRUCTIONS", $WebPath.getDATABASE_HELP)</p>
-    <p>$msg.get("DATABASE_RESULTS", $database_results)</p>
-    </table>
-  </body>
-</html>

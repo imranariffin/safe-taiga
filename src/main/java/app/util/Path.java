@@ -27,6 +27,7 @@ public class Path {
 	}
 
 	public static class Templates {
+		
 		/**
 		 * My templates
 		 */
@@ -68,12 +69,6 @@ public class Path {
 		public final static String THREADTEXT = "threadtext";
 		public final static String POSTID = "postid";
 		public final static String POSTTEXT = "posttext";
-
-		public final static String INPUT_BOARDLINK = "INPUT_boardlink";
-		public final static String INPUT_BOARDNAME = "INPUT_boardname";
-		public final static String INPUT_BOARDDESCRIPTION = "INPUT_boarddescription";
-		public final static String INPUT_THREADTEXT = "INPUT_threadtext";
-		public final static String INPUT_POSTTEXT = "INPUT_posttext";
 
 		/**
 		 * DATABASE TEXTBOARD SCRIPT

@@ -82,9 +82,9 @@ public class TextboardController {
 		model.put(Path.VTLStatics.BOARDLIST, arrayOfBoardsFromDatabase);
 
 		// Populate html-form
-		model.put(Path.VTLStatics.INPUT_BOARDLINK, Path.StaticStrings.INPUT_BOARDLINK);
-		model.put(Path.VTLStatics.INPUT_BOARDNAME, Path.StaticStrings.INPUT_BOARDNAME);
-		model.put(Path.VTLStatics.INPUT_BOARDDESCRIPTION, Path.StaticStrings.INPUT_BOARDDESCRIPTION);
+		model.put(Path.VTLStatics.INPUT_BOARDLINK, Path.VTLStatics.INPUT_BOARDLINK);
+		model.put(Path.VTLStatics.INPUT_BOARDNAME, Path.VTLStatics.INPUT_BOARDNAME);
+		model.put(Path.VTLStatics.INPUT_BOARDDESCRIPTION, Path.VTLStatics.INPUT_BOARDDESCRIPTION);
 
 		System.out.println("END:serveTextboardHome");
 		return ViewUtil.render(request, model, Path.Templates.TEXTBOARD, Path.Web.TEXTBOARD, "OK: default return");
@@ -153,12 +153,15 @@ public class TextboardController {
 		model.put(Path.VTLStatics.THREADLIST, arrayOfThreadsFromDatabase);
 
 		// Populate html-forms
-		model.put(Path.VTLStatics.INPUT_THREADTEXT, Path.StaticStrings.INPUT_THREADTEXT);
+		model.put(Path.VTLStatics.INPUT_THREADTEXT, Path.VTLStatics.INPUT_THREADTEXT);
 		System.out.println("END:serveTextboardBoard");
 		return ViewUtil.render(request, model, Path.Templates.TEXTBOARD_BOARD, Path.Web.TEXTBOARD_BOARD,
 				"OK: default return");
 	};
 
+	/**
+	 * SERVE TEXTBOARD_BOARD_THREAD
+	 */
 	public static Route serveTextboardBoardThread = (Request request, Response response) -> {
 		System.out.println("FROM:TextboardController:serveTextboardBoardThread");
 		Map<String, Object> model = new HashMap<>();
@@ -226,7 +229,7 @@ public class TextboardController {
 		model.put("postList", arrayOfPostsFromDatabase);
 
 		// Populate html-form
-		model.put(Path.VTLStatics.INPUT_THREADTEXT, Path.StaticStrings.INPUT_THREADTEXT);
+		model.put(Path.VTLStatics.INPUT_THREADTEXT, Path.VTLStatics.INPUT_THREADTEXT);
 
 		System.out.println("END:serveTextboardBoardThread");
 		return ViewUtil.render(request, model, Path.Templates.TEXTBOARD_BOARD_THREAD, Path.Web.TEXTBOARD_BOARD_THREAD,
@@ -244,9 +247,9 @@ public class TextboardController {
 		System.out.println("FROM:TextboardController:handleCreateBoard");
 		Map<String, Object> model = new HashMap<>();
 
-		String requestedBoardLink = request.queryParams(Path.StaticStrings.INPUT_BOARDLINK);
-		String requestedBoardName = request.queryParams(Path.StaticStrings.INPUT_BOARDNAME);
-		String requestedBoardDescription = request.queryParams(Path.StaticStrings.INPUT_BOARDDESCRIPTION);
+		String requestedBoardLink = request.queryParams(Path.VTLStatics.INPUT_BOARDLINK);
+		String requestedBoardName = request.queryParams(Path.VTLStatics.INPUT_BOARDNAME);
+		String requestedBoardDescription = request.queryParams(Path.VTLStatics.INPUT_BOARDDESCRIPTION);
 
 		if (TextboardLogic.checkIfBoardIsAvailable(requestedBoardLink)) {
 			System.out.println("The requested boardlink:" + requestedBoardLink + " is available!");
@@ -338,13 +341,13 @@ public class TextboardController {
 		System.out.println("FROM:TextboardController:handleCreateBoard");
 		Map<String, Object> model = new HashMap<>();
 
-		String requestedThreadText = request.queryParams(Path.StaticStrings.INPUT_THREADTEXT);
+		String requestedThreadText = request.queryParams(Path.VTLStatics.INPUT_THREADTEXT);
 		String currentBoard = request.params(Path.StaticStrings.BOARDLINK);
 
 		String threadid = "NULL_THREAD_DOES_NOT_EXIST";
 
 		// Verify retrieved data
-		System.out.println(Path.StaticStrings.INPUT_THREADTEXT + ":" + requestedThreadText);
+		System.out.println(Path.VTLStatics.INPUT_THREADTEXT + ":" + requestedThreadText);
 		System.out.println(Path.StaticStrings.BOARDLINK + ":" + currentBoard);
 
 		if (TextboardLogic.checkIfTextIsAcceptable(requestedThreadText)) {
@@ -449,7 +452,7 @@ public class TextboardController {
 		model.put(Path.VTLStatics.POSTLIST, arrayOfPostsFromDatabase);
 
 		// Populate html-form
-		model.put(Path.VTLStatics.INPUT_THREADTEXT, Path.StaticStrings.INPUT_THREADTEXT);
+		model.put(Path.VTLStatics.INPUT_THREADTEXT, Path.VTLStatics.INPUT_THREADTEXT);
 
 		System.out.println("END:serveTextboardBoardThread");
 		return ViewUtil.render(request, model, Path.Templates.TEXTBOARD_BOARD_THREAD, Path.Web.TEXTBOARD_BOARD_THREAD,
