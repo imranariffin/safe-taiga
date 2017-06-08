@@ -4,6 +4,7 @@ $where
 $message
 
 <ul>
+	<li>$threadid : $threadtext</li>
 #foreach( $post in $postList )
     <li><p>$post.postid : $post.posttext</p></li>
   #end

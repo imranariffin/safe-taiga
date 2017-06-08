@@ -5,7 +5,7 @@ $message
 
 <ul>
 #foreach( $board in $boardList )
-    <li><a href="$board.boardlink">$board.boardname</a> -- $board.boarddescription</li>
+    <li><a href="$board.boardlink">$board.boardname</a> : $board.boarddescription</li>
   #end
  </ul>
 

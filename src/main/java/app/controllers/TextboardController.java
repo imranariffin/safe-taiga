@@ -229,7 +229,7 @@ public class TextboardController {
 		model.put(Path.VTLStatics.POSTLIST, arrayOfPostsFromDatabase);
 
 		// Populate html-form
-		model.put(Path.VTLStatics.INPUT_THREADTEXT, Path.VTLStatics.INPUT_THREADTEXT);
+		model.put(Path.VTLStatics.INPUT_POSTTEXT, Path.VTLStatics.INPUT_POSTTEXT);
 
 		System.out.println("END:serveTextboardBoardThread");
 		return ViewUtil.render(request, model, Path.Templates.TEXTBOARD_BOARD_THREAD, Path.Web.TEXTBOARD_BOARD_THREAD,
