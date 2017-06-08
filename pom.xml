@@ -100,6 +100,6 @@
 		</dependency>
 	</dependencies>
 	<groupId>groupid</groupId>
-	<artifactId>safe-taiga-88682</artifactId>
+	<artifactId>safe-taiga</artifactId>
 	<version>1.00</version>
 </project>
