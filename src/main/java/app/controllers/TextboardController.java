@@ -184,6 +184,7 @@ public class TextboardController {
 		// Prepare arraylist for output from database
 		@SuppressWarnings("rawtypes")
 		ArrayList<Map> arrayOfPostsFromDatabase = new ArrayList<Map>();
+		String threadtext = "NULL_THREADTEXT_DOES_NOT_EXIST";
 		final String SCRIPT_SELECT_BOARD_THREAD_POST = "SELECT * FROM posts AS post WHERE post.threadid ='" + threadid
 				+ "';";
 		try (Connection connection = DATA_SOURCE.getConnection()) {
@@ -194,11 +195,18 @@ public class TextboardController {
 			System.out.println("Executing script:" + Path.StaticStrings.SCRIPT_CREATE_POSTS);
 			stmt.executeUpdate(Path.StaticStrings.SCRIPT_CREATE_POSTS);
 
+			// Get the threadtext from the database
+			System.out.println("Executing script:" + Path.StaticStrings.getSCRIPT_GET_THREADTEXT_BY_ID(threadid));
+			ResultSet rs = stmt.executeQuery(Path.StaticStrings.getSCRIPT_GET_THREADTEXT_BY_ID(threadid));
+			rs.next();
+			threadtext = rs.getString(Path.StaticStrings.THREADTEXT);
+			model.put(Path.StaticStrings.THREADID, threadid);
+			model.put(Path.StaticStrings.THREADTEXT, threadtext);
+
 			// Select all thread based on the given boardlink
 			System.out.println("Executing script:" + SCRIPT_SELECT_BOARD_THREAD_POST);
+			rs = stmt.executeQuery(SCRIPT_SELECT_BOARD_THREAD_POST);
 
-			ResultSet rs = stmt.executeQuery(SCRIPT_SELECT_BOARD_THREAD_POST);
-			// this is how you get a column given the colum name in string
 			while (rs.next()) {
 				// Prepare the map for threadid
 				Map<String, String> post = new HashMap<String, String>();
