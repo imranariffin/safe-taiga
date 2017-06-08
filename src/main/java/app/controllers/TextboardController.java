@@ -93,11 +93,13 @@ public class TextboardController {
 
 		// Obtain the request parameters
 		String boardlink = request.params(Path.StaticStrings.BOARDLINK);
+
 		// Put request parameters into the map
 		model.put(Path.StaticStrings.BOARDLINK, boardlink);
 
 		// Verify result
 		System.out.println(Path.StaticStrings.BOARDLINK + ":" + boardlink);
+
 		/**
 		 * Get objects from database
 		 */
@@ -254,7 +256,7 @@ public class TextboardController {
 		}
 
 		/**
-		 * COPIED FROM serveTextboardHome
+		 * COPIED FROM serveTextboardHome to update the list of board
 		 */
 		System.out.println("FROM:TextboardsController.java:START:serveTextboardHome");
 		// Map<String, Object> model = new HashMap<>();
@@ -275,8 +277,6 @@ public class TextboardController {
 			System.out.println("Executing script:" + SCRIPT_SELECT_ALL_BOARD);
 			ResultSet rs = stmt.executeQuery(SCRIPT_SELECT_ALL_BOARD);
 
-			// this is how you get a column given the colum name in string
-			// rs.getString(columnLabel)
 			while (rs.next()) {
 				// Prepare the map for boardlink, boardname and boarddescription
 				Map<String, String> board = new HashMap<String, String>();

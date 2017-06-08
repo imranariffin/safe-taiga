@@ -39,7 +39,7 @@ public class Application {
 		/**
 		 * POST ROUTES
 		 */
-		post(Path.Web.CREATE_BOARD, TextboardController.handleCreateBoard);
+		get(Path.Web.CREATE_BOARD, TextboardController.handleCreateBoard);
 
 		/**
 		 * NOT FOUND
