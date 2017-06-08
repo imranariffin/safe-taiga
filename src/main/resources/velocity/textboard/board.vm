@@ -5,7 +5,7 @@ $message
 
 <ul>
 #foreach( $thread in $threadList )
-    <li><a href="$thread.threadid">$thread.threadid</a></li>
+    <li><a href="$thread.threadid">$thread.threadid</a> says <p>$thread.threadtext</p></li>
   #end
  </ul>
 

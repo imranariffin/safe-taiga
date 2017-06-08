@@ -132,6 +132,7 @@ public class TextboardController {
 
 				// populate board with the appropriate description of a board
 				thread.put(Path.StaticStrings.THREADID, rs.getString(Path.StaticStrings.THREADID));
+				thread.put(Path.StaticStrings.THREADTEXT, rs.getString(Path.StaticStrings.THREADTEXT));
 				// put board into the arrayOfThreadsFromDatabase
 				arrayOfThreadsFromDatabase.add(thread);
 			}

@@ -63,6 +63,7 @@ public class Path {
 		public final static String BOARDLINK = "boardlink";
 		public final static String BOARDNAME = "boardname";
 		public final static String THREADID = "threadid";
+		public final static String THREADTEXT = "threadtext";
 		public final static String POSTID = "postid";
 		public final static String POSTTEXT = "posttext";
 
