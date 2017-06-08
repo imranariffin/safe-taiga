@@ -300,7 +300,7 @@ public class TextboardController {
 			// Select all thread based on the given boardlink
 			System.out.println("Executing script:" + SCRIPT_SELECT_BOARD_THREAD);
 			ResultSet rs = stmt.executeQuery(SCRIPT_SELECT_BOARD_THREAD);
-			// this is how you get a column given the colum name in string
+			// this is how you get a column given the column name in string
 			while (rs.next()) {
 				// Prepare the map for threadid
 				Map<String, String> thread = new HashMap<String, String>();
@@ -341,6 +341,8 @@ public class TextboardController {
 		String requestedThreadText = request.queryParams(Path.StaticStrings.INPUT_THREADTEXT);
 		String currentBoard = request.params(Path.StaticStrings.BOARDLINK);
 
+		String threadid = "NULL_THREAD_DOES_NOT_EXIST";
+
 		// Verify retrieved data
 		System.out.println(Path.StaticStrings.INPUT_THREADTEXT + ":" + requestedThreadText);
 		System.out.println(Path.StaticStrings.BOARDLINK + ":" + currentBoard);
@@ -360,6 +362,11 @@ public class TextboardController {
 				System.out.println("SCRIPT_INSERT_THREAD:" + SCRIPT_INSERT_THREAD);
 				stmt.executeUpdate(SCRIPT_INSERT_THREAD);
 
+				// Get the last created thread
+				final String SCRIPT_SELECT_LAST_THREAD = "SELECT * FROM threads ORDER BY threadid DESC LIMIT 1";
+				ResultSet rs = stmt.executeQuery(SCRIPT_SELECT_LAST_THREAD);
+				threadid = rs.getString(Path.StaticStrings.THREADID);
+
 			} catch (Exception e) {
 				return ViewUtil.renderErrorMessage(request, e.getMessage(),
 						Path.StaticStrings.getPREVIOUSBOARDLINK(currentBoard),
@@ -376,8 +383,12 @@ public class TextboardController {
 		// Map<String, Object> model = new HashMap<>();
 
 		// Obtain the request parameters
-		String boardlink = request.params(Path.StaticStrings.BOARDLINK);
-		String threadid = request.params(Path.StaticStrings.THREADID);
+		String boardlink = currentBoard;
+
+		if (threadid.equals("NULL_THREAD_DOES_NOT_EXIST")) {
+			return ViewUtil.renderErrorMessage(request, "NULL_THREAD_DOES_NOT_EXIST",
+					Path.StaticStrings.getPREVIOUSBOARDLINK(currentBoard), currentBoard);
+		}
 
 		// Put request parameters into the map
 		model.put(Path.StaticStrings.BOARDLINK, boardlink);
@@ -407,7 +418,7 @@ public class TextboardController {
 			System.out.println("Executing script:" + SCRIPT_SELECT_BOARD_THREAD_POST);
 
 			ResultSet rs = stmt.executeQuery(SCRIPT_SELECT_BOARD_THREAD_POST);
-			// this is how you get a column given the colum name in string
+			// this is how you get a column given the column name in string
 			while (rs.next()) {
 				// Prepare the map for threadid
 				Map<String, String> post = new HashMap<String, String>();
@@ -441,7 +452,6 @@ public class TextboardController {
 		model.put(Path.VTLStatics.INPUT_THREADTEXT, Path.StaticStrings.INPUT_THREADTEXT);
 
 		System.out.println("END:serveTextboardBoardThread");
-
 		return ViewUtil.render(request, model, Path.Templates.TEXTBOARD_BOARD_THREAD, Path.Web.TEXTBOARD_BOARD_THREAD,
 				"OK: returned from a post call of creating thread");
 	};
