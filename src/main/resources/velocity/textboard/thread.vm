@@ -1,4 +1,4 @@
-<a href="/textboard/$boardlink">Textboard</a>
+<a href="/textboard/$boardlink">$boardlink</a>
 
 $where
 $message
