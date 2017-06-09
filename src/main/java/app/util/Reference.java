@@ -3,22 +3,10 @@ package app.util;
 public class Reference {
 
 	public static class Web {
-
-		/**
-		 * My GET paths
-		 */
 		public static final String ROOT = "/";
 		public final static String TEXTBOARD = "/textboard/";
 		public final static String TEXTBOARD_BOARD = "/textboard/:boardlink/";
 		public final static String TEXTBOARD_BOARD_THREAD = "/textboard/:boardlink/:threadid/";
-
-		/**
-		 * My POST paths
-		 */
-		public final static String CREATE_BOARD = "/textboard/create/";
-		public final static String CREATE_THREAD = "/textboard/:boardlink/";
-		public final static String CREATE_POST = "/textboard/:boardlink/:threadid/";
-
 	}
 
 	public static class Templates {

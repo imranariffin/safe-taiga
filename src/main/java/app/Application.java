@@ -37,9 +37,9 @@ public class Application {
 		/**
 		 * POST ROUTES
 		 */
-		post(Reference.Web.CREATE_BOARD, TextboardController.handleCreateBoard);
-		post(Reference.Web.CREATE_THREAD, TextboardController.handleCreateThread);
-		post(Reference.Web.CREATE_POST, TextboardController.handleCreatePost);
+		post(Reference.Web.TEXTBOARD, TextboardController.handleCreateBoard);
+		post(Reference.Web.TEXTBOARD_BOARD, TextboardController.handleCreateThread);
+		post(Reference.Web.TEXTBOARD_BOARD_THREAD, TextboardController.handleCreatePost);
 
 		/**
 		 * NOT FOUND
