@@ -31,28 +31,24 @@ public class TextboardController {
 		Tools.print("FROM:TextboardsController.java:START:serveTextboard_HOME");
 		Map<String, Object> model = new HashMap<>();
 		/**
-		 * Get objects from database
+		 * 1. Get the list of boards from database 2. Populate it into an
+		 * arraylist 3. Put the arraylist to the VTL
 		 */
-		// Prepare arraylist for output from database
 		@SuppressWarnings("rawtypes")
 		ArrayList<Map> arrayOfBoardsFromDatabase = new ArrayList<Map>();
-		final String SCRIPT_SELECT_ALL_BOARD = "SELECT * FROM boards;";
 		try (Connection connection = DATA_SOURCE.getConnection()) {
 
 			Statement stmt = connection.createStatement();
 
-			// Create table if it does not exist
+			// If the table does not exist for whatever reason, create them
 			Tools.print("Executing script:" + Reference.CommonStrings.SCRIPT_CREATE_BOARDS);
 			stmt.executeUpdate(Reference.CommonStrings.SCRIPT_CREATE_BOARDS);
 
-			// Select all the board in the table
-			Tools.print("Executing script:" + SCRIPT_SELECT_ALL_BOARD);
-			ResultSet rs = stmt.executeQuery(SCRIPT_SELECT_ALL_BOARD);
+			// Just a simple SELECT ALL script
+			Tools.print("Executing script:" + Reference.CommonStrings.SCRIPT_SELECT_BOARDS);
+			ResultSet rs = stmt.executeQuery(Reference.CommonStrings.SCRIPT_SELECT_BOARDS);
 
-			// this is how you get a column given the colum name in string
-			// rs.getString(columnLabel)
 			while (rs.next()) {
-				// Prepare the map for boardlink, boardname and boarddescription
 				Map<String, String> board = new HashMap<String, String>();
 
 				// populate board with the appropriate description of a board
@@ -61,7 +57,6 @@ public class TextboardController {
 				board.put(Reference.CommonStrings.BOARDDESCRIPTION,
 						rs.getString(Reference.CommonStrings.BOARDDESCRIPTION));
 
-				// put board into the arrayOfBoardsFromDatabase
 				arrayOfBoardsFromDatabase.add(board);
 			}
 
@@ -210,14 +205,12 @@ public class TextboardController {
 			rs = stmt.executeQuery(SCRIPT_SELECT_BOARD_THREAD_POST);
 
 			while (rs.next()) {
-				// Prepare the map for threadid
 				Map<String, String> post = new HashMap<String, String>();
 
 				// populate board with the appropriate description of a board
 				post.put(Reference.CommonStrings.POSTID, rs.getString(Reference.CommonStrings.POSTID));
 				post.put(Reference.CommonStrings.POSTTEXT, rs.getString(Reference.CommonStrings.POSTTEXT));
 
-				// put board into the arrayOfPostsFromDatabase
 				arrayOfPostsFromDatabase.add(post);
 			}
 

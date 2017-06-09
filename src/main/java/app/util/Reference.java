@@ -73,6 +73,8 @@ public class Reference {
 		public final static String SCRIPT_CREATE_THREADS = "CREATE TABLE IF NOT EXISTS threads (threadid SERIAL, boardlink VARCHAR(5), threadtext TEXT, PRIMARY KEY (threadid), FOREIGN KEY (boardlink) REFERENCES boards(boardlink));";
 		public final static String SCRIPT_CREATE_POSTS = "CREATE TABLE IF NOT EXISTS posts (postid SERIAL, threadid INTEGER, posttext TEXT, PRIMARY KEY (postid), FOREIGN KEY (threadid) REFERENCES threads(threadid));";
 
+		public final static String SCRIPT_SELECT_BOARDS = "SELECT * FROM boards;";
+
 		public static String getSCRIPT_GET_THREADTEXT_BY_ID(String threadid) {
 			return "SELECT * FROM threads WHERE threadid = '" + threadid + "' LIMIT 1;";
 		}
