@@ -1,33 +1,24 @@
 package app.util;
 
-import lombok.*;
+public class Reference {
 
-public class Path {
-
-	// The @Getter methods are needed in order to access
-	// the variables from Velocity Templates
 	public static class Web {
+
 		/**
 		 * My GET paths
 		 */
-		@Getter
 		public static final String ROOT = "/";
-		@Getter
 		public final static String TEXTBOARD = "/textboard/";
-		@Getter
 		public final static String TEXTBOARD_BOARD = "/textboard/:boardlink/";
-		@Getter
 		public final static String TEXTBOARD_BOARD_THREAD = "/textboard/:boardlink/:threadid/";
 
 		/**
 		 * My POST paths
 		 */
-		@Getter
-		public final static String CREATE_BOARD = "/textboard/";
-		@Getter
+		public final static String CREATE_BOARD = "/textboard/create/";
 		public final static String CREATE_THREAD = "/textboard/:boardlink/";
-		@Getter
 		public final static String CREATE_POST = "/textboard/:boardlink/:threadid/";
+
 	}
 
 	public static class Templates {
@@ -47,7 +38,7 @@ public class Path {
 		public final static String ERROR = "/velocity/error.vm";
 	}
 
-	public static class StaticStrings {
+	public static class CommonStrings {
 
 		/**
 		 * WEBSITE MAIN VOCABULARIES
@@ -73,11 +64,11 @@ public class Path {
 		public final static String THREADTEXT = "threadtext";
 		public final static String POSTID = "postid";
 		public final static String POSTTEXT = "posttext";
+		public final static String BOARDDESCRIPTION = "boarddescription";
 
 		/**
 		 * DATABASE TEXTBOARD SCRIPT
 		 */
-		public final static String BOARDDESCRIPTION = "boarddescription";
 		public final static String SCRIPT_CREATE_BOARDS = "CREATE TABLE IF NOT EXISTS boards ( boardlink VARCHAR(5), boardname VARCHAR(25), boarddescription VARCHAR(100), PRIMARY KEY(boardlink));";
 		public final static String SCRIPT_CREATE_THREADS = "CREATE TABLE IF NOT EXISTS threads (threadid SERIAL, boardlink VARCHAR(5), threadtext TEXT, PRIMARY KEY (threadid), FOREIGN KEY (boardlink) REFERENCES boards(boardlink));";
 		public final static String SCRIPT_CREATE_POSTS = "CREATE TABLE IF NOT EXISTS posts (postid SERIAL, threadid INTEGER, posttext TEXT, PRIMARY KEY (postid), FOREIGN KEY (threadid) REFERENCES threads(threadid));";
@@ -96,19 +87,16 @@ public class Path {
 			return TEXTBOARDLINK + previousBoardLink + "/";
 		}
 
-		public static String getPREVIOUSBOARDTHREAD(String previousBoardLink, String previousThreadId) {
+		public static String getPREVIOUSTHREAD(String previousBoardLink, String previousThreadId) {
 			return TEXTBOARDLINK + previousBoardLink + "/" + previousThreadId + "/";
 		}
 	}
 
 	public static class VTLStatics {
 
-		// VTL list keys
 		public final static String BOARDLIST = "boardList";
 		public final static String THREADLIST = "threadList";
 		public final static String POSTLIST = "postList";
-
-		// VTL form keys
 		public final static String INPUT_BOARDLINK = "INPUT_BOARDLINK";
 		public final static String INPUT_BOARDNAME = "INPUT_BOARDNAME";
 		public final static String INPUT_BOARDDESCRIPTION = "INPUT_BOARDDESCRIPTION";

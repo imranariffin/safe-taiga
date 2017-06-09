@@ -22,7 +22,7 @@ public class ViewUtil {
 	public static Route notFound = (Request request, Response response) -> {
 		response.status(HttpStatus.NOT_FOUND_404);
 		Map<String, Object> model = new HashMap<>();
-		return render(request, model, Path.Templates.NOT_FOUND, Path.StaticStrings.ERROR, "404 NOT FOUND");
+		return render(request, model, Reference.Templates.NOT_FOUND, Reference.CommonStrings.ERROR, "404 NOT FOUND");
 	};
 
 	private static VelocityTemplateEngine strictVelocityEngine() {
@@ -39,9 +39,9 @@ public class ViewUtil {
 	public static String renderErrorMessage(Request request, String errorMessage, String returnLink, String returnName) {
 
 		Map<String, String> model = new HashMap<String, String>();
-		model.put(Path.StaticStrings.ERROR, errorMessage);
-		model.put(Path.StaticStrings.RETURNLINK, returnLink);
-		model.put(Path.StaticStrings.RETURNNAME, returnName);
-		return strictVelocityEngine().render(new ModelAndView(model, Path.Templates.ERROR));
+		model.put(Reference.CommonStrings.ERROR, errorMessage);
+		model.put(Reference.CommonStrings.RETURNLINK, returnLink);
+		model.put(Reference.CommonStrings.RETURNNAME, returnName);
+		return strictVelocityEngine().render(new ModelAndView(model, Reference.Templates.ERROR));
 	}
 }

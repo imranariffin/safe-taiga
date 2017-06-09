@@ -29,17 +29,17 @@ public class Application {
 		 * GET ROUTES
 		 */
 		// get(Path.Web.LOGIN, LoginController.serveLoginPage);
-		get(Path.Web.ROOT, RootController.serveRootPage);
-		get(Path.Web.TEXTBOARD, TextboardController.serveTextboardHome);
-		get(Path.Web.TEXTBOARD_BOARD, TextboardController.serveTextboardBoard);
-		get(Path.Web.TEXTBOARD_BOARD_THREAD, TextboardController.serveTextboardBoardThread);
+		get(Reference.Web.ROOT, RootController.serveRootPage);
+		get(Reference.Web.TEXTBOARD, TextboardController.serveTextboard_HOME);
+		get(Reference.Web.TEXTBOARD_BOARD, TextboardController.serveTextboard_BOARD);
+		get(Reference.Web.TEXTBOARD_BOARD_THREAD, TextboardController.serveTextboard_THREAD);
 
 		/**
 		 * POST ROUTES
 		 */
-		post(Path.Web.CREATE_BOARD, TextboardController.handleCreateBoard);
-		post(Path.Web.CREATE_THREAD, TextboardController.handleCreateBoardThread);
-		post(Path.Web.CREATE_POST, TextboardController.handleCreateBoardThreadPost);
+		post(Reference.Web.CREATE_BOARD, TextboardController.handleCreateBoard);
+		post(Reference.Web.CREATE_THREAD, TextboardController.handleCreateThread);
+		post(Reference.Web.CREATE_POST, TextboardController.handleCreatePost);
 
 		/**
 		 * NOT FOUND
