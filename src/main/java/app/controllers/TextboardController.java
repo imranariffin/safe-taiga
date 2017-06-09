@@ -274,7 +274,7 @@ public class TextboardController {
 			Tools.print("The requested boardlink:" + requestedBoardLink + " is NOT available!");
 		}
 
-		return serveTextboard_HOME;
+		return serveTextboard_HOME.handle(request, response);
 	};
 
 	/**
@@ -316,7 +316,7 @@ public class TextboardController {
 			Tools.print("The requested thread with post:" + requestedThreadText + " is NOT acceptable!");
 		}
 
-		return serveTextboard_BOARD;
+		return serveTextboard_BOARD.handle(request, response);
 	};
 
 	/**
@@ -359,6 +359,6 @@ public class TextboardController {
 			Tools.print("The requested thread with post:" + requestedPostText + " is NOT acceptable!");
 		}
 
-		return serveTextboard_THREAD;
+		return serveTextboard_THREAD.handle(request, response);
 	};
 }

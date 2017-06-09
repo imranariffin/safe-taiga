@@ -3,6 +3,7 @@ package app.util;
 public class Reference {
 
 	public static class Web {
+		
 		public static final String ROOT = "/";
 		public final static String TEXTBOARD = "/textboard/";
 		public final static String TEXTBOARD_BOARD = "/textboard/:boardlink/";
