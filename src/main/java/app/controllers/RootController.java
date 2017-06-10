@@ -5,6 +5,8 @@ import java.util.Map;
 
 import app.util.Reference;
 import app.util.ViewUtil;
+import app.util.Tools;
+
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -12,10 +14,10 @@ import spark.Route;
 public class RootController {
 
 	public static Route serveRootPage = (Request request, Response response) -> {
-		System.out.println("FROM:RootController.java:START:serveRootPage");
+		Tools.print("FROM:RootController.java:START:serveRootPage");
 		Map<String, Object> model = new HashMap<>();
-		
-		System.out.println("END:serveRootPage");
+
+		Tools.print("END:serveRootPage");
 		return ViewUtil.render(request, model, Reference.Templates.ROOT, "ROOT PAGE", "");
 	};
 }

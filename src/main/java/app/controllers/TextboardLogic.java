@@ -6,13 +6,15 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import app.util.Tools;
+
 public class TextboardLogic {
 
 	public static boolean checkIfBoardIsAvailable(String boardlink) {
-		System.out.println("FROM:TextboardLogic:START:checkIfBoardIsAvailable");
+		Tools.print("FROM:TextboardLogic:START:checkIfBoardIsAvailable");
 
 		final String SCRIPT_SELECT_GIVEN_BOARDLINK = "SELECT * FROM boards WHERE boardlink = '" + boardlink + "';";
-		System.out.println("SCRIPT_SELECT_GIVEN_BOARDLINK:" + SCRIPT_SELECT_GIVEN_BOARDLINK);
+		Tools.print("SCRIPT_SELECT_GIVEN_BOARDLINK:" + SCRIPT_SELECT_GIVEN_BOARDLINK);
 
 		try (Connection connection = DATA_SOURCE.getConnection()) {
 
@@ -22,19 +24,19 @@ public class TextboardLogic {
 			// rs.getString(columnLabel)
 			if (rs.next()) {
 				// means rs is non-empty
-				System.out.println("END:checkIfBoardIsAvailable:0");
+				Tools.print("END:checkIfBoardIsAvailable:0");
 				return false;
 			} else {
 				// means rs is empty
-				System.out.println("END:checkIfBoardIsAvailable:1");
+				Tools.print("END:checkIfBoardIsAvailable:1");
 				return true;
 			}
 		} catch (Exception e) {
-			System.out.println("ERROR:" + e.getMessage());
+			Tools.print("ERROR:" + e.getMessage());
 		}
 
 		// connection to database likely experienced an error
-		System.out.println("END:checkIfBoardIsAvailable:2");
+		Tools.print("END:checkIfBoardIsAvailable:2");
 		return false;
 	}
 

@@ -3,11 +3,12 @@ package app.util;
 public class Reference {
 
 	public static class Web {
-		
+
 		public static final String ROOT = "/";
 		public final static String TEXTBOARD = "/textboard/";
 		public final static String TEXTBOARD_BOARD = "/textboard/:boardlink/";
 		public final static String TEXTBOARD_BOARD_THREAD = "/textboard/:boardlink/:threadid/";
+		public final static String IMAGEPROCESSING = "/imageprocessing/";
 	}
 
 	public static class Templates {
@@ -19,7 +20,7 @@ public class Reference {
 		public final static String TEXTBOARD = "/velocity/textboard/textboard.vm";
 		public final static String TEXTBOARD_BOARD = "/velocity/textboard/board.vm";
 		public final static String TEXTBOARD_BOARD_THREAD = "/velocity/textboard/thread.vm";
-
+		public final static String IMAGE_PROCESSING_UPLOAD = "/velocity/imageprocessing/imageupload.vm";
 		/**
 		 * ERROR templates
 		 */

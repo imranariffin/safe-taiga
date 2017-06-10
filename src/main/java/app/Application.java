@@ -3,6 +3,7 @@ package app;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import static spark.Spark.*;
+import static spark.debug.DebugScreen.*;
 import app.util.*;
 import app.controllers.*;
 
@@ -10,14 +11,15 @@ public class Application {
 
 	public static HikariDataSource DATA_SOURCE;
 	public static HikariConfig config;
-	public static boolean devmode = false;
+	public static boolean devmode = true;
 
 	public static void main(String[] args) {
+		enableDebugScreen();
 		System.out.println("SERVER:STARTs");
 		System.out.println("Server is running at port:" + Integer.valueOf(System.getenv("PORT")));
 		port(Integer.valueOf(System.getenv("PORT")));
 		staticFileLocation("/public");
-		
+
 		config = new HikariConfig();
 		config.setJdbcUrl(System.getenv("JDBC_DATABASE_URL"));
 		DATA_SOURCE = (config.getJdbcUrl() != null) ? new HikariDataSource(config) : new HikariDataSource();
@@ -33,6 +35,7 @@ public class Application {
 		get(Reference.Web.TEXTBOARD, TextboardController.serveTextboard_HOME);
 		get(Reference.Web.TEXTBOARD_BOARD, TextboardController.serveTextboard_BOARD);
 		get(Reference.Web.TEXTBOARD_BOARD_THREAD, TextboardController.serveTextboard_THREAD);
+		get(Reference.Web.IMAGEPROCESSING, ImageProcessingController.serveImageUpload);
 
 		/**
 		 * POST ROUTES
@@ -40,6 +43,7 @@ public class Application {
 		post(Reference.Web.TEXTBOARD, TextboardController.handleCreateBoard);
 		post(Reference.Web.TEXTBOARD_BOARD, TextboardController.handleCreateThread);
 		post(Reference.Web.TEXTBOARD_BOARD_THREAD, TextboardController.handleCreatePost);
+		post(Reference.Web.IMAGEPROCESSING, ImageProcessingController.handleImageUpload);
 
 		/**
 		 * NOT FOUND
