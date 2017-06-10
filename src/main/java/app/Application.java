@@ -15,7 +15,7 @@ public class Application {
 
 	public static void main(String[] args) {
 		enableDebugScreen();
-		System.out.println("SERVER:STARTs");
+		System.out.println("SERVER:START");
 		System.out.println("Server is running at port:" + Integer.valueOf(System.getenv("PORT")));
 		port(Integer.valueOf(System.getenv("PORT")));
 		staticFileLocation("/public");
@@ -43,7 +43,7 @@ public class Application {
 		post(Reference.Web.TEXTBOARD, TextboardController.handleCreateBoard);
 		post(Reference.Web.TEXTBOARD_BOARD, TextboardController.handleCreateThread);
 		post(Reference.Web.TEXTBOARD_BOARD_THREAD, TextboardController.handleCreatePost);
-		post(Reference.Web.IMAGEPROCESSING, ImageProcessingController.handleImageUpload);
+		//post(Reference.Web.IMAGEPROCESSING, ImageProcessingController.handleImageUpload);
 
 		/**
 		 * NOT FOUND

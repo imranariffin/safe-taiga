@@ -9,7 +9,7 @@
 </head>
 
 <body>
-<a href="/">ROOT</a>=
+<a href="/">ROOT</a>
 <p>$where : $message</p>
 <div>
 	#foreach( $board in $boardList )

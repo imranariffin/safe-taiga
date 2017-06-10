@@ -12,6 +12,7 @@
 
 <p>$where : $message</p>
 
-<a href="/textboard">textboard</a>
+<a href="/textboard/">textboard</a>
+<a href="/imageprocessing/">imageprocessing</a>
 
 </body>
