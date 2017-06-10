@@ -41,26 +41,4 @@ public class ImageProcessingController {
 		 * Reference.Templates.IMAGE_PROCESSING_UPLOAD, "IMAGE UPLOAD", "OK");
 		 **/
 	};
-
-	/**
-	 * public static Route handleImageUpload = (Request request, Response
-	 * response) -> {
-	 * Tools.print("FROM:ImageProcessingController:START:handleImageUpload");
-	 * 
-	 * File uploadDir = new File("upload"); uploadDir.mkdir(); // create the
-	 * upload directory if it doesn't exist Path tempFile =
-	 * Files.createTempFile(uploadDir.toPath(), "", "");
-	 * 
-	 * Tools.print("tempFile.getFileName().toString():" +
-	 * tempFile.getFileName().toString());
-	 * 
-	 * request.attribute("org.eclipse.jetty.multipartConfig", new
-	 * MultipartConfigElement("/temp"));
-	 * 
-	 * try (InputStream input =
-	 * request.raw().getPart("uploaded_file").getInputStream()) {
-	 * Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING); }
-	 * 
-	 * logInfo(request, tempFile); Tools.print("END:handleImageUpload"); };
-	 **/
 }
