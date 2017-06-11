@@ -11,10 +11,7 @@
 <body>
 	<a href="/">ROOT</a>
 	<p>$where : $message</p>
-	<div>
-		<form method='post' enctype='multipart/form-data'>
-			<input type='file' name='uploaded_file' accept='.png'>
-			<button>Upload picture</button>
-		</form>
-	</div>
+	
+	<h1>You uploaded this image:<h1><img src='$imagename'>
+	<h1>You uploaded this image:<h1><img src='/images/input/upload/2333554662165376197.png'>
 </body>

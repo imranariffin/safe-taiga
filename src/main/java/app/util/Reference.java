@@ -8,7 +8,7 @@ public class Reference {
 		public final static String TEXTBOARD = "/textboard/";
 		public final static String TEXTBOARD_BOARD = "/textboard/:boardlink/";
 		public final static String TEXTBOARD_BOARD_THREAD = "/textboard/:boardlink/:threadid/";
-		public final static String IMAGEPROCESSING = "/imageprocessing/";
+		public final static String IMAGE_PROCESSING = "/imageprocessing/";
 	}
 
 	public static class Templates {
@@ -21,6 +21,7 @@ public class Reference {
 		public final static String TEXTBOARD_BOARD = "/velocity/textboard/board.vm";
 		public final static String TEXTBOARD_BOARD_THREAD = "/velocity/textboard/thread.vm";
 		public final static String IMAGE_PROCESSING_UPLOAD = "/velocity/imageprocessing/imageupload.vm";
+		public final static String DISPLAY_IMAGE = "/velocity/imageprocessing/displayimage.vm";
 		/**
 		 * ERROR templates
 		 */

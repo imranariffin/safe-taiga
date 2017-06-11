@@ -31,14 +31,37 @@ public class ImageProcessingController {
 	}
 
 	public static Route serveImageUpload = (Request request, Response response) -> {
-		return "<h1>You uploaded this image:<h1><img src='/img/image.png'>";
-		/**
-		 * Tools.print("FROM:ImageProcessingController:START:serveImageUpload");
-		 * Map<String, Object> model = new HashMap<>();
-		 * 
-		 * Tools.print("END:imageProcessingController"); return
-		 * ViewUtil.render(request, model,
-		 * Reference.Templates.IMAGE_PROCESSING_UPLOAD, "IMAGE UPLOAD", "OK");
-		 **/
+		Tools.print("FROM:ImageProcessingController:START:serveImageUpload");
+		Map<String, Object> model = new HashMap<>();
+
+		Tools.print("END:imageProcessingController");
+		return ViewUtil.render(request, model, Reference.Templates.IMAGE_PROCESSING_UPLOAD, "IMAGE UPLOAD", "OK");
+	};
+
+	public static Route handleImageUpload = (Request request, Response response) -> {
+		Tools.print("FROM:ImageProcessingController:START:handleImageUpload");
+		Map<String, Object> model = new HashMap<>();
+
+		File uploadDir = new File("src/main/resources/public/images/input/upload/");
+		uploadDir.mkdir(); // create the upload directory if it doesn't exist
+		Path tempFile = Files.createTempFile(uploadDir.toPath(), "", ".png");
+
+		request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+
+		try (InputStream input = request.raw().getPart("uploaded_file").getInputStream()) {
+			Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
+		}
+
+		logInfo(request, tempFile);
+		Tools.print("image name:" + tempFile.getFileName().toString());
+		model.put("imagename", tempFile.getFileName());
+		Tools.print("END:handleImageUpload");
+		// return "<h1>You uploaded this image:<h1><img
+		// src='/images/input/upload/" + tempFile.getFileName().toString() +
+		// "'>";
+		// return "<h1>You uploaded this image:<h1><img
+		// src='/images/input/upload/769123764505952825.png'>";
+		// return "<h1>You uploaded this image:<h1><img src='/img/image.png'>";
+		return ViewUtil.render(request, model, Reference.Templates.DISPLAY_IMAGE, "IMAGE DISPLAY", "OK");
 	};
 }
