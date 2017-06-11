@@ -5,12 +5,15 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletException;
+import javax.servlet.http.Part;
 
 import app.util.*;
 import app.controllers.*;
@@ -29,10 +32,12 @@ public class Application {
 		System.out.println("SERVER:START:" + Integer.valueOf(System.getenv("PORT")));
 		port(Integer.valueOf(System.getenv("PORT")));
 
-		// staticFileLocation("public");
-		staticFiles.externalLocation("upload");
-		
-		// staticFiles.externalLocation("public");
+		staticFiles.location("/public");
+		staticFiles.externalLocation("/public");
+
+		File uploadDir = new File("src/main/resources/public/images/input/uploads");
+		uploadDir.mkdir();
+
 		config = new HikariConfig();
 		config.setJdbcUrl(System.getenv("JDBC_DATABASE_URL"));
 		DATA_SOURCE = (config.getJdbcUrl() != null) ? new HikariDataSource(config) : new HikariDataSource();
@@ -63,11 +68,7 @@ public class Application {
 		// post(Reference.Web.IMAGE_PROCESSING,
 		// ImageProcessingController.handleImageUpload);
 		post(Reference.Web.IMAGE_PROCESSING, (req, res) -> {
-			// File uploadDir = new
-			// File("src/main/resources/public/images/input/upload/");
-			File uploadDir = new File("upload");
-			uploadDir.mkdir();
-			// exist
+
 			Path tempFile = Files.createTempFile(uploadDir.toPath(), "", ".png");
 
 			req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
@@ -75,8 +76,14 @@ public class Application {
 			try (InputStream input = req.raw().getPart("uploaded_file").getInputStream()) {
 				Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
 			}
-			Tools.print("image name:" + tempFile.getFileName().toString());
-			return "<h1>You uploaded this image:<h1><img src='" + tempFile.getFileName() + "'>";
+
+			logInfo(req, tempFile);
+			// return "<h1>You uploaded this image:<h1><img src='upload/" +
+			// tempFile.getFileName() + "'>";
+			return "<h1>You uploaded this image:<h1><img src='images/input/uploads" + tempFile.getFileName().toString()
+					+ "'>";
+			// return "<h1>You uploaded this image:<h1><img
+			// src='/images/input/upload/6083141945453768491.png'>";
 		});
 		/**
 		 * NOT FOUND
@@ -86,5 +93,19 @@ public class Application {
 		// Set up after-filters (called after each get/post)
 		after("*", Filters.addGzipHeader);
 		System.out.println("SERVER:END");
+	}
+
+	private static void logInfo(Request req, Path tempFile) throws IOException, ServletException {
+		System.out.println("Uploaded file '" + getFileName(req.raw().getPart("uploaded_file")) + "' saved as '"
+				+ tempFile.toAbsolutePath() + "'");
+	}
+
+	private static String getFileName(Part part) {
+		for (String cd : part.getHeader("content-disposition").split(";")) {
+			if (cd.trim().startsWith("filename")) {
+				return cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
+			}
+		}
+		return null;
 	}
 }

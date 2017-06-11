@@ -11,11 +11,12 @@ import org.bytedeco.javacv.FrameGrabber.Exception;
 import org.bytedeco.javacv.Java2DFrameConverter;
 
 import app.util.ImageProcessing;
+import app.util.Tools;
 
 public class ImageProcessingTest {
 	public static void main(String[] args) throws IOException, Exception {
 
-		String filename = "test_video";
+		String filename = "love_live";
 		System.out.println("filename:" + filename + ".mp4");
 		FFmpegFrameGrabber g = new FFmpegFrameGrabber("videos/" + filename + ".mp4");
 		g.start();
@@ -32,7 +33,8 @@ public class ImageProcessingTest {
 				ImageIO.write(
 						ImageProcessing
 								.partitionImage(ImageProcessing.resizeImage(frameConverter.getBufferedImage(frame))),
-						"png", new File("images/output/partition/" + outputFileName));
+						"png", new File("src/main/resources/public/images/output/partition/" + outputFileName));
+				Tools.print(outputFileName);
 				a++;
 			} else {
 				// do nothing

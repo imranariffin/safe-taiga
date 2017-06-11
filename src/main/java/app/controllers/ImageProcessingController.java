@@ -50,6 +50,7 @@ public class ImageProcessingController {
 
 		try (InputStream input = request.raw().getPart("uploaded_file").getInputStream()) {
 			Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
+			Tools.print("finished copying the image file");
 		}
 
 		logInfo(request, tempFile);
@@ -59,9 +60,9 @@ public class ImageProcessingController {
 		// return "<h1>You uploaded this image:<h1><img
 		// src='/images/input/upload/" + tempFile.getFileName().toString() +
 		// "'>";
-		// return "<h1>You uploaded this image:<h1><img
-		// src='/images/input/upload/769123764505952825.png'>";
-		// return "<h1>You uploaded this image:<h1><img src='/img/image.png'>";
-		return ViewUtil.render(request, model, Reference.Templates.DISPLAY_IMAGE, "IMAGE DISPLAY", "OK");
+		return "<h1>You uploaded this image:<h1><img src='/images/input/upload/image.png'>";
+		//return "<h1>You uploaded this image:<h1><img src='/img/image.png'>";
+		// return ViewUtil.render(request, model,
+		// Reference.Templates.DISPLAY_IMAGE, "IMAGE DISPLAY", "OK");
 	};
 }
