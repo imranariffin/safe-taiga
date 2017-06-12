@@ -20,7 +20,7 @@
 			#foreach( $post in $postList )
 				<br>
 	    		<div>
-	    			<h5>$post.postid : $post.posttext</h5>
+	    			<p>$post.postid : $post.posttext</p>
 	    		</div>
 	    	#end
 		</div>

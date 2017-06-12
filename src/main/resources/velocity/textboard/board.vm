@@ -18,10 +18,8 @@
 		
 		<div>
 			#foreach( $thread in $threadList )
-				<div>
 					<br>
-					<h5><a href="textboard/$boardlink/$thread.threadid">$thread.threadid</a> : $thread.threadtext</h5>
-				</div>
+					<p><a href="$boardlink/$thread.threadid">$thread.threadid</a> : $thread.threadtext</p>
 			#end
 		</div>
 		
