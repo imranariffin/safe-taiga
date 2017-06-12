@@ -12,6 +12,8 @@
 	<body>
 	
 		<a href="$ROOT_LINK">$ROOT_NAME</a>
+		<a href="$TEXTBOARD_LINK">$TEXTBOARD_NAME</a>
+		<a href="$IMAGEPROCESSING_LINK">$IMAGEPROCESSING_NAME</a>
 		
 		<p>$WHERE_NAME : $WHERE_TEXT</p>
 		

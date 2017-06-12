@@ -22,6 +22,7 @@ public class Reference {
 		public final static String TEXTBOARD_BOARD_THREAD = "/velocity/textboard/thread.vm";
 		public final static String IMAGE_PROCESSING_UPLOAD = "/velocity/imageprocessing/imageupload.vm";
 		public final static String DISPLAY_IMAGE = "/velocity/imageprocessing/displayimage.vm";
+		public final static String IMAGE_UPLOAD = "/velocity/imageprocessing/imageupload.vm";
 		/**
 		 * ERROR templates
 		 */

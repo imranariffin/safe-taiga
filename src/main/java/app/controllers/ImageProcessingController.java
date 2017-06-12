@@ -37,9 +37,8 @@ public class ImageProcessingController {
 	}
 
 	public static Route serveImageUpload = (Request request, Response response) -> {
-		return "<form method='post' enctype='multipart/form-data'>"
-				+ "    <input type='file' name='uploaded_file' accept='.png'>" + "    <button>Upload picture</button>"
-				+ "</form>";
+		Map<String, Object> model = new HashMap<String, Object>();
+		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD, "Image Upload", "OK");
 	};
 
 	public static Route handleImageUpload = (Request request, Response response) -> {
