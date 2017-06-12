@@ -29,7 +29,7 @@ public class Application {
 
 	public static File uploadDir;
 
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 		enableDebugScreen();
 
 		Tools.print("SERVER:START:" + Integer.valueOf(System.getenv("PORT")));
@@ -73,6 +73,53 @@ public class Application {
 		// Set up after-filters (called after each get/post)
 		// after("*", Filters.addGzipHeader);
 		System.out.println("SERVER:END");
+	}
+
+	public static void main(String[] args) {
+		enableDebugScreen();
+
+		Tools.print("SERVER:START:" + Integer.valueOf(System.getenv("PORT")));
+		port(Integer.valueOf(System.getenv("PORT")));
+
+		File uploadDir = new File("upload");
+		uploadDir.mkdir(); // create the upload directory if it doesn't exist
+
+		staticFiles.externalLocation("upload");
+
+		get("/", (req, res) -> "<form method='post' enctype='multipart/form-data'>"
+				+ "    <input type='file' name='uploaded_file' accept='.png'>" + "    <button>Upload picture</button>"
+				+ "</form>");
+
+		post("/", (req, res) -> {
+
+			Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
+
+			req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+
+			try (InputStream input = req.raw().getPart("uploaded_file").getInputStream()) {
+				Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
+			}
+
+			logInfo(req, tempFile);
+			return "<h1>You uploaded this image:<h1><img src='" + tempFile.getFileName() + "'>";
+
+		});
+
+	}
+
+	// methods used for logging
+	private static void logInfo(Request req, Path tempFile) throws IOException, ServletException {
+		System.out.println("Uploaded file '" + getFileName(req.raw().getPart("uploaded_file")) + "' saved as '"
+				+ tempFile.toAbsolutePath() + "'");
+	}
+
+	private static String getFileName(Part part) {
+		for (String cd : part.getHeader("content-disposition").split(";")) {
+			if (cd.trim().startsWith("filename")) {
+				return cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
+			}
+		}
+		return null;
 	}
 
 }
