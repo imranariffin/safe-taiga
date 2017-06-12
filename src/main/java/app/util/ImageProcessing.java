@@ -17,15 +17,15 @@ import javax.imageio.ImageIO;
 
 public class ImageProcessing {
 
-	private static final int IMG_WIDTH = 1280;
-	private static final int IMG_HEIGHT = 720;
+	private static final int IMG_WIDTH = 640;
+	private static final int IMG_HEIGHT = 360;
 
 	public static BufferedImage partitionImage(BufferedImage originalImage) {
 
 		// BufferedImage image;
 		int width;
 		int height;
-		int divisorSize = 30;
+		int divisorSize = 20;
 
 		try {
 			width = originalImage.getWidth();

@@ -5,9 +5,11 @@ import spark.Response;
 import spark.Route;
 import spark.Filter;
 
+import javax.imageio.ImageIO;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import app.util.ImageProcessing;
 import app.util.Reference;
 import app.util.ViewUtil;
 import app.util.Tools;
@@ -43,7 +45,7 @@ public class ImageProcessingController {
 
 	public static Route handleImageUpload = (Request request, Response response) -> {
 
-		Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
+		Path tempFile = Files.createTempFile(uploadDir.toPath(), "", ".png");
 
 		request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 
@@ -51,14 +53,30 @@ public class ImageProcessingController {
 			Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
 		}
 
+		String FILENAME = tempFile.getFileName().toString();
+		Tools.println("picture saved as:" + FILENAME);
+		try {
+			ImageIO.write(
+					ImageProcessing.partitionImage(ImageProcessing.resizeImage(
+							ImageIO.read(new File("src/main/resources/public/images/input/upload/" + FILENAME)))),
+					"png", new File("src/main/resources/public/images/output/partition/" + FILENAME));
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+
 		logInfo(request, tempFile);
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("imagefile", tempFile.getFileName());
-		// response.redirect("imageresult");
+		model.put("imagefile", "/images/output/partition/" + FILENAME);
 		return ViewUtil.render(request, model, Reference.Templates.DISPLAY_IMAGE,
 				Reference.CommonStrings.IMAGEPROCESSING_NAME, "OK");
-		// return "<h1>You uploaded this image:<h1><img src='" +
-		// tempFile.getFileName() + "'>";
-
 	};
+
+	public static String getTrueFileName(String givenFileName) {
+		Tools.print("");
+		for (int a = givenFileName.length(); a > 0; a--) {
+			Tools.print(givenFileName.charAt(a) + "");
+		}
+		return "";
+	}
 }

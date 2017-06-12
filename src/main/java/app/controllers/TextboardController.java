@@ -28,7 +28,7 @@ public class TextboardController {
 	 * SERVE TEXTBOARD
 	 */
 	public static Route serveTextboard_HOME = (Request request, Response response) -> {
-		Tools.print("FROM:TextboardsController.java:START:serveTextboard_HOME");
+		Tools.println("FROM:TextboardsController.java:START:serveTextboard_HOME");
 		Map<String, Object> model = new HashMap<>();
 		/**
 		 * 1. Get the list of boards from database 2. Populate it into an
@@ -41,11 +41,11 @@ public class TextboardController {
 			Statement stmt = connection.createStatement();
 
 			// If the table does not exist for whatever reason, create them
-			Tools.print("Executing script:" + Reference.CommonStrings.SCRIPT_CREATE_BOARDS);
+			Tools.println("Executing script:" + Reference.CommonStrings.SCRIPT_CREATE_BOARDS);
 			stmt.executeUpdate(Reference.CommonStrings.SCRIPT_CREATE_BOARDS);
 
 			// Just a simple SELECT ALL script
-			Tools.print("Executing script:" + Reference.CommonStrings.SCRIPT_SELECT_BOARDS);
+			Tools.println("Executing script:" + Reference.CommonStrings.SCRIPT_SELECT_BOARDS);
 			ResultSet rs = stmt.executeQuery(Reference.CommonStrings.SCRIPT_SELECT_BOARDS);
 
 			while (rs.next()) {
@@ -60,14 +60,14 @@ public class TextboardController {
 				arrayOfBoardsFromDatabase.add(board);
 			}
 
-			Tools.print("START:printing content of arrayOfBoardsFromDatabase:");
+			Tools.println("START:printing content of arrayOfBoardsFromDatabase:");
 			for (int a = 0; a < arrayOfBoardsFromDatabase.size(); a++) {
-				Tools.print(Reference.CommonStrings.BOARDNAME + ":"
+				Tools.println(Reference.CommonStrings.BOARDNAME + ":"
 						+ arrayOfBoardsFromDatabase.get(a).get(Reference.CommonStrings.BOARDNAME) + " "
 						+ Reference.CommonStrings.BOARDLINK + ":"
 						+ arrayOfBoardsFromDatabase.get(a).get(Reference.CommonStrings.BOARDLINK));
 			}
-			Tools.print("END:printing content of arrayOfBoardsFromDatabase");
+			Tools.println("END:printing content of arrayOfBoardsFromDatabase");
 
 		} catch (Exception e) {
 			return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.ROOTLINK,
@@ -82,7 +82,7 @@ public class TextboardController {
 		model.put(Reference.VTLStatics.INPUT_BOARDNAME, Reference.VTLStatics.INPUT_BOARDNAME);
 		model.put(Reference.VTLStatics.INPUT_BOARDDESCRIPTION, Reference.VTLStatics.INPUT_BOARDDESCRIPTION);
 
-		Tools.print("END:serveTextboard_HOME");
+		Tools.println("END:serveTextboard_HOME");
 		return ViewUtil.render(request, model, Reference.Templates.TEXTBOARD, Reference.Web.TEXTBOARD,
 				"OK: default return");
 	};
@@ -91,7 +91,7 @@ public class TextboardController {
 	 * SERVE TEXTBOARD_BOARD
 	 */
 	public static Route serveTextboard_BOARD = (Request request, Response response) -> {
-		Tools.print("FROM:TextboardController:START:serveTextboard_BOARD");
+		Tools.println("FROM:TextboardController:START:serveTextboard_BOARD");
 		Map<String, Object> model = new HashMap<>();
 
 		// Obtain the request parameters
@@ -101,7 +101,7 @@ public class TextboardController {
 		model.put(Reference.CommonStrings.BOARDLINK, boardlink);
 
 		// Verify result
-		Tools.print(Reference.CommonStrings.BOARDLINK + ":" + boardlink);
+		Tools.println(Reference.CommonStrings.BOARDLINK + ":" + boardlink);
 
 		/**
 		 * Get objects from database
@@ -116,11 +116,11 @@ public class TextboardController {
 			Statement stmt = connection.createStatement();
 
 			// Create table if it does not exist
-			Tools.print("Executing script:" + Reference.CommonStrings.SCRIPT_CREATE_THREADS);
+			Tools.println("Executing script:" + Reference.CommonStrings.SCRIPT_CREATE_THREADS);
 			stmt.executeUpdate(Reference.CommonStrings.SCRIPT_CREATE_THREADS);
 
 			// Select all thread based on the given boardlink
-			Tools.print("Executing script:" + SCRIPT_SELECT_BOARD_THREAD);
+			Tools.println("Executing script:" + SCRIPT_SELECT_BOARD_THREAD);
 			ResultSet rs = stmt.executeQuery(SCRIPT_SELECT_BOARD_THREAD);
 			// this is how you get a column given the colum name in string
 			while (rs.next()) {
@@ -134,12 +134,12 @@ public class TextboardController {
 				arrayOfThreadsFromDatabase.add(thread);
 			}
 
-			Tools.print("START:printing content of arrayOfThreadsFromDatabase:");
+			Tools.println("START:printing content of arrayOfThreadsFromDatabase:");
 			for (int a = 0; a < arrayOfThreadsFromDatabase.size(); a++) {
-				Tools.print(Reference.CommonStrings.THREADID + ":"
+				Tools.println(Reference.CommonStrings.THREADID + ":"
 						+ arrayOfThreadsFromDatabase.get(a).get(Reference.CommonStrings.THREADID));
 			}
-			Tools.print("END:printing content of arrayOfThreadsFromDatabase");
+			Tools.println("END:printing content of arrayOfThreadsFromDatabase");
 
 		} catch (Exception e) {
 			return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.TEXTBOARDLINK,
@@ -151,7 +151,7 @@ public class TextboardController {
 
 		// Populate html-forms
 		model.put(Reference.VTLStatics.INPUT_THREADTEXT, Reference.VTLStatics.INPUT_THREADTEXT);
-		Tools.print("END:serveTextboard_BOARD");
+		Tools.println("END:serveTextboard_BOARD");
 		return ViewUtil.render(request, model, Reference.Templates.TEXTBOARD_BOARD, Reference.Web.TEXTBOARD_BOARD,
 				"OK: default return");
 	};
@@ -160,7 +160,7 @@ public class TextboardController {
 	 * SERVE TEXTBOARD_BOARD_THREAD
 	 */
 	public static Route serveTextboard_THREAD = (Request request, Response response) -> {
-		Tools.print("FROM:TextboardController:START:serveTextboard_THREAD");
+		Tools.println("FROM:TextboardController:START:serveTextboard_THREAD");
 		Map<String, Object> model = new HashMap<>();
 
 		// Obtain the request parameters
@@ -172,8 +172,8 @@ public class TextboardController {
 		model.put(Reference.CommonStrings.THREADID, threadid);
 
 		// Verify result
-		Tools.print(Reference.CommonStrings.BOARDLINK + ":" + boardlink);
-		Tools.print(Reference.CommonStrings.THREADID + ":" + threadid);
+		Tools.println(Reference.CommonStrings.BOARDLINK + ":" + boardlink);
+		Tools.println(Reference.CommonStrings.THREADID + ":" + threadid);
 
 		/**
 		 * Get objects from database
@@ -189,11 +189,11 @@ public class TextboardController {
 			Statement stmt = connection.createStatement();
 
 			// Create table if it does not exist
-			Tools.print("Executing script:" + Reference.CommonStrings.SCRIPT_CREATE_POSTS);
+			Tools.println("Executing script:" + Reference.CommonStrings.SCRIPT_CREATE_POSTS);
 			stmt.executeUpdate(Reference.CommonStrings.SCRIPT_CREATE_POSTS);
 
 			// Get the threadtext from the database
-			Tools.print("Executing script:" + Reference.CommonStrings.getSCRIPT_GET_THREADTEXT_BY_ID(threadid));
+			Tools.println("Executing script:" + Reference.CommonStrings.getSCRIPT_GET_THREADTEXT_BY_ID(threadid));
 			ResultSet rs = stmt.executeQuery(Reference.CommonStrings.getSCRIPT_GET_THREADTEXT_BY_ID(threadid));
 			rs.next();
 			threadtext = rs.getString(Reference.CommonStrings.THREADTEXT);
@@ -201,7 +201,7 @@ public class TextboardController {
 			model.put(Reference.CommonStrings.THREADTEXT, threadtext);
 
 			// Select all thread based on the given boardlink
-			Tools.print("Executing script:" + SCRIPT_SELECT_BOARD_THREAD_POST);
+			Tools.println("Executing script:" + SCRIPT_SELECT_BOARD_THREAD_POST);
 			rs = stmt.executeQuery(SCRIPT_SELECT_BOARD_THREAD_POST);
 
 			while (rs.next()) {
@@ -214,14 +214,14 @@ public class TextboardController {
 				arrayOfPostsFromDatabase.add(post);
 			}
 
-			Tools.print("START:printing content of arrayOfPostsFromDatabase:");
+			Tools.println("START:printing content of arrayOfPostsFromDatabase:");
 			for (int a = 0; a < arrayOfPostsFromDatabase.size(); a++) {
-				Tools.print(Reference.CommonStrings.THREADID + ":"
+				Tools.println(Reference.CommonStrings.THREADID + ":"
 						+ arrayOfPostsFromDatabase.get(a).get(Reference.CommonStrings.THREADID) + " "
 						+ Reference.CommonStrings.POSTTEXT + ":"
 						+ arrayOfPostsFromDatabase.get(a).get(Reference.CommonStrings.POSTTEXT));
 			}
-			Tools.print("END:printing content of arrayOfPostsFromDatabase");
+			Tools.println("END:printing content of arrayOfPostsFromDatabase");
 
 		} catch (Exception e) {
 			return ViewUtil.renderErrorMessage(request, e.getMessage(),
@@ -235,7 +235,7 @@ public class TextboardController {
 		// Populate html-form
 		model.put(Reference.VTLStatics.INPUT_POSTTEXT, Reference.VTLStatics.INPUT_POSTTEXT);
 
-		Tools.print("END:serveTextboard_THREAD");
+		Tools.println("END:serveTextboard_THREAD");
 		return ViewUtil.render(request, model, Reference.Templates.TEXTBOARD_BOARD_THREAD,
 				Reference.Web.TEXTBOARD_BOARD_THREAD, "OK: default return");
 	};
@@ -248,7 +248,7 @@ public class TextboardController {
 	 * HANDLES CREATE BOARD POST METHOD
 	 */
 	public static Route handleCreateBoard = (Request request, Response response) -> {
-		Tools.print("FROM:TextboardController:START:handleCreateBoard");
+		Tools.println("FROM:TextboardController:START:handleCreateBoard");
 		Map<String, Object> model = new HashMap<>();
 
 		String requestedBoardLink = request.queryParams(Reference.VTLStatics.INPUT_BOARDLINK);
@@ -256,7 +256,7 @@ public class TextboardController {
 		String requestedBoardDescription = request.queryParams(Reference.VTLStatics.INPUT_BOARDDESCRIPTION);
 
 		if (TextboardLogic.checkIfBoardIsAvailable(requestedBoardLink)) {
-			Tools.print("The requested boardlink:" + requestedBoardLink + " is available!");
+			Tools.println("The requested boardlink:" + requestedBoardLink + " is available!");
 
 			try (Connection connection = DATA_SOURCE.getConnection()) {
 				Statement stmt = connection.createStatement();
@@ -264,14 +264,14 @@ public class TextboardController {
 				// Execute insertion into database
 				final String SCRIPT_INSERT_BOARD = "INSERT INTO boards (boardlink, boardname, boarddescription) VALUES ('"
 						+ requestedBoardLink + "', '" + requestedBoardName + "', '" + requestedBoardDescription + "');";
-				Tools.print("SCRIPT_INSERT_BOARD:" + SCRIPT_INSERT_BOARD);
+				Tools.println("SCRIPT_INSERT_BOARD:" + SCRIPT_INSERT_BOARD);
 				stmt.executeUpdate(SCRIPT_INSERT_BOARD);
 			} catch (Exception e) {
 				return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.TEXTBOARDLINK,
 						Reference.CommonStrings.TEXTBOARD_NAME);
 			}
 		} else {
-			Tools.print("The requested boardlink:" + requestedBoardLink + " is NOT available!");
+			Tools.println("The requested boardlink:" + requestedBoardLink + " is NOT available!");
 		}
 
 		return serveTextboard_HOME.handle(request, response);
@@ -281,30 +281,30 @@ public class TextboardController {
 	 * HANDLES CREATE BOARD THREAD
 	 */
 	public static Route handleCreateThread = (Request request, Response response) -> {
-		Tools.print("FROM:TextboardController:START:handleCreateBoard");
+		Tools.println("FROM:TextboardController:START:handleCreateBoard");
 		Map<String, Object> model = new HashMap<>();
 
 		String requestedThreadText = request.queryParams(Reference.VTLStatics.INPUT_THREADTEXT);
 		String currentBoard = request.params(Reference.CommonStrings.BOARDLINK);
 
 		// Verify retrieved data
-		Tools.print(Reference.VTLStatics.INPUT_THREADTEXT + ":" + requestedThreadText);
-		Tools.print(Reference.CommonStrings.BOARDLINK + ":" + currentBoard);
+		Tools.println(Reference.VTLStatics.INPUT_THREADTEXT + ":" + requestedThreadText);
+		Tools.println(Reference.CommonStrings.BOARDLINK + ":" + currentBoard);
 
 		if (TextboardLogic.checkIfTextIsAcceptable(requestedThreadText)) {
-			Tools.print("The requested thread with post:" + requestedThreadText + " is acceptable!");
+			Tools.println("The requested thread with post:" + requestedThreadText + " is acceptable!");
 
 			try (Connection connection = DATA_SOURCE.getConnection()) {
 				Statement stmt = connection.createStatement();
 
 				// Create threads table if not exist
 				stmt.executeUpdate(Reference.CommonStrings.SCRIPT_CREATE_THREADS);
-				Tools.print("Executing script:" + Reference.CommonStrings.SCRIPT_CREATE_THREADS);
+				Tools.println("Executing script:" + Reference.CommonStrings.SCRIPT_CREATE_THREADS);
 
 				// Create a new thread instance in the threads table
 				final String SCRIPT_INSERT_THREAD = "INSERT INTO threads (boardlink, threadtext) VALUES ('"
 						+ currentBoard + "', '" + requestedThreadText + "');";
-				Tools.print("Executing script:" + SCRIPT_INSERT_THREAD);
+				Tools.println("Executing script:" + SCRIPT_INSERT_THREAD);
 				stmt.executeUpdate(SCRIPT_INSERT_THREAD);
 
 			} catch (Exception e) {
@@ -313,7 +313,7 @@ public class TextboardController {
 						Reference.CommonStrings.TEXTBOARD_NAME + "/" + currentBoard);
 			}
 		} else {
-			Tools.print("The requested thread with post:" + requestedThreadText + " is NOT acceptable!");
+			Tools.println("The requested thread with post:" + requestedThreadText + " is NOT acceptable!");
 		}
 
 		return serveTextboard_BOARD.handle(request, response);
@@ -323,7 +323,7 @@ public class TextboardController {
 	 * HANDLES CREATE BOARD THREAD POST
 	 */
 	public static Route handleCreatePost = (Request request, Response response) -> {
-		Tools.print("FROM:TextboardController:handleCreateBoardPost");
+		Tools.println("FROM:TextboardController:handleCreateBoardPost");
 		Map<String, Object> model = new HashMap<>();
 
 		String requestedPostText = request.queryParams(Reference.VTLStatics.INPUT_POSTTEXT);
@@ -331,24 +331,24 @@ public class TextboardController {
 		String currentThread = request.params(Reference.CommonStrings.THREADID);
 
 		// Verify retrieved data
-		Tools.print(Reference.VTLStatics.INPUT_POSTTEXT + ":" + requestedPostText);
-		Tools.print(Reference.CommonStrings.BOARDLINK + ":" + currentBoard);
-		Tools.print(Reference.CommonStrings.THREADID + ":" + currentThread);
+		Tools.println(Reference.VTLStatics.INPUT_POSTTEXT + ":" + requestedPostText);
+		Tools.println(Reference.CommonStrings.BOARDLINK + ":" + currentBoard);
+		Tools.println(Reference.CommonStrings.THREADID + ":" + currentThread);
 
 		if (TextboardLogic.checkIfTextIsAcceptable(requestedPostText)) {
-			Tools.print("The requested thread with post:" + requestedPostText + " is acceptable!");
+			Tools.println("The requested thread with post:" + requestedPostText + " is acceptable!");
 
 			try (Connection connection = DATA_SOURCE.getConnection()) {
 				Statement stmt = connection.createStatement();
 
 				// Create threads table if not exist
 				stmt.executeUpdate(Reference.CommonStrings.SCRIPT_CREATE_THREADS);
-				Tools.print("Executing script:" + Reference.CommonStrings.SCRIPT_CREATE_THREADS);
+				Tools.println("Executing script:" + Reference.CommonStrings.SCRIPT_CREATE_THREADS);
 
 				// Create a new thread instance in the threads table
 				final String SCRIPT_INSERT_POST = "INSERT INTO posts (threadid, posttext) VALUES ('" + currentThread
 						+ "', '" + requestedPostText + "');";
-				Tools.print("Executing script:" + SCRIPT_INSERT_POST);
+				Tools.println("Executing script:" + SCRIPT_INSERT_POST);
 				stmt.executeUpdate(SCRIPT_INSERT_POST);
 
 			} catch (Exception e) {
@@ -356,7 +356,7 @@ public class TextboardController {
 						Reference.CommonStrings.getPREVIOUSTHREAD(currentBoard, currentThread), currentThread);
 			}
 		} else {
-			Tools.print("The requested thread with post:" + requestedPostText + " is NOT acceptable!");
+			Tools.println("The requested thread with post:" + requestedPostText + " is NOT acceptable!");
 		}
 
 		return serveTextboard_THREAD.handle(request, response);

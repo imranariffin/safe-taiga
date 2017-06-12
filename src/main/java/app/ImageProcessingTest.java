@@ -34,7 +34,7 @@ public class ImageProcessingTest {
 						ImageProcessing
 								.partitionImage(ImageProcessing.resizeImage(frameConverter.getBufferedImage(frame))),
 						"png", new File("src/main/resources/public/images/output/partition/" + outputFileName));
-				Tools.print(outputFileName);
+				Tools.println(outputFileName);
 				a++;
 			} else {
 				// do nothing

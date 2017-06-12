@@ -14,10 +14,10 @@ import spark.Route;
 public class RootController {
 
 	public static Route serveRootPage = (Request request, Response response) -> {
-		Tools.print("FROM:RootController.java:START:serveRootPage");
+		Tools.println("FROM:RootController.java:START:serveRootPage");
 		Map<String, Object> model = new HashMap<>();
 
-		Tools.print("END:serveRootPage");
+		Tools.println("END:serveRootPage");
 		return ViewUtil.render(request, model, Reference.Templates.ROOT, "ROOT PAGE", "OK");
 	};
 }
