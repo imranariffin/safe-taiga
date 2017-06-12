@@ -53,8 +53,13 @@ public class ImageProcessingController {
 		}
 
 		logInfo(request, tempFile);
-		//response.redirect("imageresult");
-		return "<h1>You uploaded this image:<h1><img src='" + tempFile.getFileName() + "'>";
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("imagefile", tempFile.getFileName());
+		// response.redirect("imageresult");
+		return ViewUtil.render(request, model, Reference.Templates.DISPLAY_IMAGE,
+				Reference.CommonStrings.IMAGEPROCESSING_NAME, "OK");
+		// return "<h1>You uploaded this image:<h1><img src='" +
+		// tempFile.getFileName() + "'>";
 
 	};
 }
