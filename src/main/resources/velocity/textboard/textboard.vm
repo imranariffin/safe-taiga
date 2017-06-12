@@ -19,7 +19,7 @@
 			#foreach( $board in $boardList )
 				<br>
 			    <div>
-			    	<p><a href="$board.boardlink">$board.boardname</a> : $board.boarddescription</p>
+			    	<p><a href="textboard/$board.boardlink">$board.boardname</a> : $board.boarddescription</p>
 			    </div>
 			#end
 		</div>
