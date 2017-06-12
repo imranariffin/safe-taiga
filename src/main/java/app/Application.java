@@ -36,6 +36,7 @@ public class Application {
 		port(Integer.valueOf(System.getenv("PORT")));
 
 		uploadDir = new File("src/main/resources/public/images/input/upload");
+		Tools.println("creating directory if it does not exist");
 		uploadDir.mkdir(); // create the upload directory if it doesn't exist
 
 		staticFiles.location("/public");
