@@ -1,20 +1,26 @@
 <!doctype html>
-<html lang="en">
-
-<head>
-	<meta charset="utf-8">
-	<title>Safe Taiga</title>
-	<meta name="description" content="A website for whatever">
-	<meta name="author" content="OCAkarin">
-</head>
-
-<body>
-	<a href="/">ROOT</a>
-	<p>$where : $message</p>
-	<div>
-		<form method='post' enctype='multipart/form-data'>
-			<input type='file' name='uploaded_file' accept='.png'>
-			<button>Upload picture</button>
-		</form>
-	</div>
-</body>
+<html lang="en">	
+	<head>
+	
+		<meta charset="utf-8">
+		<title>Safe Taiga</title>
+		<meta name="description" content="A website for whatever">
+		<meta name="author" content="OCAkarin">
+		
+	</head>
+	
+	<body>
+	
+		<a href="$ROOT_LINK">$ROOT_NAME</a>
+		
+		<p>$WHERE_NAME : $WHERE_TEXT</p>
+		
+		<div>
+			<form method='post' enctype='multipart/form-data'>
+				<input type='file' name='uploaded_file' accept='.png'>
+				<button>Upload picture</button>
+			</form>
+		</div>
+		
+	</body>
+</html>

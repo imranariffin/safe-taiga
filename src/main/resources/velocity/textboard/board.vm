@@ -1,37 +1,40 @@
 <!doctype html>
-
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-
-  <title>Safe Taiga</title>
-  <meta name="description" content="A website for whatever">
-  <meta name="author" content="OCAkarin">
-</head>
-
-<body>
-  <a href="/textboard">Textboard</a>
-
-<p>$where : $message</p>
-
-<div>
-	#foreach( $thread in $threadList )
+	<head>
+	
+		<meta charset="utf-8">
+		<title>Safe Taiga</title>
+		<meta name="description" content="A website for whatever">
+		<meta name="author" content="OCAkarin">
+		
+	</head>
+	
+	<body>
+	
+		<a href="$ROOT_LINK">$ROOT_NAME</a>
+		<a href="$TEXTBOARD_LINK">$TEXTBOARD_NAME</a>
+	
+		<p>$WHERE_NAME : $WHERE_TEXT</p>
+		
 		<div>
-			<br>
-			<p><a href="$thread.threadid">$thread.threadid</a></p>
-			<p>$thread.threadtext</p>
+			#foreach( $thread in $threadList )
+				<div>
+					<br>
+					<p><a href="$thread.threadid">$thread.threadid</a></p>
+					<p>$thread.threadtext</p>
+				</div>
+			#end
 		</div>
-	#end
-</div>
-
- <div align="center">
- 	<form  method="post">
-		Thread text:
-		<br>
-		<input type="text" name="$INPUT_THREADTEXT"><br>
-		<br>
-		<button type="submit">CREATE THREAD</button>
-	</form>
-</div>
-</body>
+		
+		<div align="center">
+			<form  method="post">
+				Thread text:
+				<br>
+				<input type="text" name="$INPUT_THREADTEXT"><br>
+				<br>
+				<button type="submit">CREATE THREAD</button>
+			</form>
+		</div>
+		
+	</body>
 </html>

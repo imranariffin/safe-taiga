@@ -1,16 +1,18 @@
 <!doctype html>
-
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-
-  <title>Safe Taiga</title>
-  <meta name="description" content="A website for whatever">
-  <meta name="author" content="OCAkarin">
-</head>
-<body>
-
-<a href="/">ROOT</a>
-<p>$where : $message</p>
-
-</body>
+	<head>
+	
+		<meta charset="utf-8">
+	  	<title>Safe Taiga</title>
+	  	<meta name="description" content="A website for whatever">
+	  	<meta name="author" content="OCAkarin">
+	  	
+	</head>
+	<body>
+	
+		<a href="$ROOT_LINK">ROOT</a>
+		
+		<p>$WHERE_NAME : $WHERE_TEXT</p>
+	
+	</body>
+</html>

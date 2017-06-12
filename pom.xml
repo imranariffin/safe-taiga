@@ -2,6 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<build>
 		<plugins>
 			<plugin>
@@ -102,4 +105,11 @@
 	<groupId>groupid</groupId>
 	<artifactId>safe-taiga</artifactId>
 	<version>1.00</version>
+	<url>https://safe-taiga.herokuapp.com/</url>
+	<name>Safe Taiga</name>
+	<description>A website for whatever</description>
+	<organization>
+		<name>OCAkarin</name>
+		<url>https://www.github.com/hanif-ariffi</url>
+	</organization>
 </project>

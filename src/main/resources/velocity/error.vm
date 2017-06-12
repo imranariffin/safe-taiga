@@ -1,17 +1,18 @@
 <!doctype html>
-
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-
-  <title>Sage Taiga</title>
-  <meta name="description" content="A website for whatever">
-  <meta name="author" content="OCAkarin">
-</head>
-<body>
-
-<a href="/">ROOT</a>
-$ERROR
-<a href="$returnLink">$returnName</a>
-
-</body>
+	<head>
+	
+		<meta charset="utf-8">
+		<title>Sage Taiga</title>
+		<meta name="description" content="A website for whatever">
+		<meta name="author" content="OCAkarin">
+		
+	</head>
+	<body>
+	
+		<a href="$ROOT_LINK">$ROOT_NAME</a>
+		<p>$ERROR</p>
+		<a href="$RETURN_LINK">$RETURN_NAME</a>
+		
+	</body>
+</html>

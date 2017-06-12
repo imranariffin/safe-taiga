@@ -71,7 +71,7 @@ public class TextboardController {
 
 		} catch (Exception e) {
 			return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.ROOTLINK,
-					Reference.CommonStrings.ROOT);
+					Reference.CommonStrings.ROOT_NAME);
 		}
 
 		// Populate with list of boards
@@ -143,7 +143,7 @@ public class TextboardController {
 
 		} catch (Exception e) {
 			return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.TEXTBOARDLINK,
-					Reference.CommonStrings.TEXTBOARD);
+					Reference.CommonStrings.TEXTBOARD_NAME);
 		}
 
 		// Populate with list of threads
@@ -226,7 +226,7 @@ public class TextboardController {
 		} catch (Exception e) {
 			return ViewUtil.renderErrorMessage(request, e.getMessage(),
 					Reference.CommonStrings.getPREVIOUSBOARDLINK(boardlink),
-					Reference.CommonStrings.TEXTBOARD + "/" + boardlink);
+					Reference.Web.TEXTBOARD + "/" + boardlink);
 		}
 
 		// Populate with list of posts
@@ -268,7 +268,7 @@ public class TextboardController {
 				stmt.executeUpdate(SCRIPT_INSERT_BOARD);
 			} catch (Exception e) {
 				return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.TEXTBOARDLINK,
-						Reference.CommonStrings.TEXTBOARD);
+						Reference.CommonStrings.TEXTBOARD_NAME);
 			}
 		} else {
 			Tools.print("The requested boardlink:" + requestedBoardLink + " is NOT available!");
@@ -310,7 +310,7 @@ public class TextboardController {
 			} catch (Exception e) {
 				return ViewUtil.renderErrorMessage(request, e.getMessage(),
 						Reference.CommonStrings.getPREVIOUSBOARDLINK(currentBoard),
-						Reference.CommonStrings.TEXTBOARD + "/" + currentBoard);
+						Reference.CommonStrings.TEXTBOARD_NAME + "/" + currentBoard);
 			}
 		} else {
 			Tools.print("The requested thread with post:" + requestedThreadText + " is NOT acceptable!");

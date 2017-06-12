@@ -1,36 +1,39 @@
 <!doctype html>
-
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-
-  <title>Safe Taiga</title>
-  <meta name="description" content="A website for whatever">
-  <meta name="author" content="OCAkarin">
-</head>
-<body>
-<a href="/textboard/$boardlink">$boardlink</a>
-
-<p>$where : $message</p>
-<div>
-	<p>$threadid : $threadtext</p>
-	<br>
-	#foreach( $post in $postList )
-		<br>
-    	<div>
-    		<p>$post.postid : $post.posttext</p>
-    	</div>
-    #end
-</div>
-
- <div align="center">
- 	<form  method="post">
-		Post text:
-		<br>
-		<input type="text" name="$INPUT_POSTTEXT"><br>
-		<br>
-		<button type="submit">REPLY</button>
-	</form>
-</div>
-
-</body>
+	<head>
+	
+		<meta charset="utf-8">
+		<title>Safe Taiga</title>
+		<meta name="description" content="A website for whatever">
+		<meta name="author" content="OCAkarin">
+		
+	</head>
+	<body>
+	
+		<a href="/textboard/$boardlink">$boardlink</a>
+	
+		<p>$WHERE_NAME : $WHERE_TEXT</p>
+		
+		<div>
+			<p>$threadid : $threadtext</p>
+			<br>
+			#foreach( $post in $postList )
+				<br>
+	    		<div>
+	    			<p>$post.postid : $post.posttext</p>
+	    		</div>
+	    	#end
+		</div>
+		
+	 	<div align="center">
+	 		<form  method="post">
+				Post text:
+				<br>
+				<input type="text" name="$INPUT_POSTTEXT"><br>
+				<br>
+				<button type="submit">REPLY</button>
+			</form>
+		</div>
+		
+	</body>
+</html>

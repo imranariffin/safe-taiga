@@ -1,6 +1,7 @@
 package app.util;
 
 import org.apache.velocity.app.*;
+import org.apache.velocity.app.event.implement.ReportInvalidReferences;
 import org.eclipse.jetty.http.*;
 import spark.*;
 import spark.template.velocity.*;
@@ -14,8 +15,22 @@ public class ViewUtil {
 	public static String render(Request request, Map<String, Object> model, String templatePath, String where,
 			String message) {
 
-		model.put("where", where);
-		model.put("message", message);
+		/**
+		 * <a href="$ROOT_LINK">ROOT</a> <a href="$TEXTBOARD_LINK">textboard</a>
+		 * <a href="$IMAGEPROCESSING_LINK">imageprocessing</a>
+		 */
+		// Basic links that are not dynamic like :boardlink or :threadid
+		model.put(Reference.VTLStatics.ROOT_LINK, Reference.Web.ROOT);
+		model.put(Reference.VTLStatics.ROOT_NAME, Reference.CommonStrings.ROOT_NAME);
+
+		model.put(Reference.VTLStatics.TEXTBOARD_LINK, Reference.Web.TEXTBOARD);
+		model.put(Reference.VTLStatics.TEXTBOARD_NAME, Reference.CommonStrings.TEXTBOARD_NAME);
+
+		model.put(Reference.VTLStatics.IMAGEPROCESSING_LINK, Reference.Web.IMAGEPROCESSING);
+		model.put(Reference.VTLStatics.IMAGEPROCESSING_NAME, Reference.CommonStrings.IMAGEPROCESSING_NAME);
+
+		model.put(Reference.VTLStatics.WHERE_NAME, where);
+		model.put(Reference.VTLStatics.WHERE_TEXT, message);
 		return strictVelocityEngine().render(new ModelAndView(model, templatePath));
 	}
 
@@ -36,12 +51,13 @@ public class ViewUtil {
 
 	// Renders a template given a model and a request
 	// The request is needed to know where the user is
-	public static String renderErrorMessage(Request request, String errorMessage, String returnLink, String returnName) {
+	public static String renderErrorMessage(Request request, String errorMessage, String returnLink,
+			String returnName) {
 
-		Map<String, String> model = new HashMap<String, String>();
+		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(Reference.CommonStrings.ERROR, errorMessage);
 		model.put(Reference.CommonStrings.RETURNLINK, returnLink);
 		model.put(Reference.CommonStrings.RETURNNAME, returnName);
-		return strictVelocityEngine().render(new ModelAndView(model, Reference.Templates.ERROR));
+		return render(request, model, Reference.Templates.ERROR, "Error", errorMessage);
 	}
 }

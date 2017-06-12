@@ -4,11 +4,11 @@ public class Reference {
 
 	public static class Web {
 
-		public static final String ROOT = "/";
-		public final static String TEXTBOARD = "/textboard/";
-		public final static String TEXTBOARD_BOARD = "/textboard/:boardlink/";
-		public final static String TEXTBOARD_BOARD_THREAD = "/textboard/:boardlink/:threadid/";
-		public final static String IMAGE_PROCESSING = "/imageprocessing/";
+		public final static String ROOT = "/";
+		public final static String TEXTBOARD = "/textboard";
+		public final static String TEXTBOARD_BOARD = "/textboard/:boardlink";
+		public final static String TEXTBOARD_BOARD_THREAD = "/textboard/:boardlink/:threadid";
+		public final static String IMAGEPROCESSING = "/imageprocessing";
 	}
 
 	public static class Templates {
@@ -25,24 +25,21 @@ public class Reference {
 		/**
 		 * ERROR templates
 		 */
-		public static final String NOT_FOUND = "/velocity/notFound.vm";
+		public final static String NOT_FOUND = "/velocity/notFound.vm";
 		public final static String ERROR = "/velocity/error.vm";
 	}
 
 	public static class CommonStrings {
 
-		/**
-		 * WEBSITE MAIN VOCABULARIES
-		 */
-
-		public final static String ROOT = "ROOT";
-		public final static String TEXTBOARD = "Textboard";
+		public final static String ROOT_NAME = "ROOT";
+		public final static String TEXTBOARD_NAME = "Textboard";
+		public final static String IMAGEPROCESSING_NAME = "Image Processing";
 
 		/**
-		 * ERROR HANDLER VOCABULARIES
+		 * ERROR HANDLER VOCABULARIES <a href="$RETURN_LINK">$RETURN_NAME</a>
 		 */
-		public final static String RETURNLINK = "returnLink";
-		public final static String RETURNNAME = "returnName";
+		public final static String RETURNLINK = "RETURN_LINK";
+		public final static String RETURNNAME = "RETURN_NAME";
 		public final static String ERROR = "ERROR";
 
 		/**
@@ -87,6 +84,21 @@ public class Reference {
 
 	public static class VTLStatics {
 
+		/**
+		 * <a href="$ROOT_LINK">ROOT</a> <a href="$TEXTBOARD_LINK">textboard</a>
+		 * <a href="$IMAGEPROCESSING_LINK">imageprocessing</a>
+		 * <p>
+		 * $WHERE_NAME : $WHERE_TEXT
+		 * </p>
+		 */
+		public final static String ROOT_LINK = "ROOT_LINK";
+		public final static String ROOT_NAME = "ROOT_NAME";
+		public final static String TEXTBOARD_LINK = "TEXTBOARD_LINK";
+		public final static String TEXTBOARD_NAME = "TEXTBOARD_NAME";
+		public final static String IMAGEPROCESSING_LINK = "IMAGEPROCESSING_LINK";
+		public final static String IMAGEPROCESSING_NAME = "IMAGEPROCESSING_NAME";
+		public final static String WHERE_NAME = "WHERE_NAME";
+		public final static String WHERE_TEXT = "WHERE_TEXT";
 		public final static String BOARDLIST = "boardList";
 		public final static String THREADLIST = "threadList";
 		public final static String POSTLIST = "postList";
@@ -96,5 +108,6 @@ public class Reference {
 		public final static String INPUT_THREAD = "INPUT_THREAD";
 		public final static String INPUT_THREADTEXT = "INPUT_THREADTEXT";
 		public final static String INPUT_POSTTEXT = "INPUT_POSTTEXT";
+
 	}
 }
