@@ -11,8 +11,10 @@
 	<body>
 	
 		<a href="$ROOT_LINK">$ROOT_NAME</a>
+		<a href="$TEXTBOARD_LINK">$TEXTBOARD_NAME</a>
+		<a href="$IMAGEPROCESSING_LINK">$IMAGEPROCESSING_NAME</a>
 		<p>$ERROR</p>
-		<a href="$RETURN_LINK">$RETURN_NAME</a>
+		<p>RETURN LINK: <a href="$RETURN_LINK">$RETURN_NAME</a> </p>
 		
 	</body>
 </html>
