@@ -39,11 +39,14 @@ public class ImageProcessingController {
 	}
 
 	public static Route serveImageUpload = (Request request, Response response) -> {
+		Tools.println("FROM:ImageProcessingController:START:serveImageUpload");
 		Map<String, Object> model = new HashMap<String, Object>();
+		Tools.println("END:serveImageUpload");
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD, "Image Upload", "OK");
 	};
 
 	public static Route handleImageUpload = (Request request, Response response) -> {
+		Tools.println("FROM:ImageProcessingController:START:handleImageUpload");
 
 		Path tempFile = Files.createTempFile(uploadDir.toPath(), "", ".png");
 
@@ -68,6 +71,7 @@ public class ImageProcessingController {
 		logInfo(request, tempFile);
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("imagefile", "/images/output/partition/" + FILENAME);
+		Tools.println("END:handleImageUpload");
 		return ViewUtil.render(request, model, Reference.Templates.DISPLAY_IMAGE,
 				Reference.CommonStrings.IMAGEPROCESSING_NAME, "OK");
 	};
