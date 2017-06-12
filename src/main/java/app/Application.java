@@ -29,7 +29,7 @@ public class Application {
 
 	public static File uploadDir;
 
-	public static void main2(String[] args) {
+	public static void main(String[] args) {
 		enableDebugScreen();
 
 		Tools.print("SERVER:START:" + Integer.valueOf(System.getenv("PORT")));
@@ -75,7 +75,7 @@ public class Application {
 		System.out.println("SERVER:END");
 	}
 
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 		enableDebugScreen();
 
 		Tools.print("SERVER:START:" + Integer.valueOf(System.getenv("PORT")));
