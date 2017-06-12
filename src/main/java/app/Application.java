@@ -32,9 +32,8 @@ public class Application {
 	public static void main(String[] args) {
 		enableDebugScreen();
 
-		//System.out.println("SERVER:START:" + Integer.valueOf(System.getenv("PORT")));
-		Tools.println("SERVER:START:" + 5000);
-		port(5000);
+		Tools.print("SERVER:START:" + Integer.valueOf(System.getenv("PORT")));
+		port(Integer.valueOf(System.getenv("PORT")));
 
 		uploadDir = new File("src/main/resources/public/images/input/upload");
 		uploadDir.mkdir(); // create the upload directory if it doesn't exist
