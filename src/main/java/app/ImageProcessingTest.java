@@ -16,7 +16,7 @@ import app.util.Tools;
 public class ImageProcessingTest {
 	public static void main(String[] args) throws IOException, Exception {
 
-		String filename = "love_live";
+		String filename = "test_video";
 		System.out.println("filename:" + filename + ".mp4");
 		FFmpegFrameGrabber g = new FFmpegFrameGrabber("videos/" + filename + ".mp4");
 		g.start();
@@ -30,10 +30,9 @@ public class ImageProcessingTest {
 		while ((frame = g.grabImage()) != null) {
 			if ((i % 96) == 0) {
 				outputFileName = "video-frame-" + filename + "-" + a + ".png";
-				ImageIO.write(
-						ImageProcessing
-								.partitionImage(ImageProcessing.resizeImage(frameConverter.getBufferedImage(frame))),
-						"png", new File("src/main/resources/public/images/output/partition/" + outputFileName));
+				ImageIO.write(ImageProcessing.partitionImage(
+						ImageProcessing.resizeImage(frameConverter.getBufferedImage(frame)), filename + "-" + a), "png",
+						new File("src/main/resources/public/images/output/partition/" + outputFileName));
 				Tools.println(outputFileName);
 				a++;
 			} else {

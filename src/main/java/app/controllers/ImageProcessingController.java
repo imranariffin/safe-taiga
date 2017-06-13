@@ -62,8 +62,10 @@ public class ImageProcessingController {
 		Tools.println("picture saved as:" + FILENAME);
 		try {
 			ImageIO.write(
-					ImageProcessing.partitionImage(ImageProcessing.resizeImage(
-							ImageIO.read(new File("src/main/resources/public/images/input/upload/" + FILENAME)))),
+					ImageProcessing.partitionImage(
+							ImageProcessing.resizeImage(ImageIO
+									.read(new File("src/main/resources/public/images/input/upload/" + FILENAME))),
+							FILENAME),
 					"png", new File("src/main/resources/public/images/output/partition/" + FILENAME));
 		} catch (IOException e) {
 

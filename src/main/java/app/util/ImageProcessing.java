@@ -20,13 +20,14 @@ public class ImageProcessing {
 	private static final int IMG_WIDTH = 640;
 	private static final int IMG_HEIGHT = 360;
 
-	public static BufferedImage partitionImage(BufferedImage originalImage) {
+	public static BufferedImage partitionImage(BufferedImage originalImage, String filename) {
 
 		// BufferedImage image;
 		int width;
 		int height;
 		int divisorSize = 20;
 
+		String outputText = "";
 		try {
 			width = originalImage.getWidth();
 			height = originalImage.getHeight();
@@ -100,13 +101,17 @@ public class ImageProcessing {
 					}
 					// move to the next X block
 					blockStartX += blockSizeX;
+					outputText += partitionArrayRed[b][a] + " " + partitionArrayGreen[b][a] + " "
+							+ partitionArrayBlue[b][a] + ",";
 				}
+				outputText += "\n";
 				// move to the next Y block
 				blockStartY += blockSizeY;
-
 				// reset blockStartX
 				blockStartX = 0;
 			}
+
+			WriteFile.writeStringToFile(outputText, "src/main/resources/public/texts/output/TEXT_" + filename);
 			return originalImage; // now modified
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -3,5 +3,4 @@ target
 .idea/
 *.iml
 videos
-src/main/resources/public/images/input/*
-src/main/resources/public/images/output/*
+*.png
