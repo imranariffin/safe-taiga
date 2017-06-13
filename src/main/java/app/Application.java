@@ -32,10 +32,9 @@ public class Application {
 	public static HikariConfig config;
 	public static boolean devmode = true;
 
-	public static String databaseURL = "postgres://cmnlsaojmoikne:6b83df375af6ac5217aa622076761370414a4313dada6710503aaada80ee7d84@ec2-23-21-220-48.compute-1.amazonaws.com:5432/dcm7pogkmqo3tj";
 	public static File uploadDir;
 
-	public static void main3(String[] args) {
+	public static void main(String[] args) {
 		enableDebugScreen();
 
 		Tools.print("SERVER:START:" + Integer.valueOf(System.getenv("PORT")));
@@ -45,8 +44,9 @@ public class Application {
 		Tools.println("creating directory if it does not exist");
 		uploadDir.mkdir(); // create the upload directory if it doesn't exist
 
-		staticFiles.location("/public");
+		// staticFiles.location("src/main/resources/public");
 		staticFiles.externalLocation("src/main/resources/public");
+		staticFiles.expireTime(600L);
 
 		config = new HikariConfig();
 		config.setJdbcUrl(System.getenv("JDBC_DATABASE_URL"));
@@ -80,73 +80,4 @@ public class Application {
 		// after("*", Filters.addGzipHeader);
 		System.out.println("SERVER:END");
 	}
-
-	public static void main2(String[] args) {
-		enableDebugScreen();
-
-		Tools.print("SERVER:START:" + Integer.valueOf(System.getenv("PORT")));
-		port(Integer.valueOf(System.getenv("PORT")));
-
-		File uploadDir = new File("upload");
-		uploadDir.mkdir(); // create the upload directory if it doesn't exist
-
-		staticFiles.externalLocation("upload");
-
-		get("/", (req, res) -> "<form method='post' enctype='multipart/form-data'>"
-				+ "    <input type='file' name='uploaded_file' accept='.png'>" + "    <button>Upload picture</button>"
-				+ "</form>");
-
-		post("/", (req, res) -> {
-
-			Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
-
-			req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
-
-			try (InputStream input = req.raw().getPart("uploaded_file").getInputStream()) {
-				Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
-			}
-
-			logInfo(req, tempFile);
-			return "<h1>You uploaded this image:<h1><img src='" + tempFile.getFileName() + "'>";
-
-		});
-
-	}
-
-	// methods used for logging
-	private static void logInfo(Request req, Path tempFile) throws IOException, ServletException {
-		System.out.println("Uploaded file '" + getFileName(req.raw().getPart("uploaded_file")) + "' saved as '"
-				+ tempFile.toAbsolutePath() + "'");
-	}
-
-	private static String getFileName(Part part) {
-		for (String cd : part.getHeader("content-disposition").split(";")) {
-			if (cd.trim().startsWith("filename")) {
-				return cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
-			}
-		}
-		return null;
-	}
-
-	public static void main(String[] args) {
-		try {
-			Class.forName("org.postgresql.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			Tools.println(e.getMessage());
-		}
-		Connection conn = null;
-		try {
-			conn = DriverManager
-					.getConnection("jdbc:" + databaseURL + "user=hanif.ariffin.4326@gmail.com&password=Rps5771%&&!");
-
-			// Do something with the Connection
-		} catch (SQLException ex) {
-			// handle any errors
-			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("VendorError: " + ex.getErrorCode());
-		}
-	}
-
 }

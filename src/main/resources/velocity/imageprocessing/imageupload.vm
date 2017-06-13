@@ -24,5 +24,9 @@
 			</form>
 		</div>
 		
+		<h1>$imagemessage<h1>
+		<br>
+		<img src='$imagefile'>
+		
 	</body>
 </html>

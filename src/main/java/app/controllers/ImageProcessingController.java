@@ -42,6 +42,8 @@ public class ImageProcessingController {
 		Tools.println("FROM:ImageProcessingController:START:serveImageUpload");
 		Map<String, Object> model = new HashMap<String, Object>();
 		Tools.println("END:serveImageUpload");
+		model.put("imagefile", "/images/other/image_placeholder.jpg");
+		model.put("imagemessage", "your uploaded image will replace the empy image below:");
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD, "Image Upload", "OK");
 	};
 
@@ -69,10 +71,12 @@ public class ImageProcessingController {
 		}
 
 		logInfo(request, tempFile);
+
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("imagefile", "/images/output/partition/" + FILENAME);
+		model.put("imagemessage", "you uploaded this image:");
 		Tools.println("END:handleImageUpload");
-		return ViewUtil.render(request, model, Reference.Templates.DISPLAY_IMAGE,
+		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD,
 				Reference.CommonStrings.IMAGEPROCESSING_NAME, "OK");
 	};
 
