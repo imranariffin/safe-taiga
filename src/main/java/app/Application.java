@@ -10,10 +10,15 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.sql.DriverManager;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
 import javax.servlet.http.Part;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import app.util.*;
 import app.controllers.*;
@@ -27,9 +32,10 @@ public class Application {
 	public static HikariConfig config;
 	public static boolean devmode = true;
 
+	public static String databaseURL = "postgres://cmnlsaojmoikne:6b83df375af6ac5217aa622076761370414a4313dada6710503aaada80ee7d84@ec2-23-21-220-48.compute-1.amazonaws.com:5432/dcm7pogkmqo3tj";
 	public static File uploadDir;
 
-	public static void main(String[] args) {
+	public static void main3(String[] args) {
 		enableDebugScreen();
 
 		Tools.print("SERVER:START:" + Integer.valueOf(System.getenv("PORT")));
@@ -120,6 +126,27 @@ public class Application {
 			}
 		}
 		return null;
+	}
+
+	public static void main(String[] args) {
+		try {
+			Class.forName("org.postgresql.Driver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			Tools.println(e.getMessage());
+		}
+		Connection conn = null;
+		try {
+			conn = DriverManager
+					.getConnection("jdbc:" + databaseURL + "user=hanif.ariffin.4326@gmail.com&password=Rps5771%&&!");
+
+			// Do something with the Connection
+		} catch (SQLException ex) {
+			// handle any errors
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
 	}
 
 }
