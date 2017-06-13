@@ -111,7 +111,7 @@ public class ImageProcessing {
 				blockStartX = 0;
 			}
 
-			WriteFile.writeStringToFile(outputText, "src/main/resources/public/texts/output/TEXT_" + filename);
+			WriteFile.writeStringToFile(outputText, "output/text/TEXT_" + filename + ".txt");
 			return originalImage; // now modified
 		} catch (Exception e) {
 			e.printStackTrace();
