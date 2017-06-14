@@ -28,7 +28,8 @@ public class Application {
 		new File("public/images/other").mkdirs();
 		new File("public/images/input").mkdirs();
 		new File("public/images/output/partition").mkdirs();
-		new File("public/texts/output").mkdirs();
+		new File("public/text/output/partition").mkdirs();
+		
 
 		uploadDir = new File("public/images/input");
 
