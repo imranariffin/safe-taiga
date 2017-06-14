@@ -25,9 +25,12 @@ public class Application {
 		Tools.print("SERVER:START:" + Integer.valueOf(System.getenv("PORT")));
 		port(Integer.valueOf(System.getenv("PORT")));
 
-		uploadDir = new File("src/main/resources/public/images/input/upload");
-		Tools.println("creating directory if it does not exist");
-		uploadDir.mkdir(); // create the upload directory if it doesn't exist
+		new File("public/images/other").mkdirs();
+		new File("public/images/input").mkdirs();
+		new File("public/images/output/partition").mkdirs();
+		new File("public/texts/output").mkdirs();
+
+		uploadDir = new File("public/images/input");
 
 		// staticFiles.location("src/main/resources/public");
 		staticFiles.externalLocation("public");

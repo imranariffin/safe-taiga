@@ -58,15 +58,13 @@ public class ImageProcessingController {
 			Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
 		}
 
-		String FILENAME = tempFile.getFileName().toString();
-		Tools.println("picture saved as:" + FILENAME);
+		String filename = tempFile.getFileName().toString();
+		Tools.println("picture saved as:" + filename);
 		try {
 			ImageIO.write(
-					ImageProcessing.partitionImage(
-							ImageProcessing.resizeImage(ImageIO
-									.read(new File("src/main/resources/public/images/input/upload/" + FILENAME))),
-							FILENAME),
-					"png", new File("src/main/resources/public/images/output/partition/" + FILENAME));
+					ImageProcessing.partitionImage(ImageProcessing
+							.resizeImage(ImageIO.read(new File("public/images/input/" + filename))), filename),
+					"png", new File("public/images/output/partition/" + filename));
 		} catch (IOException e) {
 
 			e.printStackTrace();
@@ -75,7 +73,7 @@ public class ImageProcessingController {
 		logInfo(request, tempFile);
 
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("imagefile", "/images/output/partition/" + FILENAME);
+		model.put("imagefile", "/images/output/partition/" + filename);
 		model.put("imagemessage", "you uploaded this image:");
 		Tools.println("END:handleImageUpload");
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD,
