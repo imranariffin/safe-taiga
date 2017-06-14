@@ -30,7 +30,7 @@ public class Application {
 		uploadDir.mkdir(); // create the upload directory if it doesn't exist
 
 		// staticFiles.location("src/main/resources/public");
-		staticFiles.externalLocation("src/main/resources/public");
+		staticFiles.externalLocation("public");
 		staticFiles.expireTime(600L);
 
 		config = new HikariConfig();
