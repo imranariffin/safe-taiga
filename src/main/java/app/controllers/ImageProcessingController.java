@@ -9,10 +9,11 @@ import javax.imageio.ImageIO;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import app.util.EasyFileReader;
 import app.util.ImageProcessing;
 import app.util.Reference;
-import app.util.ViewUtil;
 import app.util.Tools;
+import app.util.ViewUtil;
 
 import java.io.*;
 import java.nio.file.*;
@@ -22,21 +23,6 @@ import java.util.Map;
 import static app.Application.*;
 
 public class ImageProcessingController {
-
-	// methods used for logging
-	private static void logInfo(Request request, Path tempFile) throws IOException, ServletException {
-		Tools.print("Uploaded file '" + getFileName(request.raw().getPart("uploaded_file")) + "' saved as '"
-				+ tempFile.toAbsolutePath() + "'");
-	}
-
-	private static String getFileName(Part part) {
-		for (String cd : part.getHeader("content-disposition").split(";")) {
-			if (cd.trim().startsWith("filename")) {
-				return cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
-			}
-		}
-		return null;
-	}
 
 	public static Route serveImageUpload = (Request request, Response response) -> {
 		Tools.println("FROM:ImageProcessingController:START:serveImageUpload");
@@ -48,9 +34,10 @@ public class ImageProcessingController {
 	};
 
 	public static Route handleImageUpload = (Request request, Response response) -> {
+		Map<String, Object> model = new HashMap<String, Object>();
 		Tools.println("FROM:ImageProcessingController:START:handleImageUpload");
 
-		Path tempFile = Files.createTempFile(uploadDir.toPath(), "", ".png");
+		Path tempFile = Files.createTempFile(IMAGES_INPUT_DIR.toPath(), "", ".png");
 
 		request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 
@@ -58,22 +45,43 @@ public class ImageProcessingController {
 			Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
 		}
 
-		String filename = tempFile.getFileName().toString();
-		Tools.println("picture saved as:" + filename);
-		try {
-			ImageIO.write(
-					ImageProcessing.partitionImage(ImageProcessing
-							.resizeImage(ImageIO.read(new File("public/images/input/" + filename))), filename),
-					"png", new File("public/images/output/partition/" + filename));
-		} catch (IOException e) {
+		int[][][] partitionArrayRGB = null;
+		String filename = tempFile.getFileName().toString().substring(0,
+				tempFile.getFileName().toString().length() - 4);
+		// Files directory
+		String savedImageDir = IMAGES_INPUT_DIR.toPath() + "/" + filename + ".png";
+		String outputTextDir = TEXT_OUTPUT_PARTITION_DIR.toPath() + "/" + filename + ".txt";
+		String outputPartitionedImage = IMAGES_OUTPUT_PARTITION_DIR.toPath() + "/" + filename + ".png";
 
-			e.printStackTrace();
+		// Logging
+		Tools.print("Uploaded file '" + getFileName(request.raw().getPart("uploaded_file")) + "' saved as '"
+				+ tempFile.toAbsolutePath() + "'" + "\nbase filename:" + filename + "\ntemporary image is saved at:"
+				+ savedImageDir + "\ntext created from partitioning saved at:" + outputTextDir
+				+ "\npartitioned image  created at:" + outputPartitionedImage);
+
+		try {
+			ImageIO.write(ImageProcessing
+					.partitionImage(ImageProcessing.resizeImage(ImageIO.read(new File(savedImageDir))), outputTextDir),
+					"png", new File(outputPartitionedImage));
+		} catch (IOException e) {
+			Tools.println("ERROR PARTITIONING IMAGE");
+			Tools.println(e.getMessage());
 		}
 
-		logInfo(request, tempFile);
+		try {
+			partitionArrayRGB = EasyFileReader.parsePartitionTextOutput(outputTextDir);
+		} catch (Exception e) {
+			Tools.println("ERROR READING OUTPUT TEXT");
+			Tools.println(e.getMessage());
+		}
 
-		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("imagefile", "/images/output/partition/" + filename);
+		if (partitionArrayRGB == null) {
+			throw new NullPointerException("partitionArrayRGB is null");
+		} else {
+			model.put("partitionArrayRGB", partitionArrayRGB);
+		}
+
+		model.put("imagefile", outputPartitionedImage.substring(7, outputPartitionedImage.length()));
 		model.put("imagemessage", "you uploaded this image:");
 		Tools.println("END:handleImageUpload");
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD,
@@ -86,5 +94,14 @@ public class ImageProcessingController {
 			Tools.print(givenFileName.charAt(a) + "");
 		}
 		return "";
+	}
+
+	private static String getFileName(Part part) {
+		for (String cd : part.getHeader("content-disposition").split(";")) {
+			if (cd.trim().startsWith("filename")) {
+				return cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
+			}
+		}
+		return null;
 	}
 }

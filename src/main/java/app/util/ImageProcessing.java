@@ -20,12 +20,12 @@ public class ImageProcessing {
 	private static final int IMG_WIDTH = 640;
 	private static final int IMG_HEIGHT = 360;
 
-	public static BufferedImage partitionImage(BufferedImage originalImage, String filename) {
+	public static BufferedImage partitionImage(BufferedImage originalImage, String outputTextName) {
 
 		// BufferedImage image;
 		int width;
 		int height;
-		int divisorSize = 20;
+		int divisorSize = 10;
 
 		String outputText = "";
 		try {
@@ -102,7 +102,7 @@ public class ImageProcessing {
 					// move to the next X block
 					blockStartX += blockSizeX;
 					outputText += partitionArrayRed[b][a] + " " + partitionArrayGreen[b][a] + " "
-							+ partitionArrayBlue[b][a] + ",";
+							+ partitionArrayBlue[b][a] + " ";
 				}
 				outputText += "\n";
 				// move to the next Y block
@@ -111,7 +111,7 @@ public class ImageProcessing {
 				blockStartX = 0;
 			}
 
-			WriteFile.writeStringToFile(outputText, "public/text/output/partition/" + filename + ".txt");
+			WriteFile.writeStringToFile(outputText, outputTextName);
 			return originalImage; // now modified
 		} catch (Exception e) {
 			e.printStackTrace();
