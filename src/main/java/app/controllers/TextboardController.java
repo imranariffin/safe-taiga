@@ -225,8 +225,7 @@ public class TextboardController {
 
 		} catch (Exception e) {
 			return ViewUtil.renderErrorMessage(request, e.getMessage(),
-					Reference.CommonStrings.getPREVIOUSBOARDLINK(boardlink),
-					Reference.Web.TEXTBOARD + "/" + boardlink);
+					Reference.CommonStrings.getPREVIOUSBOARDLINK(boardlink), Reference.Web.TEXTBOARD + "/" + boardlink);
 		}
 
 		// Populate with list of posts

@@ -22,26 +22,24 @@ public class EasyFileReader {
 	}
 
 	public static int[][][] parsePartitionTextOutput(String filename) throws IOException {
-		
+
 		BufferedReader br = new BufferedReader(new FileReader(filename));
 		String currentLine = "";
-		int[][][] partitionArrayRGB = new int[10][10][3];
 		String numberString = "";
-		int number = 0;
+		int[][][] partitionArrayRGB = new int[10][10][3];
 		int x = 0;
 		int y = 0;
 		int z = 0;
-		int xLong = 0; // xLong is a counter to how many integers we have
+		int xInt = 0; // xLong is a counter to how many integers we have
 						// iterated in the string
 		while ((currentLine = br.readLine()) != null) {
 			char[] currentLineCharArray = currentLine.toCharArray();
 			for (int a = 0; a < currentLineCharArray.length; a++) {
 				if (currentLineCharArray[a] == ' ') {
-					z = xLong % 3;
-					number = Integer.valueOf(numberString);
-					partitionArrayRGB[x][y][z] = number;
+					z = xInt % 3;
+					partitionArrayRGB[y][x][z] = Integer.valueOf(numberString);
 					numberString = "";
-					xLong++;
+					xInt++;
 					if (z == 2) {
 						x++;
 					}
@@ -49,7 +47,7 @@ public class EasyFileReader {
 					numberString += currentLineCharArray[a];
 				}
 			}
-			xLong = 0;
+			xInt = 0;
 			x = 0;
 			y++;
 		}

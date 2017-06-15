@@ -30,6 +30,7 @@ public class ImageProcessingController {
 		Tools.println("END:serveImageUpload");
 		model.put("imagefile", "/images/other/image_placeholder.jpg");
 		model.put("imagemessage", "your uploaded image will replace the empy image below:");
+		model.put("partitionArrayRGB", new int[10][10][3]);
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD, "Image Upload", "OK");
 	};
 
