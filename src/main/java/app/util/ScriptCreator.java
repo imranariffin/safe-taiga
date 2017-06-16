@@ -4,7 +4,7 @@ public class ScriptCreator {
 
 	public static String INSERT_INTO_imagedb_partition_rgb(String imagename, int[][][] partitionArrayRGB) {
 
-		String script = "INSERT INTO image_db_partition_rgb VALUES ('" + imagename + "',";
+		String script = "INSERT INTO image_db_partition_rgb (imagename, pixel_red, pixel_green, pixel_blue) VALUES ('" + imagename + "',";
 
 		/**
 		 * include values of the RGB
