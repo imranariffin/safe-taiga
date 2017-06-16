@@ -84,14 +84,6 @@ public class Reference {
 	}
 
 	public static class VTLStatics {
-
-		/**
-		 * <a href="$ROOT_LINK">ROOT</a> <a href="$TEXTBOARD_LINK">textboard</a>
-		 * <a href="$IMAGEPROCESSING_LINK">imageprocessing</a>
-		 * <p>
-		 * $WHERE_NAME : $WHERE_TEXT
-		 * </p>
-		 */
 		public final static String ROOT_LINK = "ROOT_LINK";
 		public final static String ROOT_NAME = "ROOT_NAME";
 		public final static String TEXTBOARD_LINK = "TEXTBOARD_LINK";

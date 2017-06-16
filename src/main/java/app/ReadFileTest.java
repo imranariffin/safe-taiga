@@ -1,11 +1,8 @@
 package app;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 
 import app.util.EasyFileReader;
-import app.util.Tools;
 
 public class ReadFileTest {
 

@@ -3,7 +3,6 @@ package app.controllers;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import spark.Filter;
 
 import javax.imageio.ImageIO;
 import javax.servlet.*;
@@ -12,6 +11,7 @@ import javax.servlet.http.*;
 import app.util.EasyFileReader;
 import app.util.ImageProcessing;
 import app.util.Reference;
+import app.util.ScriptCreator;
 import app.util.Tools;
 import app.util.ViewUtil;
 
@@ -81,6 +81,7 @@ public class ImageProcessingController {
 		} else {
 			model.put("partitionArrayRGB", partitionArrayRGB);
 		}
+		ScriptCreator.INSERT_INTO_imagedb_partition_rgb(filename, partitionArrayRGB);
 
 		model.put("imagefile", outputPartitionedImage.substring(7, outputPartitionedImage.length()));
 		model.put("imagemessage", "you uploaded this image:");

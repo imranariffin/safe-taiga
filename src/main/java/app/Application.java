@@ -4,13 +4,17 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
+import app.util.EasyFileReader;
 import app.util.Reference;
+import app.util.ScriptCreator;
 import app.util.ViewUtil;
 import app.util.Tools;
 import app.controllers.RootController;
@@ -78,6 +82,34 @@ public class Application {
 
 		// Set up after-filters (called after each get/post)
 		// after("*", Filters.addGzipHeader);
+		InsertTextDumpToDatabase();
 		System.out.println("SERVER:END");
+	}
+
+	public static void InsertTextDumpToDatabase() {
+		String baseFilename = "idolmaster_1-";
+		String fileType = ".txt";
+		String insertScript = "";
+		int[][][] partitionArrayRGB = null;
+		for (int id = 0; id < 482; id++) {
+			try (Connection connection = DATA_SOURCE.getConnection()) {
+				partitionArrayRGB = EasyFileReader
+						.parsePartitionTextOutput("dev_output/text/" + baseFilename + id + fileType);
+
+				insertScript = ScriptCreator.INSERT_INTO_imagedb_partition_rgb(baseFilename, partitionArrayRGB);
+
+				Statement stmt = connection.createStatement();
+				Tools.println("Executing script:" + insertScript);
+				stmt.executeUpdate(insertScript);
+
+			} catch (IOException e) {
+				Tools.println("id:" + id);
+				Tools.println(e.getMessage());
+			} catch (SQLException e) {
+				Tools.println("id:" + id);
+				Tools.println("query:" + insertScript);
+				Tools.println(e.getMessage());
+			}
+		}
 	}
 }
