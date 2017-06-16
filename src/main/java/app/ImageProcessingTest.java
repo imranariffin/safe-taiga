@@ -36,7 +36,7 @@ public class ImageProcessingTest {
 					ImageIO.write(
 							ImageProcessing.partitionImage(
 									ImageProcessing.resizeImage(frameConverter.getBufferedImage(frame)),
-									"dev_output/text/" + filename + "-" + a),
+									"dev_output/text/" + filename + "-" + a + ".txt"),
 							"png", new File("public/images/output/partition/" + outputFileName));
 					Tools.println(outputFileName);
 					a++;
