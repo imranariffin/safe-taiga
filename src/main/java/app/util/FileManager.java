@@ -28,13 +28,14 @@ public class FileManager {
 		BufferedReader br = new BufferedReader(new FileReader(filename));
 		String currentLine = "";
 		String numberString = "";
-		int[][][] partitionArrayRGB = new int[10][10][3];
+		int[][][] partitionArrayRGB = new int[ImageProcessing.DIVISOR_VALUE][ImageProcessing.DIVISOR_VALUE][3];
 		int x = 0;
 		int y = 0;
 		int z = 0;
 		int xInt = 0; // xLong is a counter to how many integers we have
 						// iterated in the string
 		while ((currentLine = br.readLine()) != null) {
+			Tools.println(currentLine, false);
 			char[] currentLineCharArray = currentLine.toCharArray();
 			for (int a = 0; a < currentLineCharArray.length; a++) {
 				if (currentLineCharArray[a] == ' ') {

@@ -178,12 +178,13 @@ public class ImageProcessing {
 	public static String getStringFromTripleArray(int[][][] tripleArray) {
 		Tools.println("FROM:ImageProcessing:START:getStringFromTripleArray");
 		String outputText = "";
-		for (int a = 0; a < tripleArray.length; a++) {
-			for (int b = 0; b < tripleArray[a].length; b++) {
+		for (int a = 0; a < tripleArray.length; a++) { // Y-axis
+			for (int b = 0; b < tripleArray[a].length; b++) { // X-axis
 				for (int c = 0; c < tripleArray[a][b].length; c++) {
 					outputText += tripleArray[b][a][0] + " ";
 				}
 			}
+			outputText += "\n";
 		}
 		Tools.println("END:getStringFromTripleArray");
 		return outputText;
