@@ -37,7 +37,12 @@ public class Application {
 		enableDebugScreen();
 
 		Tools.print("SERVER:START:" + Integer.valueOf(System.getenv("PORT")));
-		port(Integer.valueOf(System.getenv("PORT")));
+		try {
+			port(Integer.valueOf(System.getenv("PORT")));
+		} catch (Exception e) {
+			Tools.println("System running locally, setting port to the default 5000");
+			port(5000);
+		}
 
 		IMAGES_OTHER_DIR = new File("public/images/other");
 		IMAGES_OUTPUT_PARTITION_DIR = new File("public/images/output/partition");
@@ -84,7 +89,7 @@ public class Application {
 
 		// Set up after-filters (called after each get/post)
 		// after("*", Filters.addGzipHeader);
-		// InsertTextDumpToDatabase();
+		InsertTextDumpToDatabase();
 		System.out.println("SERVER:END");
 	}
 
