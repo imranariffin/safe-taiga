@@ -13,7 +13,7 @@ import org.bytedeco.javacv.Java2DFrameConverter;
 
 import app.util.ImageProcessing;
 import app.util.Tools;
-import app.util.WriteFile;
+import app.util.FileManager;
 
 public class CreateImageDump {
 	public static void main(String[] args) throws IOException, Exception {
@@ -37,12 +37,12 @@ public class CreateImageDump {
 			while ((frame = g.grabImage()) != null) {
 				if ((i % 72) == 0) {
 					image = frameConverter.getBufferedImage(frame);
-					outputImageName = "public/images/output/partition/video-frame-" + filename + "-" + a + ".png";
+					outputImageName = "dev_output/images/output/partition/video-frame-" + filename + "-" + a + ".png";
 					outputTextName = "dev_output/text/" + filename + "-" + a + ".txt";
 					partitionArrayRGB = ImageProcessing.getImageRGBPartitionValues(image);
 					ImageIO.write(ImageProcessing.partitionImage(ImageProcessing.resizeImage(image), partitionArrayRGB),
 							"png", new File(outputImageName));
-					WriteFile.writeStringToFile(
+					FileManager.writeStringToFile(
 							ImageProcessing.getStringFromTripleArray(ImageProcessing.getImageRGBPartitionValues(image)),
 							outputTextName);
 					Tools.println(outputImageName);

@@ -2,7 +2,7 @@ package app;
 
 import java.io.IOException;
 
-import app.util.EasyFileReader;
+import app.util.FileManager;
 
 public class ReadFileTest {
 
@@ -18,7 +18,7 @@ public class ReadFileTest {
 				// EasyFileReader.readFile("dev_output/text/" + baseFilename +
 				// "-" + id + ".txt"));
 				// id++;
-				EasyFileReader.parsePartitionTextOutput("dev_output/text/" + baseFilename + id + fileType);
+				FileManager.parsePartitionTextOutput("dev_output/text/" + baseFilename + id + fileType);
 				id++;
 			}
 		} catch (IOException e) {

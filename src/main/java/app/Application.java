@@ -18,7 +18,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import app.controllers.ImageProcessingController;
 import app.controllers.RootController;
 import app.controllers.TextboardController;
-import app.util.EasyFileReader;
+import app.util.FileManager;
 import app.util.Reference;
 import app.util.ScriptCreator;
 import app.util.Tools;
@@ -95,7 +95,7 @@ public class Application {
 		int[][][] partitionArrayRGB = null;
 		for (int id = 0; id < 482; id++) {
 			try (Connection connection = DATA_SOURCE.getConnection()) {
-				partitionArrayRGB = EasyFileReader
+				partitionArrayRGB = FileManager
 						.parsePartitionTextOutput("dev_output/text/" + baseFilename + id + fileType);
 
 				insertScript = ScriptCreator.INSERT_INTO_imagedb_partition_rgb(baseFilename, partitionArrayRGB);

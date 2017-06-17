@@ -18,12 +18,12 @@ import javax.imageio.ImageIO;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.Part;
 
+import app.util.FileManager;
 import app.util.ImageProcessing;
 import app.util.Reference;
 import app.util.ScriptCreator;
 import app.util.Tools;
 import app.util.ViewUtil;
-import app.util.WriteFile;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -35,8 +35,8 @@ public class ImageProcessingController {
 		Map<String, Object> model = new HashMap<String, Object>();
 		Tools.println("END:serveImageUpload");
 		model.put("imagefile", "/images/other/image_placeholder.jpg");
-		model.put("imagemessage", "your uploaded image will replace the empy image below:");
-		model.put("partitionArrayRGB", new int[10][10][3]);
+		model.put("imagemessage", "your uploaded image will replace the empty image below:");
+		model.put("partitionArrayRGB", new int[ImageProcessing.DIVISOR_VALUE][ImageProcessing.DIVISOR_VALUE][3]);
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD, "Image Upload", "OK");
 	};
 
@@ -90,7 +90,7 @@ public class ImageProcessingController {
 		ImageIO.write(originalImage, "png", new File(outputPartitionedImage));
 
 		// write image data to a text file
-		WriteFile.writeStringToFile(ImageProcessing.getStringFromTripleArray(partitionArrayRGB), outputTextDir);
+		FileManager.writeStringToFile(ImageProcessing.getStringFromTripleArray(partitionArrayRGB), outputTextDir);
 
 		/**
 		 * Write to database?

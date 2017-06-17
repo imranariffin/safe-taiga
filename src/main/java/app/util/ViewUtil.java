@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.velocity.app.VelocityEngine;
 import org.eclipse.jetty.http.HttpStatus;
 
+import spark.Filter;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -20,10 +21,6 @@ public class ViewUtil {
 	public static String render(Request request, Map<String, Object> model, String templatePath, String where,
 			String message) {
 
-		/**
-		 * <a href="$ROOT_LINK">ROOT</a> <a href="$TEXTBOARD_LINK">textboard</a>
-		 * <a href="$IMAGEPROCESSING_LINK">imageprocessing</a>
-		 */
 		// Basic links that are not dynamic like :boardlink or :threadid
 		model.put(Reference.VTLStatics.ROOT_LINK, Reference.Web.ROOT);
 		model.put(Reference.VTLStatics.ROOT_NAME, Reference.CommonStrings.ROOT_NAME);
@@ -65,4 +62,21 @@ public class ViewUtil {
 		model.put(Reference.CommonStrings.RETURNNAME, returnName);
 		return render(request, model, Reference.Templates.ERROR, "Error", errorMessage);
 	}
+
+	// If a user manually manipulates paths and forgets to add
+	// a trailing slash, redirect the user to the correct path
+	public static Filter addTrailingSlashes = (Request request, Response response) -> {
+		// Tools.print("FROM:Filters:START:addTrailingSlashes");
+		if (!request.pathInfo().endsWith("/")) {
+			response.redirect(request.pathInfo() + "/");
+		}
+		// Tools.print("END:addTrailingSlashes");
+	};
+
+	// Enable GZIP for all responses
+	public static Filter addGzipHeader = (Request request, Response response) -> {
+		// Tools.print("FROM:Filters:START:addGzipHeader");
+		response.header("Content-Encoding", "gzip");
+		// Tools.print("END:addGzipHeader");
+	};
 }

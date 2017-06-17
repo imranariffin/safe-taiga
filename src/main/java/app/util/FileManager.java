@@ -2,9 +2,11 @@ package app.util;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
-public class EasyFileReader {
+public class FileManager {
 
 	private static BufferedReader br;
 
@@ -54,5 +56,20 @@ public class EasyFileReader {
 
 		br.close();
 		return partitionArrayRGB;
+	}
+
+	public static void writeStringToFile(String text, String pathFile) {
+		Tools.println("FROM:WriteFile:START:writeStringToFile");
+		FileWriter write;
+		try {
+			write = new FileWriter(pathFile);
+			PrintWriter print_line = new PrintWriter(write);
+			print_line.printf("%s", text);
+			print_line.close();
+		} catch (IOException e) {
+			Tools.println("FAILURE WRITING FILE" + "\n" + "pathFile" + pathFile + "\n" + "text:" + text);
+			Tools.println(e.getMessage());
+		}
+		Tools.println("END:writeStringToFile");
 	}
 }

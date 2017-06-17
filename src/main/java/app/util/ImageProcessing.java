@@ -17,23 +17,23 @@ import javax.imageio.ImageIO;
 
 public class ImageProcessing {
 
-	private static final int IMG_WIDTH = 640;
-	private static final int IMG_HEIGHT = 360;
+	public static final int IMG_WIDTH = 640;
+	public static final int IMG_HEIGHT = 360;
+	public static final int DIVISOR_VALUE = 10;
 
 	public static BufferedImage partitionImage(BufferedImage originalImage, int[][][] partitionArrayRGB) {
 		Tools.println("FROM:ImageProcessing:START:partitionImage");
 
 		// parse required information about the image
-		int divisorSize = DefaultValues.ImagePartitioning.getDivisorSize();
 		int width = originalImage.getWidth();
 		int height = originalImage.getHeight();
-		int blockSizeX = width / divisorSize;
-		int blockSizeY = height / divisorSize;
+		int blockSizeX = width / DIVISOR_VALUE;
+		int blockSizeY = height / DIVISOR_VALUE;
 
 		/**
 		 * Verify information of the image
 		 */
-		Tools.println("divisor image:" + divisorSize + "\n" + "width:" + width + "\n" + "height:" + height + "\n"
+		Tools.println("divisor image:" + DIVISOR_VALUE + "\n" + "width:" + width + "\n" + "height:" + height + "\n"
 				+ "blockSizeX:" + blockSizeX + "\n" + "blockSizeY:" + blockSizeY);
 
 		// Variables for iterating through the image array
@@ -41,8 +41,8 @@ public class ImageProcessing {
 		int blockStartY = 0;
 
 		// Assign RGB color to the new image
-		for (int a = 0; a < divisorSize; a++) { // Y-axis
-			for (int b = 0; b < divisorSize; b++) { // X-axis
+		for (int a = 0; a < DIVISOR_VALUE; a++) { // Y-axis
+			for (int b = 0; b < DIVISOR_VALUE; b++) { // X-axis
 				// do stuff in the partition
 				for (int c = 0; c < blockSizeY; c++) { // Y-axis
 					for (int d = 0; d < blockSizeX; d++) { // X-axis
@@ -117,15 +117,14 @@ public class ImageProcessing {
 		// BufferedImage image;
 		int width;
 		int height;
-		int divisorSize = DefaultValues.ImagePartitioning.getDivisorSize();
 		width = originalImage.getWidth();
 		height = originalImage.getHeight();
 
-		int blockSizeX = width / divisorSize;
-		int blockSizeY = height / divisorSize;
+		int blockSizeX = width / DIVISOR_VALUE;
+		int blockSizeY = height / DIVISOR_VALUE;
 
 		// Array for the average values of partitioned images
-		int[][][] partitionArrayRGB = new int[divisorSize][divisorSize][3];
+		int[][][] partitionArrayRGB = new int[DIVISOR_VALUE][DIVISOR_VALUE][3];
 
 		// Variables for iterating through the image array
 		int blockStartX = 0;
@@ -137,8 +136,8 @@ public class ImageProcessing {
 		int partitionTotalValueGreen = 0;
 		int partitionTotalValueBlue = 0;
 
-		for (int a = 0; a < divisorSize; a++) { // Y-axis
-			for (int b = 0; b < divisorSize; b++) { // X-axis
+		for (int a = 0; a < DIVISOR_VALUE; a++) { // Y-axis
+			for (int b = 0; b < DIVISOR_VALUE; b++) { // X-axis
 				// do stuff in the partition
 				for (int c = 0; c < blockSizeY; c++) { // Y-axis
 					for (int d = 0; d < blockSizeX; d++) { // X-axis
