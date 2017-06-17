@@ -101,8 +101,8 @@ public class Application {
 		for (int episode = 1; episode < 5; episode++) {
 			for (int panel = 0; panel < 482; panel++) {
 				try (Connection connection = DATA_SOURCE.getConnection()) {
-					partitionArrayRGB = FileManager
-							.parsePartitionTextOutput("dev_output/text/" + animeName + panel + fileType);
+					partitionArrayRGB = FileManager.parsePartitionTextOutput(
+							"dev_output/text/" + animeName + "_" + episode + "_" + panel + fileType);
 
 					insertScript = ScriptCreator.INSERT_INTO_imagedb_anime_rgb(animeName, episode, panel,
 							partitionArrayRGB);
