@@ -28,7 +28,7 @@ public class TextboardController {
 	 * SERVE TEXTBOARD
 	 */
 	public static Route serveTextboard_HOME = (Request request, Response response) -> {
-		Tools.println("FROM:TextboardsController.java:START:serveTextboard_HOME");
+		Tools.println("FROM:TextboardsController:START:serveTextboard_HOME");
 		Map<String, Object> model = new HashMap<>();
 		/**
 		 * 1. Get the list of boards from database 2. Populate it into an

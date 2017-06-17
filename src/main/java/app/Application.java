@@ -1,29 +1,28 @@
 package app;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import static spark.Spark.get;
+import static spark.Spark.port;
+import static spark.Spark.post;
+import static spark.Spark.staticFiles;
+import static spark.debug.DebugScreen.enableDebugScreen;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
+import app.controllers.ImageProcessingController;
+import app.controllers.RootController;
+import app.controllers.TextboardController;
 import app.util.EasyFileReader;
 import app.util.Reference;
 import app.util.ScriptCreator;
-import app.util.ViewUtil;
 import app.util.Tools;
-import app.controllers.RootController;
-import app.controllers.ImageProcessingController;
-import app.controllers.TextboardController;
-
-import static app.Application.DATA_SOURCE;
-import static spark.Spark.*;
-import static spark.debug.DebugScreen.*;
+import app.util.ViewUtil;
 
 public class Application {
 
@@ -31,7 +30,8 @@ public class Application {
 	public static HikariConfig config;
 	public static boolean devmode = true;
 
-	public static File IMAGES_INPUT_DIR, IMAGES_OTHER_DIR, IMAGES_OUTPUT_PARTITION_DIR, TEXT_OUTPUT_PARTITION_DIR;
+	public static File IMAGES_INPUT_DIR, IMAGES_OTHER_DIR, IMAGES_OUTPUT_PARTITION_DIR, TEXT_OUTPUT_PARTITION_DIR,
+			IMAGES_OUTPUT_RESIZED_DIR;
 
 	public static void main(String[] args) {
 		enableDebugScreen();
@@ -41,11 +41,13 @@ public class Application {
 
 		IMAGES_OTHER_DIR = new File("public/images/other");
 		IMAGES_OUTPUT_PARTITION_DIR = new File("public/images/output/partition");
+		IMAGES_OUTPUT_RESIZED_DIR = new File("public/images/output/resized");
 		TEXT_OUTPUT_PARTITION_DIR = new File("public/texts/output/partition");
 		IMAGES_INPUT_DIR = new File("public/images/input");
 
 		IMAGES_OTHER_DIR.mkdirs();
 		IMAGES_OUTPUT_PARTITION_DIR.mkdirs();
+		IMAGES_OUTPUT_RESIZED_DIR.mkdirs();
 		TEXT_OUTPUT_PARTITION_DIR.mkdirs();
 		IMAGES_INPUT_DIR.mkdirs();
 
@@ -82,7 +84,7 @@ public class Application {
 
 		// Set up after-filters (called after each get/post)
 		// after("*", Filters.addGzipHeader);
-		InsertTextDumpToDatabase();
+		// InsertTextDumpToDatabase();
 		System.out.println("SERVER:END");
 	}
 

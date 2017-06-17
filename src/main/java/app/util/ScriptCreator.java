@@ -3,8 +3,9 @@ package app.util;
 public class ScriptCreator {
 
 	public static String INSERT_INTO_imagedb_partition_rgb(String imagename, int[][][] partitionArrayRGB) {
-
-		String script = "INSERT INTO image_db_partition_rgb (imagename, pixel_red, pixel_green, pixel_blue) VALUES ('" + imagename + "',";
+		Tools.println("FROM:ScriptCreator:START:INSERT_INTO_imagedb_partition_rgb");
+		String script = "INSERT INTO image_db_partition_rgb (imagename, pixel_red, pixel_green, pixel_blue) VALUES ('"
+				+ imagename + "',";
 
 		/**
 		 * include values of the RGB
@@ -41,8 +42,9 @@ public class ScriptCreator {
 			}
 		}
 		script += ");";
-		Tools.println("RED:" + RGBArray[0] + "\nGREEN:" + RGBArray[1] + "\nBLUE:" + RGBArray[2]);
+		Tools.println("RED:" + RGBArray[0] + "\nGREEN:" + RGBArray[1] + "\nBLUE:" + RGBArray[2], false);
 		Tools.println(script);
+		Tools.println("END:INSERT_INTO_imagedb_partition_rgb");
 		return script;
 	}
 }

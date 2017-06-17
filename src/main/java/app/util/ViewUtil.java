@@ -1,11 +1,16 @@
 package app.util;
 
-import org.apache.velocity.app.*;
-import org.apache.velocity.app.event.implement.ReportInvalidReferences;
-import org.eclipse.jetty.http.*;
-import spark.*;
-import spark.template.velocity.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.velocity.app.VelocityEngine;
+import org.eclipse.jetty.http.HttpStatus;
+
+import spark.ModelAndView;
+import spark.Request;
+import spark.Response;
+import spark.Route;
+import spark.template.velocity.VelocityTemplateEngine;
 
 public class ViewUtil {
 

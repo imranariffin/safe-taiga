@@ -18,31 +18,24 @@ public class WriteFile {
 	}
 
 	public void writeToFile(String textLine) throws IOException {
-
+		Tools.println("FROM:WriteFile:START:writeToFile");
 		FileWriter write = new FileWriter(path, append_to_file);
 		PrintWriter print_line = new PrintWriter(write);
 
 		print_line.printf("%s", textLine);
 
 		print_line.close();
+		Tools.println("END:writeToFile");
 	}
 
-	public static void writeStringToFile(String newText, String pathFile) {
+	public static void writeStringToFile(String text, String pathFile) {
+		Tools.println("FROM:WriteFile:START:writeStringToFile");
 		WriteFile write = new WriteFile(pathFile);
 		try {
-			write.writeToFile(newText);
+			write.writeToFile(text);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public static void main(String[] args) {
-		WriteFile write = new WriteFile("test.txt");
-		try {
-			write.writeToFile("sample text");
-			write.writeToFile("another sample text");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Tools.println("END:writeStringToFile");
 	}
 }
