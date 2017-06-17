@@ -95,7 +95,7 @@ public class ImageProcessingController {
 		/**
 		 * Write to database?
 		 */
-		ScriptCreator.INSERT_INTO_imagedb_partition_rgb(filename, partitionArrayRGB);
+		ScriptCreator.INSERT_INTO_imagedb_anime_rgb(filename, 1, 2, partitionArrayRGB);
 
 		if (partitionArrayRGB == null) {
 			throw new NullPointerException("partitionArrayRGB is null");

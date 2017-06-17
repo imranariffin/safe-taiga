@@ -2,15 +2,16 @@ package app.util;
 
 public class ScriptCreator {
 
-	public static String INSERT_INTO_imagedb_partition_rgb(String imagename, int[][][] partitionArrayRGB) {
-		Tools.println("FROM:ScriptCreator:START:INSERT_INTO_imagedb_partition_rgb");
-		String script = "INSERT INTO image_db_partition_rgb (imagename, pixel_red, pixel_green, pixel_blue) VALUES ('"
-				+ imagename + "',";
+	public static String INSERT_INTO_imagedb_anime_rgb(String name, int episode, int panel,
+			int[][][] partitionArrayRGB) {
+		Tools.println("FROM:ScriptCreator:START:INSERT_INTO_imagedb_name_rgb");
+		String script = "INSERT INTO image_db_name_rgb (name, episode, panel, pixel_red, pixel_green, pixel_blue) VALUES ('"
+				+ name + "','" + Integer.toString(episode) + "', '" + Integer.toString(panel) + "', ";
 
 		/**
-		 * include values of the RGB
+		 * create string for the RGBs
 		 */
-		String[] RGBArray = new String[] { "'{", "'{", "'{" };
+		String[] RGBArray = new String[] { "{", "{", "{" };
 		for (int a = 0; a < partitionArrayRGB.length; a++) { // y-axis
 			for (int e = 0; e < 3; e++) {
 				RGBArray[e] += "{";
@@ -31,9 +32,10 @@ public class ScriptCreator {
 			}
 		}
 		for (int e = 0; e < 3; e++) {
-			RGBArray[e] += "}'";
+			RGBArray[e] += "}";
 		}
 
+		script += "'{";
 		for (int d = 0; d < partitionArrayRGB[1][1].length; d++) {
 			if (d < (partitionArrayRGB[1][1].length - 1)) {
 				script += RGBArray[d] + ", ";
@@ -41,7 +43,7 @@ public class ScriptCreator {
 				script += RGBArray[d];
 			}
 		}
-		script += ");";
+		script += "}');";
 		Tools.println("RED:" + RGBArray[0] + "\nGREEN:" + RGBArray[1] + "\nBLUE:" + RGBArray[2], false);
 		Tools.println(script);
 		Tools.println("END:INSERT_INTO_imagedb_partition_rgb");

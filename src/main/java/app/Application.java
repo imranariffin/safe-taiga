@@ -94,28 +94,31 @@ public class Application {
 	}
 
 	public static void InsertTextDumpToDatabase() {
-		String baseFilename = "idolmaster_1-";
+		String animeName = "idolmaster";
 		String fileType = ".txt";
 		String insertScript = "";
 		int[][][] partitionArrayRGB = null;
-		for (int id = 0; id < 482; id++) {
-			try (Connection connection = DATA_SOURCE.getConnection()) {
-				partitionArrayRGB = FileManager
-						.parsePartitionTextOutput("dev_output/text/" + baseFilename + id + fileType);
+		for (int episode = 1; episode < 5; episode++) {
+			for (int panel = 0; panel < 482; panel++) {
+				try (Connection connection = DATA_SOURCE.getConnection()) {
+					partitionArrayRGB = FileManager
+							.parsePartitionTextOutput("dev_output/text/" + animeName + panel + fileType);
 
-				insertScript = ScriptCreator.INSERT_INTO_imagedb_partition_rgb(baseFilename, partitionArrayRGB);
+					insertScript = ScriptCreator.INSERT_INTO_imagedb_anime_rgb(animeName, episode, panel,
+							partitionArrayRGB);
 
-				Statement stmt = connection.createStatement();
-				Tools.println("Executing script:" + insertScript);
-				stmt.executeUpdate(insertScript);
+					Statement stmt = connection.createStatement();
+					Tools.println("Executing script:" + insertScript);
+					stmt.executeUpdate(insertScript);
 
-			} catch (IOException e) {
-				Tools.println("id:" + id);
-				Tools.println(e.getMessage());
-			} catch (SQLException e) {
-				Tools.println("id:" + id);
-				Tools.println("query:" + insertScript);
-				Tools.println(e.getMessage());
+				} catch (IOException e) {
+					Tools.println("id:" + panel);
+					Tools.println(e.getMessage());
+				} catch (SQLException e) {
+					Tools.println("id:" + panel);
+					Tools.println("query:" + insertScript);
+					Tools.println(e.getMessage());
+				}
 			}
 		}
 	}
