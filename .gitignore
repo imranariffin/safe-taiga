@@ -4,4 +4,4 @@ target
 *.iml
 videos
 public
-dev_output
+dev_output/images
