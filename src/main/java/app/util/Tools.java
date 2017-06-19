@@ -46,8 +46,7 @@ public class Tools {
 		 */
 		animeMap.put("idolmaster", new AnimeObject("idolmaster", 25));
 
-		AnimeObject[] animeArray = new AnimeObject[0];
-		animeMap.entrySet().toArray(animeArray);
+		AnimeObject[] animeArray = (AnimeObject[]) animeMap.values().toArray();
 
 		String insertScript = "";
 		int[][][] partitionArrayRGB = null;
