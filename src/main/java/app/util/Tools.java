@@ -50,7 +50,7 @@ public class Tools {
 		for (int animeNumber = 0; animeNumber < animeArray.length; animeNumber++) {
 			try {
 				int[] tmpPanels = new int[animeArray[animeNumber].getNumberOfEpisodes()];
-				for (int a = 0; a < animeArray[animeNumber].getNumberOfEpisodes(); a++) {
+				for (int a = 1; a <= animeArray[animeNumber].getNumberOfEpisodes(); a++) {
 					tmpPanels[a] = Integer.valueOf(FileManager.readFile(
 							"dev_output/description/" + animeArray[animeNumber].getName() + "_" + a + ".txt"));
 				}
