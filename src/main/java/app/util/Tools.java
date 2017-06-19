@@ -11,8 +11,9 @@ import static app.Application.DATA_SOURCE;
 
 public class Tools {
 
-	private static Map<String, AnimeObject> animeMap = new HashMap<String, AnimeObject>();
-
+	// private static Map<String, AnimeObject> animeMap = new HashMap<String,
+	// AnimeObject>();
+	private static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("idolmaster", 25) };
 	public static boolean devmode = true;
 
 	public static void println(String text) {
@@ -44,9 +45,6 @@ public class Tools {
 		/**
 		 * Temporary, later we need to update this to a text instead
 		 */
-		animeMap.put("idolmaster", new AnimeObject("idolmaster", 25));
-
-		AnimeObject[] animeArray = (AnimeObject[]) animeMap.values().toArray();
 
 		String insertScript = "";
 		int[][][] partitionArrayRGB = null;
