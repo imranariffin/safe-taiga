@@ -13,7 +13,7 @@ public class Tools {
 
 	// private static Map<String, AnimeObject> animeMap = new HashMap<String,
 	// AnimeObject>();
-	private static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("idolmaster", 25) };
+	private static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("idolmaster", 25, 47) };
 	public static boolean devmode = true;
 
 	public static void println(String text) {
@@ -42,19 +42,33 @@ public class Tools {
 
 	public static void InsertTextDumpToDatabase() {
 
-		/**
-		 * Temporary, later we need to update this to a text instead
-		 */
-
 		String insertScript = "";
 		int[][][] partitionArrayRGB = null;
 
 		Tools.println("beginning to insert " + animeArray.length + " anime into the database");
 
 		for (int animeNumber = 0; animeNumber < animeArray.length; animeNumber++) {
+			try {
+				int[] tmpPanels = new int[animeArray[animeNumber].getNumberOfEpisodes()];
+				for (int a = 0; a < animeArray[animeNumber].getNumberOfEpisodes(); a++) {
+					tmpPanels[a] = Integer.valueOf(FileManager.readFile(
+							"dev_output/description/" + animeArray[animeNumber].getName() + "_" + a + ".txt"));
+				}
+
+				try {
+					animeArray[animeNumber].setPanels(tmpPanels);
+				} catch (Exception e) {
+					Tools.println("panels mistmatch");
+					Tools.println(e.getMessage());
+				}
+			} catch (IOException e) {
+				Tools.println("FAIL READING DESCRIPTION TEXT");
+				Tools.println(e.getMessage());
+			}
 			for (int episodeNumber = 1; episodeNumber <= animeArray[animeNumber]
 					.getNumberOfEpisodes(); episodeNumber++) {
-				for (int panelNumber = 0; panelNumber < animeArray[animeNumber].getNumberOfPanels(); panelNumber++) {
+				for (int panelNumber = 0; panelNumber < animeArray[animeNumber]
+						.getPanels()[episodeNumber]; panelNumber++) {
 					try (Connection connection = DATA_SOURCE.getConnection()) {
 						partitionArrayRGB = FileManager.parsePartitionTextOutput("dev_output/text/"
 								+ animeArray[animeNumber].getName() + "/" + animeArray[animeNumber].getName() + "_"

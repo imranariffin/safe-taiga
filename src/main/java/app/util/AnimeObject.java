@@ -4,7 +4,13 @@ public class AnimeObject {
 
 	private String name;
 	private int numberOfEpisodes;
-	int panel = 0;
+	int[] panels = null;
+
+	public AnimeObject(String name, int numberOfEpisodes, int numberOfPanels) {
+		this.name = name;
+		this.numberOfEpisodes = numberOfEpisodes;
+		this.panels = new int[numberOfPanels];
+	}
 
 	public AnimeObject(String name, int numberOfEpisodes) {
 		this.name = name;
@@ -19,14 +25,19 @@ public class AnimeObject {
 		return numberOfEpisodes;
 	}
 
-	public int getNumberOfPanels() {
-		if (panel == 0){
-			Tools.println("panel count for " + this.name + " is currently 0, something is wrong!");
-		}
-		return panel;
+	public int[] getPanels() {
+		return panels;
 	}
 
-	public void setNumberOfPanels(int panelCount) {
-		this.panel = panelCount;
+	public void setNumberOfPanels(int numberOfPanels) {
+		this.panels = new int[numberOfPanels];
+	}
+
+	public void setPanels(int[] givenPanels) throws Exception {
+		if (givenPanels.length != numberOfEpisodes) {
+			throw new Exception("panel count mismatch");
+		} else {
+			panels = givenPanels;
+		}
 	}
 }
