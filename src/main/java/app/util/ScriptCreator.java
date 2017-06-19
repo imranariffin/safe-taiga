@@ -4,8 +4,8 @@ public class ScriptCreator {
 
 	public static String INSERT_INTO_imagedb_anime_rgb(String name, int episode, int panel,
 			int[][][] partitionArrayRGB) {
-		Tools.println("FROM:ScriptCreator:START:INSERT_INTO_imagedb_name_rgb");
-		String script = "INSERT INTO image_db_name_rgb (name, episode, panel, pixel_red, pixel_green, pixel_blue) VALUES ('"
+		Tools.println("FROM:ScriptCreator:START:INSERT_INTO_imagedb_anime_rgb");
+		String script = "INSERT INTO imagedb_anime_rgb (name, episode, panel, pixel_rgb) VALUES ('"
 				+ name + "','" + Integer.toString(episode) + "', '" + Integer.toString(panel) + "', ";
 
 		/**
