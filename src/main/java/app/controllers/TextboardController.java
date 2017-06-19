@@ -248,7 +248,7 @@ public class TextboardController {
 	 */
 	public static Route handleCreateBoard = (Request request, Response response) -> {
 		Tools.println("FROM:TextboardController:START:handleCreateBoard");
-		Map<String, Object> model = new HashMap<>();
+		// Map<String, Object> model = new HashMap<>();
 
 		String requestedBoardLink = request.queryParams(Reference.VTLStatics.INPUT_BOARDLINK);
 		String requestedBoardName = request.queryParams(Reference.VTLStatics.INPUT_BOARDNAME);
@@ -281,7 +281,7 @@ public class TextboardController {
 	 */
 	public static Route handleCreateThread = (Request request, Response response) -> {
 		Tools.println("FROM:TextboardController:START:handleCreateBoard");
-		Map<String, Object> model = new HashMap<>();
+		// Map<String, Object> model = new HashMap<>();
 
 		String requestedThreadText = request.queryParams(Reference.VTLStatics.INPUT_THREADTEXT);
 		String currentBoard = request.params(Reference.CommonStrings.BOARDLINK);
@@ -323,7 +323,7 @@ public class TextboardController {
 	 */
 	public static Route handleCreatePost = (Request request, Response response) -> {
 		Tools.println("FROM:TextboardController:handleCreateBoardPost");
-		Map<String, Object> model = new HashMap<>();
+		// Map<String, Object> model = new HashMap<>();
 
 		String requestedPostText = request.queryParams(Reference.VTLStatics.INPUT_POSTTEXT);
 		String currentBoard = request.params(Reference.CommonStrings.BOARDLINK);

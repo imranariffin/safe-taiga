@@ -16,27 +16,46 @@ import app.util.Tools;
 import app.util.FileManager;
 
 public class CreateImageDump {
+
+	public static File DEV_OUTPUT_IMAGES_OUTPUT_PARTITION;
+
 	public static void main(String[] args) throws IOException, Exception {
 
-		for (int episode = 1; episode < 5; episode++) {
+		/**
+		 * Create required folders
+		 */
+		DEV_OUTPUT_IMAGES_OUTPUT_PARTITION = new File("dev_output/images/output/partition");
+		DEV_OUTPUT_IMAGES_OUTPUT_PARTITION.mkdirs();
+
+		for (int episode = 1; episode <= 25; episode++) {
 			String animeName = "idolmaster";
-			FFmpegFrameGrabber g = new FFmpegFrameGrabber("videos/" + animeName + "_" + episode + ".mp4");
+			FFmpegFrameGrabber g = new FFmpegFrameGrabber(
+					"videos/" + animeName + "/" + animeName + "_" + episode + ".mkv");
 			g.start();
 			Java2DFrameConverter frameConverter = new Java2DFrameConverter();
 
-			int i = 0;
-			int panel = 0;
-			String outputImageName;
-			String outputTextName;
-			BufferedImage image;
-			int[][][] partitionArrayRGB;
+			/**
+			 * Setting variables
+			 */
+			int frameSkip = 72; // determines how many frames we want to skip
+
+			/**
+			 * Iterators
+			 */
+			int i = 0; // the frame iterator
+			int panel = 0; // the panel iterator
+			int[][][] partitionArrayRGB; // int array for RGB
+			String outputImageName; // name of the output partitioned image
+			String outputTextName; // name of the output partitioned text dump
+			BufferedImage image; // the image
+
 			System.out.println("begin parsing video");
 			Frame frame;
 			while ((frame = g.grabImage()) != null) {
-				if ((i % 72) == 0) {
+				if ((i % frameSkip) == 0) {
 					image = frameConverter.getBufferedImage(frame);
-					outputImageName = "dev_output/images/output/partition/" + animeName + "_" + episode + "_" + panel
-							+ ".png";
+					outputImageName = "dev_output/images/output/partition/" + animeName + "/" + animeName + "_"
+							+ episode + "_" + panel + ".png";
 					outputTextName = "dev_output/text/" + animeName + "_" + episode + "_" + panel + ".txt";
 					partitionArrayRGB = ImageProcessing.getImageRGBPartitionValues(image);
 					ImageIO.write(ImageProcessing.partitionImage(ImageProcessing.resizeImage(image), partitionArrayRGB),

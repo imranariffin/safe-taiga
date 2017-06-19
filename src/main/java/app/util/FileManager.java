@@ -14,7 +14,6 @@ public class FileManager {
 
 		String readString = "";
 		br = new BufferedReader(new FileReader(filename));
-
 		String sCurrentLine;
 
 		while ((sCurrentLine = br.readLine()) != null) {
@@ -68,8 +67,8 @@ public class FileManager {
 			print_line.printf("%s", text);
 			print_line.close();
 		} catch (IOException e) {
-			Tools.println("FAILURE WRITING FILE" + "\n" + "pathFile" + pathFile + "\n" + "text:" + text);
-			Tools.println(e.getMessage());
+			Tools.println("FAILURE WRITING FILE" + "\n" + "pathFile:" + pathFile + "\n" + "text:" + text);
+			Tools.println("message" + e.getMessage());
 		}
 		Tools.println("END:writeStringToFile");
 	}

@@ -7,10 +7,6 @@ import static spark.Spark.staticFiles;
 import static spark.debug.DebugScreen.enableDebugScreen;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -18,9 +14,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import app.controllers.ImageProcessingController;
 import app.controllers.RootController;
 import app.controllers.TextboardController;
-import app.util.FileManager;
 import app.util.Reference;
-import app.util.ScriptCreator;
 import app.util.Tools;
 import app.util.ViewUtil;
 
@@ -28,7 +22,6 @@ public class Application {
 
 	public static HikariDataSource DATA_SOURCE;
 	public static HikariConfig config;
-	public static boolean devmode = true;
 
 	public static File IMAGES_INPUT_DIR, IMAGES_OTHER_DIR, IMAGES_OUTPUT_PARTITION_DIR, TEXT_OUTPUT_PARTITION_DIR,
 			IMAGES_OUTPUT_RESIZED_DIR;
@@ -36,13 +29,15 @@ public class Application {
 	public static void main(String[] args) {
 		enableDebugScreen();
 
-		Tools.print("SERVER:START:" + Integer.valueOf(System.getenv("PORT")));
+		int portNumber;
 		try {
-			port(Integer.valueOf(System.getenv("PORT")));
+			portNumber = Integer.valueOf(System.getenv("PORT"));
 		} catch (Exception e) {
 			Tools.println("System running locally, setting port to the default 5000");
-			port(5000);
+			portNumber = 5000;
 		}
+		Tools.println("PORT:" + portNumber);
+		port(portNumber);
 
 		IMAGES_OTHER_DIR = new File("public/images/other");
 		IMAGES_OUTPUT_PARTITION_DIR = new File("public/images/output/partition");
@@ -89,37 +84,7 @@ public class Application {
 
 		// Set up after-filters (called after each get/post)
 		// after("*", Filters.addGzipHeader);
-		InsertTextDumpToDatabase();
+		Tools.InsertTextDumpToDatabase();
 		System.out.println("SERVER:END");
-	}
-
-	public static void InsertTextDumpToDatabase() {
-		String animeName = "idolmaster";
-		String fileType = ".txt";
-		String insertScript = "";
-		int[][][] partitionArrayRGB = null;
-		for (int episode = 1; episode < 5; episode++) {
-			for (int panel = 0; panel < 482; panel++) {
-				try (Connection connection = DATA_SOURCE.getConnection()) {
-					partitionArrayRGB = FileManager.parsePartitionTextOutput(
-							"dev_output/text/" + animeName + "_" + episode + "_" + panel + fileType);
-
-					insertScript = ScriptCreator.INSERT_INTO_imagedb_anime_rgb(animeName, episode, panel,
-							partitionArrayRGB);
-
-					Statement stmt = connection.createStatement();
-					Tools.println("Executing script:" + insertScript);
-					stmt.executeUpdate(insertScript);
-
-				} catch (IOException e) {
-					Tools.println("id:" + panel);
-					Tools.println(e.getMessage());
-				} catch (SQLException e) {
-					Tools.println("id:" + panel);
-					Tools.println("query:" + insertScript);
-					Tools.println(e.getMessage());
-				}
-			}
-		}
 	}
 }
