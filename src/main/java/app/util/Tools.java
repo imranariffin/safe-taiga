@@ -65,17 +65,17 @@ public class Tools {
 				Tools.println("FAIL READING DESCRIPTION TEXT");
 				Tools.println(e.getMessage());
 			}
-			for (int episodeNumber = 1; episodeNumber <= animeArray[animeNumber]
+			for (int episodeNumber = 1; episodeNumber <= animeArray[animeNumber - 1]
 					.getNumberOfEpisodes(); episodeNumber++) {
-				for (int panelNumber = 0; panelNumber < animeArray[animeNumber]
-						.getPanels()[episodeNumber]; panelNumber++) {
+				for (int panelNumber = 0; panelNumber < animeArray[animeNumber - 1].getPanels()[episodeNumber
+						- 1]; panelNumber++) {
 					try (Connection connection = DATA_SOURCE.getConnection()) {
 						partitionArrayRGB = FileManager.parsePartitionTextOutput("dev_output/text/"
-								+ animeArray[animeNumber].getName() + "/" + animeArray[animeNumber].getName() + "_"
-								+ episodeNumber + "_" + panelNumber + ".txt");
+								+ animeArray[animeNumber - 1].getName() + "/" + animeArray[animeNumber - 1].getName()
+								+ "_" + episodeNumber + "_" + panelNumber + ".txt");
 
-						insertScript = ScriptCreator.INSERT_INTO_imagedb_anime_rgb(animeArray[animeNumber].getName(),
-								episodeNumber, panelNumber, partitionArrayRGB);
+						insertScript = ScriptCreator.INSERT_INTO_imagedb_anime_rgb(
+								animeArray[animeNumber - 1].getName(), episodeNumber, panelNumber, partitionArrayRGB);
 
 						Statement stmt = connection.createStatement();
 						Tools.println("Executing script:" + insertScript);
