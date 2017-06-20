@@ -48,9 +48,11 @@ public class Tools {
 		Tools.println("beginning to insert " + animeArray.length + " anime into the database");
 
 		for (int animeNumber = 0; animeNumber < animeArray.length; animeNumber++) {
+			Tools.println("animeNumber:" + animeNumber);
 			try {
 				int[] tmpPanels = new int[animeArray[animeNumber].getNumberOfEpisodes()];
 				for (int a = 1; a <= animeArray[animeNumber].getNumberOfEpisodes(); a++) {
+					Tools.println("a:" + a);
 					tmpPanels[a - 1] = Integer.valueOf(FileManager.readFile(
 							"dev_output/description/" + animeArray[animeNumber].getName() + "_" + a + ".txt"));
 				}
@@ -67,8 +69,11 @@ public class Tools {
 			}
 			for (int episodeNumber = 1; episodeNumber <= animeArray[animeNumber - 1]
 					.getNumberOfEpisodes(); episodeNumber++) {
+				Tools.println("episodeNumber:" + episodeNumber);
+				Tools.println("panelNumbers: ");
 				for (int panelNumber = 0; panelNumber < animeArray[animeNumber - 1].getPanels()[episodeNumber
 						- 1]; panelNumber++) {
+					Tools.print(panelNumber + " ");
 					try (Connection connection = DATA_SOURCE.getConnection()) {
 						partitionArrayRGB = FileManager.parsePartitionTextOutput("dev_output/text/"
 								+ animeArray[animeNumber - 1].getName() + "/" + animeArray[animeNumber - 1].getName()
