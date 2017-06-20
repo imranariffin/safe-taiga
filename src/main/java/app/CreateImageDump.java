@@ -70,6 +70,7 @@ public class CreateImageDump {
 				}
 				i++;
 			}
+			FileManager.writeStringToFile("" + panel, "dev_output/description/" + animeName + "_" + episode + ".txt");
 			g.stop();
 			System.out.println("end parsing video");
 		}
