@@ -83,7 +83,7 @@ public class ScriptCreator {
 				RGBArray += "}";
 			}
 		}
-		RGBArray = "}'"; // end
+		RGBArray += "}'"; // end
 
 		script += RGBArray + ");";
 		return script;
