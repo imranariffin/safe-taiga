@@ -96,4 +96,17 @@ public class Tools {
 			}
 		}
 	}
+	
+	public static String convertTripleArrayToString(int[][][] tripleArray){
+		String result = "";
+		
+		for (int a = 0; a < tripleArray.length; a++){
+			for (int b = 0; b < tripleArray[a].length; b++){
+				for (int c = 0; c < tripleArray[a][b].length; c++){
+					result += tripleArray[a][b][c] + " ";
+				}
+			}
+		}
+		return result;
+	}
 }

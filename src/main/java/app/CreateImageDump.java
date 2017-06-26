@@ -56,13 +56,12 @@ public class CreateImageDump {
 					image = frameConverter.getBufferedImage(frame);
 					outputImageName = "dev_output/images/output/partition/" + animeName + "/" + animeName + "_"
 							+ episode + "_" + panel + ".png";
-					outputTextName = "dev_output/text/" + animeName + "_" + episode + "_" + panel + ".txt";
+					outputTextName = "dev_output/text/" + animeName + "/" + animeName + "_" + episode + "_" + panel
+							+ ".txt";
 					partitionArrayRGB = ImageProcessing.getImageRGBPartitionValues(image);
 					ImageIO.write(ImageProcessing.partitionImage(ImageProcessing.resizeImage(image), partitionArrayRGB),
 							"png", new File(outputImageName));
-					FileManager.writeStringToFile(
-							ImageProcessing.getStringFromTripleArray(ImageProcessing.getImageRGBPartitionValues(image)),
-							outputTextName);
+					FileManager.writeStringToFile(Tools.convertTripleArrayToString(partitionArrayRGB), outputTextName);
 					Tools.println(outputImageName);
 					panel++;
 				} else {

@@ -60,6 +60,7 @@ public class FileManager {
 
 	public static void writeStringToFile(String text, String pathFile) {
 		Tools.println("FROM:WriteFile:START:writeStringToFile");
+		Tools.println("writing to:" + pathFile);
 		FileWriter write;
 		try {
 			write = new FileWriter(pathFile);
