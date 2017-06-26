@@ -1,6 +1,10 @@
 package app;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 import app.util.FileManager;
 import app.util.ScriptCreator;
@@ -8,7 +12,7 @@ import app.util.Tools;
 
 public class ReadFileTest {
 
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 
 		String animeName = "idolmaster";
 		String fileType = ".txt";
@@ -33,5 +37,18 @@ public class ReadFileTest {
 				}
 			}
 		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		
+		int[][][] tripleArray = new int[10][10][3];
+		for (int a = 0; a < 10; a++){
+			for (int b = 0; b < 10; b++){
+				for (int c = 0; c < 3; c++){
+					tripleArray[a][b][c] = c;
+				}
+			}
+		}
+		FileManager.writeTripleArrayToString(tripleArray, "text.txt");
 	}
 }

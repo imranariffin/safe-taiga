@@ -58,7 +58,7 @@ public class Tools {
 				try {
 					animeArray[animeNumber].setPanels(tmpPanels);
 				} catch (Exception e) {
-					Tools.println("panels mistmatch");
+					Tools.println("FAIL ASSIGNING PANEL VALUE");
 					Tools.println(e.getMessage());
 				}
 			} catch (IOException e) {
@@ -74,11 +74,11 @@ public class Tools {
 					Tools.print(panelNumber + " ");
 					try (Connection connection = DATA_SOURCE.getConnection()) {
 						partitionArrayRGB = FileManager.parsePartitionTextOutput("dev_output/text/"
-								+ animeArray[animeNumber].getName() + "/" + animeArray[animeNumber].getName()
-								+ "_" + episodeNumber + "_" + panelNumber + ".txt");
+								+ animeArray[animeNumber].getName() + "/" + animeArray[animeNumber].getName() + "_"
+								+ episodeNumber + "_" + panelNumber + ".txt");
 
-						insertScript = ScriptCreator.INSERT_INTO_imagedb_anime_rgb2(
-								animeArray[animeNumber].getName(), episodeNumber, panelNumber, partitionArrayRGB);
+						insertScript = ScriptCreator.INSERT_INTO_imagedb_anime_rgb2(animeArray[animeNumber].getName(),
+								episodeNumber, panelNumber, partitionArrayRGB);
 
 						Statement stmt = connection.createStatement();
 						Tools.println("Executing script:" + insertScript);
@@ -96,15 +96,19 @@ public class Tools {
 			}
 		}
 	}
-	
-	public static String convertTripleArrayToString(int[][][] tripleArray){
+
+	public static String convertTripleArrayToString(int[][][] tripleArray) {
 		String result = "";
-		
-		for (int a = 0; a < tripleArray.length; a++){
-			for (int b = 0; b < tripleArray[a].length; b++){
-				for (int c = 0; c < tripleArray[a][b].length; c++){
+
+		for (int a = 0; a < tripleArray.length; a++) {
+			for (int b = 0; b < tripleArray[a].length; b++) {
+				for (int c = 0; c < tripleArray[a][b].length; c++) {
 					result += tripleArray[a][b][c] + " ";
 				}
+			}
+			if (a == (tripleArray.length - 1)) {
+				System.out.println("new line");
+				result += "/n";
 			}
 		}
 		return result;

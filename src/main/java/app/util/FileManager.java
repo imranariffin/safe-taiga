@@ -1,6 +1,8 @@
 package app.util;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,17 +10,19 @@ import java.io.PrintWriter;
 
 public class FileManager {
 
-	private static BufferedReader br;
-
 	public static String readFile(String filename) throws IOException {
 
 		String readString = "";
-		br = new BufferedReader(new FileReader(filename));
+		BufferedReader br = new BufferedReader(new FileReader(filename));
 		String sCurrentLine;
 
 		while ((sCurrentLine = br.readLine()) != null) {
 			readString += sCurrentLine;
 		}
+
+		// always close file reader
+		br.close();
+
 		return readString;
 	}
 
@@ -33,10 +37,11 @@ public class FileManager {
 		int z = 0;
 		int xInt = 0; // xLong is a counter to how many integers we have
 						// iterated in the string
-		while ((currentLine = br.readLine()) != null) {
+		while ((currentLine = br.readLine()) != null) { // y-axis of text
 			Tools.println(currentLine, false);
 			char[] currentLineCharArray = currentLine.toCharArray();
-			for (int a = 0; a < currentLineCharArray.length; a++) {
+			for (int a = 0; a < currentLineCharArray.length; a++) { // x-axis of
+																	// text
 				if (currentLineCharArray[a] == ' ') {
 					z = xInt % 3;
 					partitionArrayRGB[y][x][z] = Integer.valueOf(numberString);
@@ -54,7 +59,9 @@ public class FileManager {
 			y++;
 		}
 
+		// always close file reader
 		br.close();
+
 		return partitionArrayRGB;
 	}
 
@@ -72,5 +79,35 @@ public class FileManager {
 			Tools.println("message" + e.getMessage());
 		}
 		Tools.println("END:writeStringToFile");
+	}
+
+	public static void writeTripleArrayToString(int[][][] tripleArray, String pathFile) {
+		Tools.println("FROM:WriteFile:START:writeTripleArrayToString");
+		Tools.println("writing to:" + pathFile);
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter(new File(pathFile)));
+			for (int a = 0; a < tripleArray.length; a++) {
+				for (int b = 0; b < tripleArray[a].length; b++) {
+					for (int c = 0; c < tripleArray[a][b].length; c++) {
+						writer.write(tripleArray[a][b][c] + " ");
+					}
+				}
+
+				if (a < (tripleArray.length - 1)) {
+					writer.newLine();
+				}
+			}
+		} catch (Exception e) {
+			Tools.println(e.getMessage());
+		} finally {
+			try {
+				// Close the writer regardless of what happens...
+				writer.close();
+			} catch (Exception e) {
+			}
+		}
+
+		Tools.println("END:writeTripleArrayToString");
 	}
 }

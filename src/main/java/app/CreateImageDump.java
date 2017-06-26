@@ -49,7 +49,7 @@ public class CreateImageDump {
 			String outputTextName; // name of the output partitioned text dump
 			BufferedImage image; // the image
 
-			System.out.println("begin parsing video");
+			Tools.println("begin parsing video");
 			Frame frame;
 			while ((frame = g.grabImage()) != null) {
 				if ((i % frameSkip) == 0) {
@@ -61,7 +61,7 @@ public class CreateImageDump {
 					partitionArrayRGB = ImageProcessing.getImageRGBPartitionValues(image);
 					ImageIO.write(ImageProcessing.partitionImage(ImageProcessing.resizeImage(image), partitionArrayRGB),
 							"png", new File(outputImageName));
-					FileManager.writeStringToFile(Tools.convertTripleArrayToString(partitionArrayRGB), outputTextName);
+					FileManager.writeTripleArrayToString(partitionArrayRGB, outputTextName);
 					Tools.println(outputImageName);
 					panel++;
 				} else {
@@ -71,7 +71,7 @@ public class CreateImageDump {
 			}
 			FileManager.writeStringToFile("" + panel, "dev_output/description/" + animeName + "_" + episode + ".txt");
 			g.stop();
-			System.out.println("end parsing video");
+			Tools.println("end parsing video");
 		}
 	}
 }
