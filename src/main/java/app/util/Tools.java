@@ -79,7 +79,7 @@ public class Tools {
 								+ animeArray[animeNumber].getName() + "/" + animeArray[animeNumber].getName()
 								+ "_" + episodeNumber + "_" + panelNumber + ".txt");
 
-						insertScript = ScriptCreator.INSERT_INTO_imagedb_anime_rgb(
+						insertScript = ScriptCreator.INSERT_INTO_imagedb_anime_rgb2(
 								animeArray[animeNumber].getName(), episodeNumber, panelNumber, partitionArrayRGB);
 
 						Statement stmt = connection.createStatement();
