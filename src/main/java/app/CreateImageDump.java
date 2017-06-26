@@ -27,7 +27,7 @@ public class CreateImageDump {
 		DEV_OUTPUT_IMAGES_OUTPUT_PARTITION = new File("dev_output/images/output/partition");
 		DEV_OUTPUT_IMAGES_OUTPUT_PARTITION.mkdirs();
 
-		for (int episode = 14; episode <= 25; episode++) {
+		for (int episode = 1; episode <= 25; episode++) {
 			String animeName = "idolmaster";
 			FFmpegFrameGrabber g = new FFmpegFrameGrabber(
 					"videos/" + animeName + "/" + animeName + "_" + episode + ".mkv");

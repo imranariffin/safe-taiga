@@ -181,7 +181,7 @@ public class ImageProcessing {
 		for (int a = 0; a < tripleArray.length; a++) { // Y-axis
 			for (int b = 0; b < tripleArray[a].length; b++) { // X-axis
 				for (int c = 0; c < tripleArray[a][b].length; c++) {
-					outputText += tripleArray[b][a][0] + " ";
+					outputText += tripleArray[b][a][c] + " ";
 				}
 			}
 			outputText += "\n";
