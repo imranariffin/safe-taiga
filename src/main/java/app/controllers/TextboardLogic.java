@@ -1,7 +1,5 @@
 package app.controllers;
 
-import static app.Application.DATA_SOURCE;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -16,7 +14,7 @@ public class TextboardLogic {
 		final String SCRIPT_SELECT_GIVEN_BOARDLINK = "SELECT * FROM boards WHERE boardlink = '" + boardlink + "';";
 		Tools.println("SCRIPT_SELECT_GIVEN_BOARDLINK:" + SCRIPT_SELECT_GIVEN_BOARDLINK);
 
-		try (Connection connection = DATA_SOURCE.getConnection()) {
+		try (Connection connection = app.Application.getConnection()) {
 
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(SCRIPT_SELECT_GIVEN_BOARDLINK);

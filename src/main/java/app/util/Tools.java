@@ -1,11 +1,10 @@
 package app.util;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import static app.Application.DATA_SOURCE;
 
 public class Tools {
 
@@ -72,7 +71,7 @@ public class Tools {
 				for (int panelNumber = 0; panelNumber < animeArray[animeNumber].getPanels()[episodeNumber
 						- 1]; panelNumber++) {
 					Tools.print(panelNumber + " ");
-					try (Connection connection = DATA_SOURCE.getConnection()) {
+					try (Connection connection = app.Application.getConnection()) {
 
 						Statement stmt = connection.createStatement();
 						/**
@@ -98,6 +97,9 @@ public class Tools {
 						Tools.println("id:" + panelNumber);
 						Tools.println("query:" + insertScript);
 						Tools.println(e.getMessage());
+					} catch (URISyntaxException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
 				}
 			}

@@ -1,7 +1,5 @@
 package app.controllers;
 
-import static app.Application.DATA_SOURCE;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -37,7 +35,7 @@ public class TextboardController {
 		 */
 		@SuppressWarnings("rawtypes")
 		ArrayList<Map> arrayOfBoardsFromDatabase = new ArrayList<Map>();
-		try (Connection connection = DATA_SOURCE.getConnection()) {
+		try (Connection connection = app.Application.getConnection()) {
 
 			Statement stmt = connection.createStatement();
 
@@ -111,7 +109,7 @@ public class TextboardController {
 		@SuppressWarnings("rawtypes")
 		ArrayList<Map> arrayOfThreadsFromDatabase = new ArrayList<Map>();
 
-		try (Connection connection = DATA_SOURCE.getConnection()) {
+		try (Connection connection = app.Application.getConnection()) {
 
 			Statement stmt = connection.createStatement();
 
@@ -185,7 +183,7 @@ public class TextboardController {
 		ArrayList<Map> arrayOfPostsFromDatabase = new ArrayList<Map>();
 		String threadtext = "NULL_THREADTEXT_DOES_NOT_EXIST";
 
-		try (Connection connection = DATA_SOURCE.getConnection()) {
+		try (Connection connection = app.Application.getConnection()) {
 
 			Statement stmt = connection.createStatement();
 
@@ -262,7 +260,7 @@ public class TextboardController {
 		if (TextboardLogic.checkIfBoardIsAvailable(requestedBoardLink)) {
 			Tools.println("The requested boardlink:" + requestedBoardLink + " is available!");
 
-			try (Connection connection = DATA_SOURCE.getConnection()) {
+			try (Connection connection = app.Application.getConnection()) {
 				Statement stmt = connection.createStatement();
 
 				/**
@@ -305,7 +303,7 @@ public class TextboardController {
 		if (TextboardLogic.checkIfTextIsAcceptable(requestedThreadText)) {
 			Tools.println("The requested thread with post:" + requestedThreadText + " is acceptable!");
 
-			try (Connection connection = DATA_SOURCE.getConnection()) {
+			try (Connection connection = app.Application.getConnection()) {
 				Statement stmt = connection.createStatement();
 
 				/**
@@ -351,7 +349,7 @@ public class TextboardController {
 		if (TextboardLogic.checkIfTextIsAcceptable(requestedPostText)) {
 			Tools.println("The requested thread with post:" + requestedPostText + " is acceptable!");
 
-			try (Connection connection = DATA_SOURCE.getConnection()) {
+			try (Connection connection = app.Application.getConnection()) {
 				Statement stmt = connection.createStatement();
 
 				/**
