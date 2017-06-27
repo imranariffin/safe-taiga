@@ -25,7 +25,6 @@ import app.util.ViewUtil;
 
 public class Application {
 
-	public static Connection DATA_SOURCE;
 	// public static HikariConfig config;
 
 	public static File IMAGES_INPUT_DIR, IMAGES_OTHER_DIR, IMAGES_OUTPUT_PARTITION_DIR, TEXT_OUTPUT_PARTITION_DIR,
@@ -58,20 +57,6 @@ public class Application {
 
 		staticFiles.externalLocation("public");
 		staticFiles.expireTime(600L);
-
-		try {
-			URI dbUri = new URI(System.getenv("HEROKU_POSTGRESQL_BLUE_URL"));
-
-			String username = dbUri.getUserInfo().split(":")[0];
-			String password = dbUri.getUserInfo().split(":")[1];
-			String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
-			DATA_SOURCE = DriverManager.getConnection(dbUrl, username, password);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			Tools.println(e.getMessage());
-		} catch (URISyntaxException e) {
-			Tools.println(e.getMessage());
-		}
 
 		/**
 		 * config = new HikariConfig();
@@ -110,7 +95,7 @@ public class Application {
 	}
 
 	public static Connection getConnection() throws URISyntaxException, SQLException {
-		URI dbUri = new URI(System.getenv("DATABASE_URL"));
+		URI dbUri = new URI(System.getenv("HEROKU_POSTGRESQL_BLUE_URL"));
 
 		String username = dbUri.getUserInfo().split(":")[0];
 		String password = dbUri.getUserInfo().split(":")[1];
