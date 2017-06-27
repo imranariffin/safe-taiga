@@ -73,6 +73,14 @@ public class Tools {
 						- 1]; panelNumber++) {
 					Tools.print(panelNumber + " ");
 					try (Connection connection = DATA_SOURCE.getConnection()) {
+
+						Statement stmt = connection.createStatement();
+						/**
+						 * Create imagedb_anime_rgb table if not exist
+						 */
+						Tools.println("Execute script:" + ScriptCreator.CREATE_IMAGEDB);
+						stmt.executeUpdate(ScriptCreator.CREATE_IMAGEDB);
+
 						partitionArrayRGB = FileManager.parsePartitionTextOutput("dev_output/text/"
 								+ animeArray[animeNumber].getName() + "/" + animeArray[animeNumber].getName() + "_"
 								+ episodeNumber + "_" + panelNumber + ".txt");
@@ -80,7 +88,6 @@ public class Tools {
 						insertScript = ScriptCreator.INSERT_INTO_imagedb_anime_rgb2(animeArray[animeNumber].getName(),
 								episodeNumber, panelNumber, partitionArrayRGB);
 
-						Statement stmt = connection.createStatement();
 						Tools.println("Executing script:" + insertScript);
 						stmt.executeUpdate(insertScript);
 

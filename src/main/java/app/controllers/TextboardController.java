@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import app.util.Reference;
+import app.util.ScriptCreator;
 import app.util.ViewUtil;
 import app.util.Tools;
 
@@ -41,12 +42,12 @@ public class TextboardController {
 			Statement stmt = connection.createStatement();
 
 			// If the table does not exist for whatever reason, create them
-			Tools.println("Executing script:" + Reference.CommonStrings.SCRIPT_CREATE_BOARDS);
-			stmt.executeUpdate(Reference.CommonStrings.SCRIPT_CREATE_BOARDS);
+			Tools.println("Executing script:" + ScriptCreator.CREATE_BOARDS);
+			stmt.executeUpdate(ScriptCreator.CREATE_BOARDS);
 
 			// Just a simple SELECT ALL script
-			Tools.println("Executing script:" + Reference.CommonStrings.SCRIPT_SELECT_BOARDS);
-			ResultSet rs = stmt.executeQuery(Reference.CommonStrings.SCRIPT_SELECT_BOARDS);
+			Tools.println("Executing script:" + ScriptCreator.SELECT_ALL_FROM_BOARDS);
+			ResultSet rs = stmt.executeQuery(ScriptCreator.SELECT_ALL_FROM_BOARDS);
 
 			while (rs.next()) {
 				Map<String, String> board = new HashMap<String, String>();
@@ -109,19 +110,20 @@ public class TextboardController {
 		// Prepare arraylist for output from database
 		@SuppressWarnings("rawtypes")
 		ArrayList<Map> arrayOfThreadsFromDatabase = new ArrayList<Map>();
-		final String SCRIPT_SELECT_BOARD_THREAD = "SELECT * FROM threads AS thread WHERE thread.boardlink = '"
-				+ boardlink + "';";
+
 		try (Connection connection = DATA_SOURCE.getConnection()) {
 
 			Statement stmt = connection.createStatement();
 
-			// Create table if it does not exist
-			Tools.println("Executing script:" + Reference.CommonStrings.SCRIPT_CREATE_THREADS);
-			stmt.executeUpdate(Reference.CommonStrings.SCRIPT_CREATE_THREADS);
+			/**
+			 * Create threads if not exist
+			 */
+			Tools.println("Executing script:" + ScriptCreator.CREATE_THREADS);
+			stmt.executeUpdate(ScriptCreator.CREATE_THREADS);
 
 			// Select all thread based on the given boardlink
-			Tools.println("Executing script:" + SCRIPT_SELECT_BOARD_THREAD);
-			ResultSet rs = stmt.executeQuery(SCRIPT_SELECT_BOARD_THREAD);
+			Tools.println("Executing script:" + ScriptCreator.selectAllThreadFromThreadsGivenBoardLink(boardlink));
+			ResultSet rs = stmt.executeQuery(ScriptCreator.selectAllThreadFromThreadsGivenBoardLink(boardlink));
 			// this is how you get a column given the colum name in string
 			while (rs.next()) {
 				// Prepare the map for threadid
@@ -182,27 +184,30 @@ public class TextboardController {
 		@SuppressWarnings("rawtypes")
 		ArrayList<Map> arrayOfPostsFromDatabase = new ArrayList<Map>();
 		String threadtext = "NULL_THREADTEXT_DOES_NOT_EXIST";
-		final String SCRIPT_SELECT_BOARD_THREAD_POST = "SELECT * FROM posts AS post WHERE post.threadid ='" + threadid
-				+ "';";
+
 		try (Connection connection = DATA_SOURCE.getConnection()) {
 
 			Statement stmt = connection.createStatement();
 
-			// Create table if it does not exist
-			Tools.println("Executing script:" + Reference.CommonStrings.SCRIPT_CREATE_POSTS);
-			stmt.executeUpdate(Reference.CommonStrings.SCRIPT_CREATE_POSTS);
+			/**
+			 * Create posts table if not exist
+			 */
+			Tools.println("Executing script:" + ScriptCreator.CREATE_POSTS);
+			stmt.executeUpdate(ScriptCreator.CREATE_POSTS);
 
-			// Get the threadtext from the database
-			Tools.println("Executing script:" + Reference.CommonStrings.getSCRIPT_GET_THREADTEXT_BY_ID(threadid));
-			ResultSet rs = stmt.executeQuery(Reference.CommonStrings.getSCRIPT_GET_THREADTEXT_BY_ID(threadid));
+			/**
+			 * Get threadtext from the table
+			 */
+			Tools.println("Executing script:" + ScriptCreator.selectThreadFromThreadsGivenThreadid(threadid));
+			ResultSet rs = stmt.executeQuery(ScriptCreator.selectThreadFromThreadsGivenThreadid(threadid));
 			rs.next();
 			threadtext = rs.getString(Reference.CommonStrings.THREADTEXT);
 			model.put(Reference.CommonStrings.THREADID, threadid);
 			model.put(Reference.CommonStrings.THREADTEXT, threadtext);
 
 			// Select all thread based on the given boardlink
-			Tools.println("Executing script:" + SCRIPT_SELECT_BOARD_THREAD_POST);
-			rs = stmt.executeQuery(SCRIPT_SELECT_BOARD_THREAD_POST);
+			Tools.println("Executing script:" + ScriptCreator.selectAllPostFromPostsGivenThreadId(threadid));
+			rs = stmt.executeQuery(ScriptCreator.selectAllPostFromPostsGivenThreadId(threadid));
 
 			while (rs.next()) {
 				Map<String, String> post = new HashMap<String, String>();
@@ -260,7 +265,14 @@ public class TextboardController {
 			try (Connection connection = DATA_SOURCE.getConnection()) {
 				Statement stmt = connection.createStatement();
 
-				// Execute insertion into database
+				/**
+				 * Create boards table if not exist
+				 */
+				stmt.executeUpdate(ScriptCreator.CREATE_BOARDS);
+
+				/**
+				 * Insert value into the table
+				 */
 				final String SCRIPT_INSERT_BOARD = "INSERT INTO boards (boardlink, boardname, boarddescription) VALUES ('"
 						+ requestedBoardLink + "', '" + requestedBoardName + "', '" + requestedBoardDescription + "');";
 				Tools.println("SCRIPT_INSERT_BOARD:" + SCRIPT_INSERT_BOARD);
@@ -296,9 +308,11 @@ public class TextboardController {
 			try (Connection connection = DATA_SOURCE.getConnection()) {
 				Statement stmt = connection.createStatement();
 
-				// Create threads table if not exist
-				stmt.executeUpdate(Reference.CommonStrings.SCRIPT_CREATE_THREADS);
-				Tools.println("Executing script:" + Reference.CommonStrings.SCRIPT_CREATE_THREADS);
+				/**
+				 * Create threads table if not exist
+				 */
+				stmt.executeUpdate(ScriptCreator.CREATE_THREADS);
+				Tools.println("Executing script:" + ScriptCreator.CREATE_THREADS);
 
 				// Create a new thread instance in the threads table
 				final String SCRIPT_INSERT_THREAD = "INSERT INTO threads (boardlink, threadtext) VALUES ('"
@@ -340,9 +354,11 @@ public class TextboardController {
 			try (Connection connection = DATA_SOURCE.getConnection()) {
 				Statement stmt = connection.createStatement();
 
-				// Create threads table if not exist
-				stmt.executeUpdate(Reference.CommonStrings.SCRIPT_CREATE_THREADS);
-				Tools.println("Executing script:" + Reference.CommonStrings.SCRIPT_CREATE_THREADS);
+				/**
+				 * Create threads table if not exist
+				 */
+				stmt.executeUpdate(ScriptCreator.CREATE_THREADS);
+				Tools.println("Executing script:" + ScriptCreator.CREATE_THREADS);
 
 				// Create a new thread instance in the threads table
 				final String SCRIPT_INSERT_POST = "INSERT INTO posts (threadid, posttext) VALUES ('" + currentThread
