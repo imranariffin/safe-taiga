@@ -55,7 +55,7 @@ public class Application {
 		staticFiles.expireTime(600L);
 
 		config = new HikariConfig();
-		config.setJdbcUrl(System.getenv("JDBC_DATABASE_URL"));
+		config.setJdbcUrl(System.getenv("HEROKU_POSTGRESQL_BLUE_URL"));
 		DATA_SOURCE = (config.getJdbcUrl() != null) ? new HikariDataSource(config) : new HikariDataSource();
 
 		// Set up before-filters (called before each get/post)
