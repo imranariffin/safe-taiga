@@ -60,7 +60,7 @@ public class Application {
 		staticFiles.expireTime(600L);
 
 		try {
-			URI dbUri = new URI(System.getenv("DATABASE_URL"));
+			URI dbUri = new URI(System.getenv("HEROKU_POSTGRESQL_BLUE_URL"));
 
 			String username = dbUri.getUserInfo().split(":")[0];
 			String password = dbUri.getUserInfo().split(":")[1];
