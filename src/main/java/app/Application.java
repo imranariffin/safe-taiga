@@ -95,12 +95,24 @@ public class Application {
 	}
 
 	public static Connection getConnection() throws URISyntaxException, SQLException {
-		URI dbUri = new URI(System.getenv("HEROKU_POSTGRESQL_BLUE_URL"));
+		String username, password, dbUrl;
 
-		String username = dbUri.getUserInfo().split(":")[0];
-		String password = dbUri.getUserInfo().split(":")[1];
-		String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
+		if (System.getenv("HEROKU_POSTGRESQL_BLUE_URL") != null) {
 
+			/**
+			 * If .env file is not provided, try to use a local psql database
+			 * instead
+			 */
+			URI dbUri = new URI(System.getenv("HEROKU_POSTGRESQL_BLUE_URL"));
+			username = dbUri.getUserInfo().split(":")[0];
+			password = dbUri.getUserInfo().split(":")[1];
+			dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
+			System.out.println("dbUrl:" + dbUrl);
+		} else {
+			dbUrl = "jdbc:postgresql://" + "localhost" + ":" + "5432" + "";
+			username = "postgres";
+			password = "5771";
+		}
 		return DriverManager.getConnection(dbUrl, username, password);
 	}
 
