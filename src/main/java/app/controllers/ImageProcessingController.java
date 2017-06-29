@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +33,7 @@ import spark.Route;
 public class ImageProcessingController {
 
 	public static Route serveImageUpload = (Request request, Response response) -> {
-		Tools.println("FROM:ImageProcessingController:START:serveImageUpload");
+		Tools.println("\nFROM:ImageProcessingController:START:serveImageUpload");
 		Map<String, Object> model = new HashMap<String, Object>();
 		Tools.println("END:serveImageUpload");
 		model.put("imagefile", "/images/other/image_placeholder.jpg");
@@ -42,7 +44,7 @@ public class ImageProcessingController {
 
 	public static Route handleImageUpload = (Request request, Response response) -> {
 		Map<String, Object> model = new HashMap<String, Object>();
-		Tools.println("FROM:ImageProcessingController:START:handleImageUpload");
+		Tools.println("\nFROM:ImageProcessingController:START:handleImageUpload");
 
 		Path tempFile = Files.createTempFile(IMAGES_INPUT_DIR.toPath(), "", ".png");
 
@@ -50,6 +52,10 @@ public class ImageProcessingController {
 
 		try (InputStream input = request.raw().getPart("uploaded_file").getInputStream()) {
 			Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
+		} catch (Exception e){
+			e.printStackTrace();
+			return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.LINK_IMAGEPROCESSING,
+					Reference.CommonStrings.NAME_IMAGEPROCESSING);
 		}
 
 		/**
@@ -93,9 +99,31 @@ public class ImageProcessingController {
 		FileManager.writeStringToFile(ImageProcessing.getStringFromTripleArray(partitionArrayRGB), outputTextDir);
 
 		/**
-		 * Write to database?
+		 * Insert into database
 		 */
-		ScriptCreator.INSERT_INTO_imagedb_anime_rgb(filename, 1, 2, partitionArrayRGB);
+
+		try (Connection connection = app.Application.getConnection()) {
+
+			Statement stmt = connection.createStatement();
+
+			/**
+			 * Create image database if not exist
+			 */
+			Tools.println("Executing script:" + ScriptCreator.CREATE_IMAGEDB_USER_IMAGE_REQUEST);
+			stmt.executeUpdate(ScriptCreator.CREATE_IMAGEDB_USER_IMAGE_REQUEST);
+
+			/**
+			 * Insert into database the image data sent by user
+			 */
+			String insertIntoImageDbUserImageRequest = ScriptCreator.insertIntoImageDbUserImageRequest(request.ip(),
+					partitionArrayRGB);
+			Tools.println("Executing script:" + insertIntoImageDbUserImageRequest);
+			stmt.executeUpdate(insertIntoImageDbUserImageRequest);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.LINK_IMAGEPROCESSING,
+					Reference.CommonStrings.NAME_IMAGEPROCESSING);
+		}
 
 		if (partitionArrayRGB == null) {
 			throw new NullPointerException("partitionArrayRGB is null");
@@ -105,12 +133,12 @@ public class ImageProcessingController {
 		model.put("imagefile", outputPartitionedImage.substring(7, outputPartitionedImage.length())); // remove
 																										// 'public/'
 		model.put("imagemessage", "partitioned image");
-		Tools.println("END:handleImageUpload");
+		Tools.println("END:handleImageUpload\n");
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD,
-				Reference.CommonStrings.IMAGEPROCESSING_NAME, "OK");
+				Reference.CommonStrings.NAME_IMAGEPROCESSING, "OK");
 	};
 
-	public static String getTrueFileName(String givenFileName) {
+	public static String printTrueFileName(String givenFileName) {
 		Tools.print("");
 		for (int a = givenFileName.length(); a > 0; a--) {
 			Tools.print(givenFileName.charAt(a) + "");

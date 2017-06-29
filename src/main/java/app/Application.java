@@ -13,9 +13,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
 import app.controllers.ImageProcessingController;
 import app.controllers.RootController;
 import app.controllers.TextboardController;
@@ -26,7 +23,6 @@ import app.util.ViewUtil;
 public class Application {
 
 	// public static HikariConfig config;
-
 	public static File IMAGES_INPUT_DIR, IMAGES_OTHER_DIR, IMAGES_OUTPUT_PARTITION_DIR, TEXT_OUTPUT_PARTITION_DIR,
 			IMAGES_OUTPUT_RESIZED_DIR;
 
@@ -59,15 +55,6 @@ public class Application {
 		staticFiles.expireTime(600L);
 
 		/**
-		 * config = new HikariConfig();
-		 * config.setJdbcUrl(System.getenv("HEROKU_POSTGRESQL_BLUE_URL"));
-		 * DATA_SOURCE = (config.getJdbcUrl() != null) ? new
-		 * HikariDataSource(config) : new HikariDataSource();
-		 */
-		// Set up before-filters (called before each get/post)
-		// before("*", Filters.addTrailingSlashes);
-
-		/**
 		 * GET ROUTES
 		 */
 		get(Reference.Web.ROOT, RootController.serveRootPage);
@@ -88,9 +75,6 @@ public class Application {
 		 */
 		get("*", ViewUtil.notFound);
 
-		// Set up after-filters (called after each get/post)
-		// after("*", Filters.addGzipHeader);
-		Tools.InsertTextDumpToDatabase();
 		System.out.println("SERVER:END");
 	}
 
@@ -109,7 +93,7 @@ public class Application {
 			dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
 			System.out.println("dbUrl:" + dbUrl);
 		} else {
-			dbUrl = "jdbc:postgresql://" + "localhost" + ":" + "5432" + "";
+			dbUrl = "jdbc:postgresql://" + "localhost" + ":" + "5432" + "/postgres";
 			username = "postgres";
 			password = "5771";
 		}

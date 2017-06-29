@@ -37,6 +37,47 @@ public class Tools {
 		}
 	}
 
+	public static String convertTripleArrayToString(int[][][] tripleArray) {
+		/**
+		 * create string for the RGBs
+		 */
+		String finalString = "";
+		String[] RGBArray = new String[] { "{", "{", "{" };
+		for (int a = 0; a < tripleArray.length; a++) { // y-axis
+			for (int e = 0; e < 3; e++) {
+				RGBArray[e] += "{";
+			}
+			for (int b = 0; b < tripleArray[a].length; b++) { // x-axis
+				for (int c = 0; c < tripleArray[a][b].length; c++) {
+					RGBArray[c] += tripleArray[a][b][c];
+					if (b < (tripleArray[a].length - 1)) {
+						RGBArray[c] += ",";
+					} else {
+						if (a < (tripleArray.length - 1)) {
+							RGBArray[c] += "},";
+						} else {
+							RGBArray[c] += "}";
+						}
+					}
+				}
+			}
+		}
+		for (int e = 0; e < 3; e++) {
+			RGBArray[e] += "}";
+		}
+
+		finalString += "'{";
+		for (int d = 0; d < tripleArray[1][1].length; d++) {
+			if (d < (tripleArray[1][1].length - 1)) {
+				finalString += RGBArray[d] + ", ";
+			} else {
+				finalString += RGBArray[d];
+			}
+		}
+		finalString += "}'";
+		return finalString;
+	}
+
 	public static void InsertTextDumpToDatabase() {
 
 		String insertScript = "";
@@ -83,7 +124,7 @@ public class Tools {
 								+ animeArray[animeNumber].getName() + "/" + animeArray[animeNumber].getName() + "_"
 								+ episodeNumber + "_" + panelNumber + ".txt");
 
-						insertScript = ScriptCreator.INSERT_INTO_imagedb_anime_rgb2(animeArray[animeNumber].getName(),
+						insertScript = ScriptCreator.insertIntoImagedbAnimeRgb(animeArray[animeNumber].getName(),
 								episodeNumber, panelNumber, partitionArrayRGB);
 
 						Tools.println("Executing script:" + insertScript);
@@ -103,22 +144,5 @@ public class Tools {
 				}
 			}
 		}
-	}
-
-	public static String convertTripleArrayToString(int[][][] tripleArray) {
-		String result = "";
-
-		for (int a = 0; a < tripleArray.length; a++) {
-			for (int b = 0; b < tripleArray[a].length; b++) {
-				for (int c = 0; c < tripleArray[a][b].length; c++) {
-					result += tripleArray[a][b][c] + " ";
-				}
-			}
-			if (a == (tripleArray.length - 1)) {
-				System.out.println("new line");
-				result += "/n";
-			}
-		}
-		return result;
 	}
 }

@@ -1,10 +1,6 @@
 package app;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 
 import app.util.FileManager;
 import app.util.ScriptCreator;
@@ -24,7 +20,7 @@ public class ReadFileTest {
 					partitionArrayRGB = FileManager.parsePartitionTextOutput(
 							"dev_output/text/" + animeName + "_" + episode + "_" + panel + fileType);
 
-					insertScript = ScriptCreator.INSERT_INTO_imagedb_anime_rgb(animeName, episode, panel,
+					insertScript = ScriptCreator.insertIntoImagedbAnimeRgb(animeName, episode, panel,
 							partitionArrayRGB);
 
 					// Statement stmt = connection.createStatement();
@@ -32,8 +28,8 @@ public class ReadFileTest {
 					// stmt.executeUpdate(insertScript);
 
 				} catch (IOException e) {
+					e.printStackTrace();
 					Tools.println("id:" + panel);
-					Tools.println(e.getMessage());
 				}
 			}
 		}

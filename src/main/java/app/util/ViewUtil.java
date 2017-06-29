@@ -22,17 +22,17 @@ public class ViewUtil {
 			String message) {
 
 		// Basic links that are not dynamic like :boardlink or :threadid
-		model.put(Reference.VTLStatics.ROOT_LINK, Reference.Web.ROOT);
-		model.put(Reference.VTLStatics.ROOT_NAME, Reference.CommonStrings.ROOT_NAME);
+		model.put(Reference.VTL.ROOT_LINK, Reference.Web.ROOT);
+		model.put(Reference.VTL.ROOT_NAME, Reference.CommonStrings.NAME_ROOT);
 
-		model.put(Reference.VTLStatics.TEXTBOARD_LINK, Reference.Web.TEXTBOARD);
-		model.put(Reference.VTLStatics.TEXTBOARD_NAME, Reference.CommonStrings.TEXTBOARD_NAME);
+		model.put(Reference.VTL.TEXTBOARD_LINK, Reference.Web.TEXTBOARD);
+		model.put(Reference.VTL.TEXTBOARD_NAME, Reference.CommonStrings.NAME_TEXTBOARD);
 
-		model.put(Reference.VTLStatics.IMAGEPROCESSING_LINK, Reference.Web.IMAGEPROCESSING);
-		model.put(Reference.VTLStatics.IMAGEPROCESSING_NAME, Reference.CommonStrings.IMAGEPROCESSING_NAME);
+		model.put(Reference.VTL.IMAGEPROCESSING_LINK, Reference.Web.IMAGEPROCESSING);
+		model.put(Reference.VTL.IMAGEPROCESSING_NAME, Reference.CommonStrings.NAME_IMAGEPROCESSING);
 
-		model.put(Reference.VTLStatics.WHERE_NAME, where);
-		model.put(Reference.VTLStatics.WHERE_TEXT, message);
+		model.put(Reference.VTL.WHERE_NAME, where);
+		model.put(Reference.VTL.WHERE_TEXT, message);
 		return strictVelocityEngine().render(new ModelAndView(model, templatePath));
 	}
 

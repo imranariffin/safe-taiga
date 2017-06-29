@@ -32,9 +32,9 @@ public class Reference {
 
 	public static class CommonStrings {
 
-		public final static String ROOT_NAME = "ROOT";
-		public final static String TEXTBOARD_NAME = "Textboard";
-		public final static String IMAGEPROCESSING_NAME = "Image Processing";
+		public final static String NAME_ROOT = "ROOT";
+		public final static String NAME_TEXTBOARD = "Textboard";
+		public final static String NAME_IMAGEPROCESSING = "Image Processing";
 
 		/**
 		 * ERROR HANDLER VOCABULARIES <a href="$RETURN_LINK">$RETURN_NAME</a>
@@ -58,19 +58,20 @@ public class Reference {
 		/**
 		 * PATHS CONSTANTS
 		 */
-		public final static String ROOTLINK = "/";
-		public final static String TEXTBOARDLINK = "/textboard/";
+		public final static String LINK_ROOT = "/";
+		public final static String LINK_TEXTBOARD = "/textboard/";
+		public final static String LINK_IMAGEPROCESSING = "imageprocessing";
 
 		public static String getPREVIOUSBOARDLINK(String previousBoardLink) {
-			return TEXTBOARDLINK + previousBoardLink + "/";
+			return LINK_TEXTBOARD + previousBoardLink + "/";
 		}
 
 		public static String getPREVIOUSTHREAD(String previousBoardLink, String previousThreadId) {
-			return TEXTBOARDLINK + previousBoardLink + "/" + previousThreadId + "/";
+			return LINK_TEXTBOARD + previousBoardLink + "/" + previousThreadId + "/";
 		}
 	}
 
-	public static class VTLStatics {
+	public static class VTL {
 		public final static String ROOT_LINK = "ROOT_LINK";
 		public final static String ROOT_NAME = "ROOT_NAME";
 		public final static String TEXTBOARD_LINK = "TEXTBOARD_LINK";
@@ -89,5 +90,9 @@ public class Reference {
 		public final static String INPUT_THREADTEXT = "INPUT_THREADTEXT";
 		public final static String INPUT_POSTTEXT = "INPUT_POSTTEXT";
 
+	}
+	
+	public static class Error {
+		
 	}
 }
