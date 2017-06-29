@@ -96,7 +96,7 @@ public class Tools {
 						Tools.println("id:" + panelNumber);
 						Tools.println("query:" + insertScript);
 						Tools.println(e.getMessage());
-					} catch (URISyntaxException e1) {
+					} catch (URISyntaxException e) {
 						Tools.println("id:" + panelNumber);
 						Tools.println(e.getMessage());
 					}
