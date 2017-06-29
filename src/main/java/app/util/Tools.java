@@ -145,4 +145,27 @@ public class Tools {
 			}
 		}
 	}
+
+	public static String selectAverageOfImageDb() {
+
+		String selectString = "SELECT ";
+		for (int a = 1; a <= 10; a++) {
+			for (int b = 1; b <= 10; b++) {
+				for (int c = 1; c <= 3; c++) {
+					selectString += "AVG(pixel_rgb[" + a + "][ " + b + "][" + c + "]) AS \"" + a + ":" + b + ":" + c
+							+ "\"";
+					if (a == 10 && b == 10 && c == 3) {
+						selectString += "";
+					} else {
+						selectString += ", ";
+					}
+				}
+			}
+		}
+
+		selectString += " FROM imagedb_anime_rgb;";
+		Tools.println(selectString);
+
+		return selectString;
+	}
 }

@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class ImageProcessingController {
 
 		try (InputStream input = request.raw().getPart("uploaded_file").getInputStream()) {
 			Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
-		} catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.LINK_IMAGEPROCESSING,
 					Reference.CommonStrings.NAME_IMAGEPROCESSING);
@@ -119,6 +120,18 @@ public class ImageProcessingController {
 					partitionArrayRGB);
 			Tools.println("Executing script:" + insertIntoImageDbUserImageRequest);
 			stmt.executeUpdate(insertIntoImageDbUserImageRequest);
+
+			ResultSet rs = stmt.executeQuery(Tools.selectAverageOfImageDb());
+			Tools.println(rs.toString());
+			rs.next();
+			for (int a = 1; a <= 10; a++){
+				for (int b = 1; b <= 10; b++){
+					for (int c = 1; c <= 3; c++){
+						Tools.print(rs.getString("" + a  + ":" + b + ":" + c) + " ");
+					}
+					Tools.println("");
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.LINK_IMAGEPROCESSING,

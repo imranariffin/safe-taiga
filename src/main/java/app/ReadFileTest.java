@@ -35,16 +35,38 @@ public class ReadFileTest {
 		}
 	}
 
-	public static void main(String[] args) throws Exception {
-		
+	public static void main3(String[] args) throws Exception {
+
 		int[][][] tripleArray = new int[10][10][3];
-		for (int a = 0; a < 10; a++){
-			for (int b = 0; b < 10; b++){
-				for (int c = 0; c < 3; c++){
+		for (int a = 0; a < 10; a++) {
+			for (int b = 0; b < 10; b++) {
+				for (int c = 0; c < 3; c++) {
 					tripleArray[a][b][c] = c;
 				}
 			}
 		}
 		FileManager.writeTripleArrayToString(tripleArray, "text.txt");
 	}
+
+	public static void main(String[] args) {
+
+		String selectString = "SELECT ";
+		for (int a = 1; a <= 10; a++) {
+			for (int b = 1; b <= 10; b++) {
+				for (int c = 1; c <= 3; c++) {
+					selectString += "AVG(pixel_rgb[" + a + "][ " + b + "][" + c + "]) AS \"" + a + ":" + b + ":" + c
+							+ "\"";
+					if (a == 10 && b == 10 && c == 3) {
+						selectString += "";
+					} else {
+						selectString += ", ";
+					}
+				}
+			}
+		}
+
+		selectString += " FROM imagedb_anime_rgb;";
+		Tools.println(selectString);
+	}
+
 }

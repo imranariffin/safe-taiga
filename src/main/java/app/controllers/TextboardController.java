@@ -223,8 +223,8 @@ public class TextboardController {
 
 			Tools.println("START:printing content of arrayOfPostsFromDatabase:");
 			for (int a = 0; a < arrayOfPostsFromDatabase.size(); a++) {
-				Tools.println(Reference.CommonStrings.THREADID + ":"
-						+ arrayOfPostsFromDatabase.get(a).get(Reference.CommonStrings.THREADID) + " "
+				Tools.println(Reference.CommonStrings.POSTID + ":"
+						+ arrayOfPostsFromDatabase.get(a).get(Reference.CommonStrings.POSTID) + " "
 						+ Reference.CommonStrings.POSTTEXT + ":"
 						+ arrayOfPostsFromDatabase.get(a).get(Reference.CommonStrings.POSTTEXT));
 			}
@@ -287,7 +287,7 @@ public class TextboardController {
 		} else {
 			Tools.println("The requested boardlink:" + requestedBoardLink + " is NOT available!");
 		}
-		
+
 		Tools.println("END:handleCreateBoard\n");
 		return serveTextboard_HOME.handle(request, response);
 	};
