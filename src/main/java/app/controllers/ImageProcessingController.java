@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
@@ -123,6 +124,22 @@ public class ImageProcessingController {
 					partitionArrayRGB);
 
 			stmt.executeUpdate(insertIntoImageDbUserImageRequest);
+
+			Tools.println(ScriptCreator.findMatchingImageDataRandomized(partitionArrayRGB));
+			ResultSet rs = stmt.executeQuery(ScriptCreator.findMatchingImageDataRandomized(partitionArrayRGB));
+
+			while (rs.next()) {
+				Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
+						+ rs.getString("panel"));
+			}
+			
+			Tools.println(ScriptCreator.findMatchingImageDataRandomizedV2(partitionArrayRGB));
+			rs = stmt.executeQuery(ScriptCreator.findMatchingImageDataRandomizedV2(partitionArrayRGB));
+
+			while (rs.next()) {
+				Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
+						+ rs.getString("panel"));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.LINK_IMAGEPROCESSING,
