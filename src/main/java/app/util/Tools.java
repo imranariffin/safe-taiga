@@ -70,7 +70,6 @@ public class Tools {
 				Tools.println("panelNumbers: ");
 				for (int panelNumber = 0; panelNumber < animeArray[animeNumber].getPanels()[episodeNumber
 						- 1]; panelNumber++) {
-					Tools.print(panelNumber + " ");
 					try (Connection connection = app.Application.getConnection()) {
 
 						Statement stmt = connection.createStatement();
@@ -98,8 +97,8 @@ public class Tools {
 						Tools.println("query:" + insertScript);
 						Tools.println(e.getMessage());
 					} catch (URISyntaxException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						Tools.println("id:" + panelNumber);
+						Tools.println(e.getMessage());
 					}
 				}
 			}
