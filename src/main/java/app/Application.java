@@ -22,7 +22,6 @@ import app.util.ViewUtil;
 
 public class Application {
 
-	// public static HikariConfig config;
 	public static File IMAGES_INPUT_DIR, IMAGES_OTHER_DIR, IMAGES_OUTPUT_PARTITION_DIR, TEXT_OUTPUT_PARTITION_DIR,
 			IMAGES_OUTPUT_RESIZED_DIR;
 
@@ -74,7 +73,7 @@ public class Application {
 		 * NOT FOUND
 		 */
 		get("*", ViewUtil.notFound);
-
+		Tools.InsertTextDumpToDatabase();
 		System.out.println("SERVER:END");
 	}
 
@@ -97,6 +96,7 @@ public class Application {
 			username = "postgres";
 			password = "5771";
 		}
+
 		return DriverManager.getConnection(dbUrl, username, password);
 	}
 

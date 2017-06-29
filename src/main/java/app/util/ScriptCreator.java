@@ -14,8 +14,7 @@ public class ScriptCreator {
 	public final static String SELECT_ALL_FROM_IMAGEDB = "SELECT * FROM imagedb_anime_rgb;";
 	public final static String SELECT_ALL_FROM_IMAGEDB_USER_IMAGE_REQUEST = "SELECT * FROM imagedb_user_image_request;";
 
-	public static String insertIntoImageDbUserImageRequest(String ipAddress,
-			int[][][] partitionArrayRGB) {
+	public static String insertIntoImageDbUserImageRequest(String ipAddress, int[][][] partitionArrayRGB) {
 		String script = "INSERT INTO imagedb_user_image_request (request_ip, pixel_rgb) VALUES ('" + ipAddress + "', "
 				+ Tools.convertTripleArrayToString(partitionArrayRGB) + ");";
 		return script;
@@ -37,8 +36,7 @@ public class ScriptCreator {
 		return "SELECT * FROM threads AS thread WHERE thread.boardlink = '" + boardlink + "';";
 	}
 
-	public static String insertIntoImagedbAnimeRgb(String name, int episode, int panel,
-			int[][][] partitionArrayRGB) {
+	public static String insertIntoImagedbAnimeRgb(String name, int episode, int panel, int[][][] partitionArrayRGB) {
 		String script = "INSERT INTO imagedb_anime_rgb (name, episode, panel, pixel_rgb) VALUES ('" + name + "','"
 				+ Integer.toString(episode) + "', '" + Integer.toString(panel) + "', ";
 		String RGBArray = Tools.convertTripleArrayToString(partitionArrayRGB);
@@ -46,4 +44,59 @@ public class ScriptCreator {
 		return script;
 	}
 
+	public static String selectAverageOfImageDb() {
+
+		String selectString = "SELECT ";
+		for (int a = 1; a <= ImageProcessing.DIVISOR_VALUE; a++) {
+			for (int b = 1; b <= ImageProcessing.DIVISOR_VALUE; b++) {
+				for (int c = 1; c <= 3; c++) {
+					selectString += "AVG(pixel_rgb[" + a + "][ " + b + "][" + c + "]) AS \"" + a + ":" + b + ":" + c
+							+ "\"";
+					if (a == 10 && b == 10 && c == 3) {
+						selectString += "";
+					} else {
+						selectString += ", ";
+					}
+				}
+			}
+		}
+
+		selectString += " FROM imagedb_anime_rgb;";
+
+		return selectString;
+	}
+
+	public static String getMinMaxOfImageDb() {
+
+		String selectString = "SELECT ";
+		for (int a = 1; a <= ImageProcessing.DIVISOR_VALUE; a++) {
+			for (int b = 1; b <= ImageProcessing.DIVISOR_VALUE; b++) {
+				for (int c = 1; c <= 3; c++) {
+					selectString += "MIN(pixel_rgb[" + a + "][ " + b + "][" + c + "]) AS \"MIN:" + a + ":" + b + ":" + c
+							+ "\", ";
+					selectString += "MAX(pixel_rgb[" + a + "][ " + b + "][" + c + "]) AS \"MAX:" + a + ":" + b + ":" + c
+							+ "\"";
+					if (a == 10 && b == 10 && c == 3) {
+						selectString += "";
+					} else {
+						selectString += ", ";
+					}
+				}
+			}
+		}
+
+		selectString += " FROM imagedb_anime_rgb;";
+		return selectString;
+	}
+	
+	public static String findMatchingImageData(){
+		//sample
+		//SELECT pixel_rgb[1][1][1] FROM imagedb_user_image_request WHERE pixel_rgb[1][1][1] BETWEEN (100-25) AND (100+25) ORDER BY pixel_rgb[1][1][1];
+		
+		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb WHERE ";
+		
+		for (int a = 1; a <= ImageProcessing.DIVISOR_VALUE; a ++){
+			
+		}
+	}
 }

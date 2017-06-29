@@ -29,10 +29,7 @@ public class TextboardController {
 	public static Route serveTextboard_HOME = (Request request, Response response) -> {
 		Tools.println("\nFROM:TextboardsController:START:serveTextboard_HOME");
 		Map<String, Object> model = new HashMap<>();
-		/**
-		 * 1. Get the list of boards from database 2. Populate it into an
-		 * arraylist 3. Put the arraylist to the VTL
-		 */
+
 		@SuppressWarnings("rawtypes")
 		ArrayList<Map> arrayOfBoardsFromDatabase = new ArrayList<Map>();
 		try (Connection connection = app.Application.getConnection()) {
@@ -155,6 +152,7 @@ public class TextboardController {
 
 		// Populate html-forms
 		model.put(Reference.VTL.INPUT_THREADTEXT, Reference.VTL.INPUT_THREADTEXT);
+
 		Tools.println("END:serveTextboard_BOARD\n");
 		return ViewUtil.render(request, model, Reference.Templates.TEXTBOARD_BOARD, Reference.Web.TEXTBOARD_BOARD,
 				"OK: default return");
@@ -333,6 +331,7 @@ public class TextboardController {
 		} else {
 			Tools.println("The requested thread with post:" + requestedThreadText + " is NOT acceptable!");
 		}
+
 		Tools.println("END:handleCreateThread\n");
 		return serveTextboard_BOARD.handle(request, response);
 	};
@@ -379,6 +378,7 @@ public class TextboardController {
 		} else {
 			Tools.println("The requested thread with post:" + requestedPostText + " is NOT acceptable!");
 		}
+
 		Tools.println("END:handleCreatePost\n");
 		return serveTextboard_THREAD.handle(request, response);
 	};

@@ -12,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,16 +35,18 @@ public class ImageProcessingController {
 	public static Route serveImageUpload = (Request request, Response response) -> {
 		Tools.println("\nFROM:ImageProcessingController:START:serveImageUpload");
 		Map<String, Object> model = new HashMap<String, Object>();
-		Tools.println("END:serveImageUpload");
+
 		model.put("imagefile", "/images/other/image_placeholder.jpg");
 		model.put("imagemessage", "your uploaded image will replace the empty image below:");
 		model.put("partitionArrayRGB", new int[ImageProcessing.DIVISOR_VALUE][ImageProcessing.DIVISOR_VALUE][3]);
+
+		Tools.println("END:serveImageUpload\n");
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD, "Image Upload", "OK");
 	};
 
 	public static Route handleImageUpload = (Request request, Response response) -> {
-		Map<String, Object> model = new HashMap<String, Object>();
 		Tools.println("\nFROM:ImageProcessingController:START:handleImageUpload");
+		Map<String, Object> model = new HashMap<String, Object>();
 
 		Path tempFile = Files.createTempFile(IMAGES_INPUT_DIR.toPath(), "", ".png");
 
@@ -110,28 +111,18 @@ public class ImageProcessingController {
 			/**
 			 * Create image database if not exist
 			 */
-			Tools.println("Executing script:" + ScriptCreator.CREATE_IMAGEDB_USER_IMAGE_REQUEST);
 			stmt.executeUpdate(ScriptCreator.CREATE_IMAGEDB_USER_IMAGE_REQUEST);
 
 			/**
 			 * Insert into database the image data sent by user
 			 */
-			String insertIntoImageDbUserImageRequest = ScriptCreator.insertIntoImageDbUserImageRequest(request.ip(),
-					partitionArrayRGB);
-			Tools.println("Executing script:" + insertIntoImageDbUserImageRequest);
-			stmt.executeUpdate(insertIntoImageDbUserImageRequest);
+			String requestIp = request.ip();
+			Tools.println("userIp:" + requestIp);
 
-			ResultSet rs = stmt.executeQuery(Tools.selectAverageOfImageDb());
-			Tools.println(rs.toString());
-			rs.next();
-			for (int a = 1; a <= 10; a++){
-				for (int b = 1; b <= 10; b++){
-					for (int c = 1; c <= 3; c++){
-						Tools.print(rs.getString("" + a  + ":" + b + ":" + c) + " ");
-					}
-					Tools.println("");
-				}
-			}
+			String insertIntoImageDbUserImageRequest = ScriptCreator.insertIntoImageDbUserImageRequest(requestIp,
+					partitionArrayRGB);
+
+			stmt.executeUpdate(insertIntoImageDbUserImageRequest);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.LINK_IMAGEPROCESSING,

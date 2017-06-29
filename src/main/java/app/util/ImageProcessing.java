@@ -22,7 +22,7 @@ public class ImageProcessing {
 	public static final int DIVISOR_VALUE = 10;
 
 	public static BufferedImage partitionImage(BufferedImage originalImage, int[][][] partitionArrayRGB) {
-		Tools.println("FROM:ImageProcessing:START:partitionImage");
+		Tools.println("\nFROM:ImageProcessing:START:partitionImage");
 
 		// parse required information about the image
 		int width = originalImage.getWidth();
@@ -60,12 +60,12 @@ public class ImageProcessing {
 			blockStartX = 0;
 		}
 
-		Tools.println("END:partitionImage");
+		Tools.println("END:partitionImage\n");
 		return originalImage;
 	}
 
 	public static BufferedImage resizeImage(BufferedImage originalImage) throws IOException {
-		Tools.println("FROM:ImageProcessing:START:resizeImage");
+		Tools.println("\nFROM:ImageProcessing:START:resizeImage");
 
 		int type = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_RGB : originalImage.getType();
 		BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
@@ -73,12 +73,12 @@ public class ImageProcessing {
 		g.drawImage(originalImage, 0, 0, IMG_WIDTH, IMG_HEIGHT, null);
 		g.dispose();
 
-		Tools.println("END:resizeImage");
+		Tools.println("END:resizeImage\n");
 		return resizedImage;
 	}
 
 	public static void resizeImageWithHint(String fileName) throws IOException {
-		Tools.println("START:resizeImageWithHinting:FROM:ImageProcessing");
+		Tools.println("\nSTART:resizeImageWithHinting:FROM:ImageProcessing");
 		BufferedImage originalImage = ImageIO.read(new File("images/input/" + fileName));
 		int type = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
 		BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
@@ -92,7 +92,7 @@ public class ImageProcessing {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		ImageIO.write(resizedImage, "png", new File("images/input/resizedwithhint/" + fileName));
-		Tools.println("END:resizeImageWithHinting");
+		Tools.println("END:resizeImageWithHinting\n");
 	}
 
 	public static void convertToPng(String filename) {
@@ -112,7 +112,7 @@ public class ImageProcessing {
 	}
 
 	public static int[][][] getImageRGBPartitionValues(BufferedImage originalImage) {
-		Tools.println("FROM:ImageProcessing:START:getImageRGBPartitionValues");
+		Tools.println("\nFROM:ImageProcessing:START:getImageRGBPartitionValues");
 
 		// BufferedImage image;
 		int width;
@@ -171,12 +171,12 @@ public class ImageProcessing {
 			blockStartX = 0;
 		}
 
-		Tools.println("END:getImageRGBPartitionValues");
+		Tools.println("END:getImageRGBPartitionValues\n");
 		return partitionArrayRGB;
 	}
 
 	public static String getStringFromTripleArray(int[][][] tripleArray) {
-		Tools.println("FROM:ImageProcessing:START:getStringFromTripleArray");
+		Tools.println("\nFROM:ImageProcessing:START:getStringFromTripleArray");
 		String outputText = "";
 		for (int a = 0; a < tripleArray.length; a++) { // Y-axis
 			for (int b = 0; b < tripleArray[a].length; b++) { // X-axis
@@ -186,7 +186,7 @@ public class ImageProcessing {
 			}
 			outputText += "\n";
 		}
-		Tools.println("END:getStringFromTripleArray");
+		Tools.println("END:getStringFromTripleArray\n");
 		return outputText;
 	}
 }

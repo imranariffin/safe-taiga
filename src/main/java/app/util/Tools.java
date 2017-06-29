@@ -8,9 +8,8 @@ import java.sql.Statement;
 
 public class Tools {
 
-	// private static Map<String, AnimeObject> animeMap = new HashMap<String,
-	// AnimeObject>();
-	private static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("idolmaster", 25, 47) };
+	// new AnimeObject("idolmaster", 25),
+	private static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("yuruyuri-season2", 12) };
 	public static boolean devmode = true;
 
 	public static void println(String text) {
@@ -108,7 +107,7 @@ public class Tools {
 			for (int episodeNumber = 1; episodeNumber <= animeArray[animeNumber]
 					.getNumberOfEpisodes(); episodeNumber++) {
 				Tools.println("episodeNumber:" + episodeNumber);
-				Tools.println("panelNumbers: ");
+				Tools.println("panelNumbers: " + animeArray[animeNumber].getPanels()[episodeNumber - 1]);
 				for (int panelNumber = 0; panelNumber < animeArray[animeNumber].getPanels()[episodeNumber
 						- 1]; panelNumber++) {
 					try (Connection connection = app.Application.getConnection()) {
@@ -144,28 +143,5 @@ public class Tools {
 				}
 			}
 		}
-	}
-
-	public static String selectAverageOfImageDb() {
-
-		String selectString = "SELECT ";
-		for (int a = 1; a <= 10; a++) {
-			for (int b = 1; b <= 10; b++) {
-				for (int c = 1; c <= 3; c++) {
-					selectString += "AVG(pixel_rgb[" + a + "][ " + b + "][" + c + "]) AS \"" + a + ":" + b + ":" + c
-							+ "\"";
-					if (a == 10 && b == 10 && c == 3) {
-						selectString += "";
-					} else {
-						selectString += ", ";
-					}
-				}
-			}
-		}
-
-		selectString += " FROM imagedb_anime_rgb;";
-		Tools.println(selectString);
-
-		return selectString;
 	}
 }
