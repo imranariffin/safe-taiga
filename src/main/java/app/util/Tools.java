@@ -8,8 +8,8 @@ import java.sql.Statement;
 
 public class Tools {
 
-	// new AnimeObject("idolmaster", 25),
-	private static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("yuruyuri-season2", 12) };
+	private static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("yuruyuri-season2", 12),
+			new AnimeObject("idolmaster", 25) };
 	public static boolean devmode = true;
 
 	public static void println(String text) {

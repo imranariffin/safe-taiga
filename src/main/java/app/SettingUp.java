@@ -20,20 +20,25 @@ import org.bytedeco.javacv.Java2DFrameConverter;
 import app.util.ImageProcessing;
 import app.util.ScriptCreator;
 import app.util.Tools;
+import app.util.AnimeObject;
 import app.util.FileManager;
 
 public class SettingUp {
 
+	// new AnimeObject("yuruyuri-season2", 12),
+	private static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("idolmaster", 25) };
+
 	public static void main(String[] args) {
 		try {
 			createImageDump();
-		} catch (IOException e) {
-			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		getImageDbAverageRGB();
-		getImageDbMinMax();
+
+		// getImageDbAverageRGB();
+		// getImageDbMinMax();
 	}
 
 	public static void createImageDump() throws IOException, Exception {
@@ -44,51 +49,58 @@ public class SettingUp {
 		File DEV_OUTPUT_IMAGES_OUTPUT_PARTITION = new File("dev_output/images/output/partition");
 		DEV_OUTPUT_IMAGES_OUTPUT_PARTITION.mkdirs();
 
-		for (int episode = 1; episode <= 13; episode++) {
-			String animeName = "yuruyuri-season2";
-			FFmpegFrameGrabber g = new FFmpegFrameGrabber(
-					"videos/" + animeName + "/" + animeName + "_" + episode + ".mkv");
-			g.start();
-			Java2DFrameConverter frameConverter = new Java2DFrameConverter();
+		String animeName = "";
+		for (int animeNumber = 0; animeNumber < animeArray.length; animeNumber++) {
+			animeName = animeArray[animeNumber].getName();
+			for (int episode = 1; episode <= animeArray[animeNumber].getNumberOfEpisodes(); episode++) {
+				FFmpegFrameGrabber g = new FFmpegFrameGrabber(
+						"videos/" + animeName + "/" + animeName + "_" + episode + ".mkv");
+				g.start();
+				Java2DFrameConverter frameConverter = new Java2DFrameConverter();
 
-			/**
-			 * Setting variables
-			 */
-			int frameSkip = 72; // determines how many frames we want to skip
+				/**
+				 * Setting variables
+				 */
+				int frameSkip = 72; // determines how many frames we want to
+									// skip
 
-			/**
-			 * Iterators
-			 */
-			int i = 0; // the frame iterator
-			int panel = 0; // the panel iterator
-			int[][][] partitionArrayRGB; // int array for RGB
-			String outputImageName; // name of the output partitioned image
-			String outputTextName; // name of the output partitioned text dump
-			BufferedImage image; // the image
+				/**
+				 * Iterators
+				 */
+				int i = 0; // the frame iterator
+				int panel = 0; // the panel iterator
+				int[][][] partitionArrayRGB; // int array for RGB
+				String outputImageName; // name of the output partitioned image
+				String outputTextName; // name of the output partitioned text
+										// dump
+				BufferedImage image; // the image
 
-			Tools.println("begin parsing video");
-			Frame frame;
-			while ((frame = g.grabImage()) != null) {
-				if ((i % frameSkip) == 0) {
-					image = frameConverter.getBufferedImage(frame);
-					outputImageName = "dev_output/images/output/partition/" + animeName + "/" + animeName + "_"
-							+ episode + "_" + panel + ".png";
-					outputTextName = "dev_output/text/" + animeName + "/" + animeName + "_" + episode + "_" + panel
-							+ ".txt";
-					partitionArrayRGB = ImageProcessing.getImageRGBPartitionValues(image);
-					ImageIO.write(ImageProcessing.partitionImage(ImageProcessing.resizeImage(image), partitionArrayRGB),
-							"png", new File(outputImageName));
-					FileManager.writeTripleArrayToString(partitionArrayRGB, outputTextName);
-					Tools.println(outputImageName);
-					panel++;
-				} else {
-					// do nothing
+				Tools.println("begin parsing video");
+				Frame frame;
+				while ((frame = g.grabImage()) != null) {
+					if ((i % frameSkip) == 0) {
+						image = frameConverter.getBufferedImage(frame);
+						outputImageName = "dev_output/images/output/partition/" + animeName + "/" + animeName + "_"
+								+ episode + "_" + panel + ".png";
+						outputTextName = "dev_output/text/" + animeName + "/" + animeName + "_" + episode + "_" + panel
+								+ ".txt";
+						partitionArrayRGB = ImageProcessing.getImageRGBPartitionValues(image);
+						ImageIO.write(
+								ImageProcessing.partitionImage(ImageProcessing.resizeImage(image), partitionArrayRGB),
+								"png", new File(outputImageName));
+						FileManager.writeTripleArrayToString(partitionArrayRGB, outputTextName);
+						Tools.println(outputImageName);
+						panel++;
+					} else {
+						// do nothing
+					}
+					i++;
 				}
-				i++;
+				FileManager.writeStringToFile("" + panel,
+						"dev_output/description/" + animeName + "_" + episode + ".txt");
+				g.stop();
+				Tools.println("end parsing video");
 			}
-			FileManager.writeStringToFile("" + panel, "dev_output/description/" + animeName + "_" + episode + ".txt");
-			g.stop();
-			Tools.println("end parsing video");
 		}
 	}
 
@@ -96,6 +108,7 @@ public class SettingUp {
 
 		try (Connection connection = app.Application.getConnection()) {
 			Statement stmt = connection.createStatement();
+			Tools.println(ScriptCreator.selectAverageOfImageDb());
 			ResultSet rs = stmt.executeQuery(ScriptCreator.selectAverageOfImageDb());
 
 			rs.next();
@@ -123,6 +136,7 @@ public class SettingUp {
 	public static void getImageDbMinMax() {
 		try (Connection connection = app.Application.getConnection()) {
 			Statement stmt = connection.createStatement();
+			Tools.println(ScriptCreator.getMinMaxOfImageDb());
 			ResultSet rs = stmt.executeQuery(ScriptCreator.getMinMaxOfImageDb());
 
 			rs.next();

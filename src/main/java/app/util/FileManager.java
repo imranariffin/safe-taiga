@@ -66,7 +66,7 @@ public class FileManager {
 	}
 
 	public static void writeStringToFile(String text, String pathFile) {
-		Tools.println("FROM:WriteFile:START:writeStringToFile");
+		Tools.println("\nFROM:WriteFile:START:writeStringToFile");
 		Tools.println("writing to:" + pathFile);
 		FileWriter write;
 		try {
@@ -78,11 +78,11 @@ public class FileManager {
 			Tools.println("FAILURE WRITING FILE" + "\n" + "pathFile:" + pathFile + "\n" + "text:" + text);
 			Tools.println("message" + e.getMessage());
 		}
-		Tools.println("END:writeStringToFile");
+		Tools.println("END:writeStringToFile\n");
 	}
 
 	public static void writeTripleArrayToString(int[][][] tripleArray, String pathFile) {
-		Tools.println("FROM:WriteFile:START:writeTripleArrayToString");
+		Tools.println("\nFROM:WriteFile:START:writeTripleArrayToString");
 		Tools.println("writing to:" + pathFile);
 		BufferedWriter writer = null;
 		try {
@@ -105,9 +105,10 @@ public class FileManager {
 				// Close the writer regardless of what happens...
 				writer.close();
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 
-		Tools.println("END:writeTripleArrayToString");
+		Tools.println("END:writeTripleArrayToString\n");
 	}
 }

@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -27,6 +28,8 @@ import app.util.Reference;
 import app.util.ScriptCreator;
 import app.util.Tools;
 import app.util.ViewUtil;
+import app.util.ImagePanelData;
+
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -76,11 +79,12 @@ public class ImageProcessingController {
 		String outputPartitionedImage = IMAGES_OUTPUT_PARTITION_DIR.toPath() + "/" + filename + ".png";
 
 		// Logging
-		Tools.print("Uploaded file '" + getFileName(request.raw().getPart("uploaded_file")) + "' saved as '"
-				+ tempFile.toAbsolutePath() + "'" + "\nbase filename:" + filename + "\ntemporary image is saved at:"
-				+ savedImageDir + "\nresized image saved at:" + outputResizedImage
-				+ "\ntext created from partitioning saved at:" + outputTextDir + "\npartitioned image created at:"
-				+ outputPartitionedImage);
+		Tools.print("Uploaded file '" +
+
+				getFileName(request.raw().getPart("uploaded_file")) + "' saved as '" + tempFile.toAbsolutePath() + "'"
+				+ "\nbase filename:" + filename + "\ntemporary image is saved at:" + savedImageDir
+				+ "\nresized image saved at:" + outputResizedImage + "\ntext created from partitioning saved at:"
+				+ outputTextDir + "\npartitioned image created at:" + outputPartitionedImage);
 
 		/**
 		 * Reformat the image
@@ -125,21 +129,139 @@ public class ImageProcessingController {
 
 			stmt.executeUpdate(insertIntoImageDbUserImageRequest);
 
-			Tools.println(ScriptCreator.findMatchingImageDataRandomized(partitionArrayRGB));
-			ResultSet rs = stmt.executeQuery(ScriptCreator.findMatchingImageDataRandomized(partitionArrayRGB));
+			String findMatchingImageDataRandomized = ScriptCreator.findMatchingImageDataRandomized(partitionArrayRGB);
+			Tools.println(findMatchingImageDataRandomized);
+			ResultSet rs = stmt.executeQuery(findMatchingImageDataRandomized);
 
+			LinkedList<String> matchResult1 = new LinkedList<String>();
 			while (rs.next()) {
 				Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
 						+ rs.getString("panel"));
 			}
-			
-			Tools.println(ScriptCreator.findMatchingImageDataRandomizedV2(partitionArrayRGB));
-			rs = stmt.executeQuery(ScriptCreator.findMatchingImageDataRandomizedV2(partitionArrayRGB));
 
+			if (matchResult1.isEmpty()) {
+				Tools.println("Test 1: None found");
+			}
+
+			String findMatchingImageDataRandomizedV2 = ScriptCreator
+					.findMatchingImageDataRandomizedV2(partitionArrayRGB);
+			Tools.println(findMatchingImageDataRandomizedV2);
+			rs = stmt.executeQuery(findMatchingImageDataRandomizedV2);
+
+			LinkedList<String> matchResult2 = new LinkedList<String>();
 			while (rs.next()) {
 				Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
 						+ rs.getString("panel"));
 			}
+
+			if (matchResult2.isEmpty()) {
+				Tools.println("Test 2: None found");
+			}
+
+			String findMatchingImageDataIncremental;
+			Map<String, ImagePanelData> imageMatchMap = new HashMap<String, ImagePanelData>();
+
+			for (int a = 0; a < ImageProcessing.DIVISOR_VALUE; a++) {
+				for (int b = 0; b < ImageProcessing.DIVISOR_VALUE; b++) {
+					for (int c = 0; c < 3; c++) {
+						findMatchingImageDataIncremental = ScriptCreator.findMatchingImageDataIncremental(a, b, c,
+								partitionArrayRGB[a][b][c]);
+						Tools.println("Execute Query:" + findMatchingImageDataIncremental);
+
+						rs = stmt.executeQuery(findMatchingImageDataIncremental);
+
+						while (rs.next()) {
+							Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
+									+ rs.getString("panel"), false);
+							ImagePanelData panelData = new ImagePanelData(rs.getString("name"), rs.getInt(2),
+									rs.getInt(3));
+							if (!(imageMatchMap.containsKey(panelData.getKey()))) {
+								imageMatchMap.put(panelData.getKey(), panelData);
+							} else {
+								imageMatchMap.get(panelData.getKey()).incrementWeight();
+							}
+
+						}
+					}
+				}
+			}
+
+			if (imageMatchMap.isEmpty()) {
+				Tools.println("Test 3: None found");
+			} else {
+				Tools.println("Test 3: Found");
+				String[] keys = new String[imageMatchMap.size()];
+				ImagePanelData[] values = new ImagePanelData[imageMatchMap.size()];
+				int index = 0;
+				for (Map.Entry<String, ImagePanelData> mapEntry : imageMatchMap.entrySet()) {
+					keys[index] = mapEntry.getKey();
+					values[index] = mapEntry.getValue();
+					index++;
+				}
+
+				int maxIndex = -1;
+				int maxValue = 0;
+				for (int a = 0; a < values.length; a++) {
+					if (values[a].getWeight() > maxValue) {
+						maxValue = values[a].getWeight();
+						maxIndex = a;
+					}
+					Tools.println(values[a].getWeight() + " " + values[a].getKey(), false);
+				}
+				Tools.println("\n" + maxValue + " " + values[maxIndex].getKey());
+			}
+
+			String findMatchingImageDataIncrementalRGB;
+			Map<String, ImagePanelData> imageMatchMapRGB = new HashMap<String, ImagePanelData>();
+
+			for (int a = 0; a < ImageProcessing.DIVISOR_VALUE; a++) {
+				for (int b = 0; b < ImageProcessing.DIVISOR_VALUE; b++) {
+					findMatchingImageDataIncrementalRGB = ScriptCreator.findMatchingImageDataIncrementalRGB(a, b,
+							partitionArrayRGB[a][b]);
+					Tools.println("Execute Query:" + findMatchingImageDataIncrementalRGB);
+
+					rs = stmt.executeQuery(findMatchingImageDataIncrementalRGB);
+
+					while (rs.next()) {
+						Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
+								+ rs.getString("panel"));
+						String key = "" + rs.getString("name") + ":" + rs.getInt(2) + ":" + rs.getInt(3);
+						if (!(imageMatchMapRGB.containsKey(key))) {
+							imageMatchMapRGB.put(key,
+									new ImagePanelData("" + rs.getString("name"), rs.getInt(2), rs.getInt(3)));
+						} else {
+							imageMatchMapRGB.get(key).incrementWeight();
+						}
+
+					}
+				}
+			}
+
+			if (imageMatchMapRGB.isEmpty()) {
+				Tools.println("Test 4: None found");
+			} else {
+				Tools.println("Test 4: Found");
+				String[] keys = new String[imageMatchMapRGB.size()];
+				ImagePanelData[] values = new ImagePanelData[imageMatchMapRGB.size()];
+				int index = 0;
+				for (Map.Entry<String, ImagePanelData> mapEntry : imageMatchMapRGB.entrySet()) {
+					keys[index] = mapEntry.getKey();
+					values[index] = mapEntry.getValue();
+					index++;
+				}
+
+				int maxIndex = -1;
+				int maxValue = 0;
+				for (int a = 0; a < values.length; a++) {
+					if (values[a].getWeight() > maxValue) {
+						maxValue = values[a].getWeight();
+						maxIndex = a;
+					}
+					Tools.println(values[a].getWeight() + " " + values[a].getKey());
+				}
+				Tools.println("\n" + maxValue + " " + values[maxIndex].getKey());
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.LINK_IMAGEPROCESSING,
@@ -151,9 +273,9 @@ public class ImageProcessingController {
 		} else {
 			model.put("partitionArrayRGB", partitionArrayRGB);
 		}
-		model.put("imagefile", outputPartitionedImage.substring(7, outputPartitionedImage.length())); // remove
-																										// 'public/'
+		model.put("imagefile", outputPartitionedImage.substring(7, outputPartitionedImage.length()));
 		model.put("imagemessage", "partitioned image");
+
 		Tools.println("END:handleImageUpload\n");
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD,
 				Reference.CommonStrings.NAME_IMAGEPROCESSING, "OK");

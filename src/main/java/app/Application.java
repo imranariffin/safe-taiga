@@ -73,7 +73,7 @@ public class Application {
 		 * NOT FOUND
 		 */
 		get("*", ViewUtil.notFound);
-		//Tools.InsertTextDumpToDatabase();
+		// Tools.InsertTextDumpToDatabase();
 		System.out.println("SERVER:END");
 	}
 

@@ -19,8 +19,8 @@ public class ImageProcessing {
 
 	public static final int IMG_WIDTH = 640;
 	public static final int IMG_HEIGHT = 360;
-	public static final int DIVISOR_VALUE = 10;
-	public static final int BUFFER_VALUE = 30;
+	public static final int DIVISOR_VALUE = 20;
+	public static final int BUFFER_VALUE = 5;
 
 	public static BufferedImage partitionImage(BufferedImage originalImage, int[][][] partitionArrayRGB) {
 		Tools.println("\nFROM:ImageProcessing:START:partitionImage");
