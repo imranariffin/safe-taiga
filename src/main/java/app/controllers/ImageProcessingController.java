@@ -234,6 +234,7 @@ public class ImageProcessingController {
 			 * separate 1-tuple
 			 */
 			Tools.println("TEST 3");
+			boolean test3Found = false;
 			String findMatchingImageDataIncremental;
 			matchResult = new HashMap<String, ImagePanelData>();
 
@@ -254,6 +255,7 @@ public class ImageProcessingController {
 							if (!(matchResult.containsKey(panelData.getKey()))) {
 								matchResult.put(panelData.getKey(), panelData);
 							} else {
+								test3Found = true;
 								matchResult.get(panelData.getKey()).incrementWeight();
 							}
 
@@ -262,7 +264,7 @@ public class ImageProcessingController {
 				}
 			}
 
-			if (matchResult.isEmpty()) {
+			if (!test3Found) {
 				Tools.println("Test 3: None found");
 				model.put("test_3_boolean", false);
 			} else {
@@ -306,6 +308,7 @@ public class ImageProcessingController {
 			 * 3-tuple
 			 */
 			Tools.println("TEST 4");
+			boolean test4Found = false;
 			String findMatchingImageDataIncrementalRGB;
 			matchResult = new HashMap<String, ImagePanelData>();
 			for (int a = 0; a < ImageProcessing.DIVISOR_VALUE; a++) {
@@ -324,6 +327,7 @@ public class ImageProcessingController {
 							matchResult.put(key,
 									new ImagePanelData("" + rs.getString("name"), rs.getInt(2), rs.getInt(3)));
 						} else {
+							test4Found = true;
 							matchResult.get(key).incrementWeight();
 						}
 
@@ -331,7 +335,7 @@ public class ImageProcessingController {
 				}
 			}
 
-			if (matchResult.isEmpty()) {
+			if (!test4Found) {
 				Tools.println("Test 4: None found");
 				model.put("test_4_boolean", false);
 			} else {
