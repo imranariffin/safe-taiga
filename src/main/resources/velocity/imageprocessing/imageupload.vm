@@ -23,11 +23,13 @@
 				<button>Upload picture</button>
 			</form>
 		</div>
+		#**
 		<div>
 		<h1>$imagemessage</h1>
 		<br>
 		<img src='$imagefile'>
 		</div>
+		*#
 		<div>
 		#foreach( $y in $partitionArrayRGB )
 			<p><small>#foreach( $x in $y){#foreach( $z in $x)[$z]#end}#end</small></p>
