@@ -24,7 +24,7 @@
 			</form>
 		</div>
 		<div>
-		<h1>$imagemessage<h1>
+		<h1>$imagemessage</h1>
 		<br>
 		<img src='$imagefile'>
 		</div>
@@ -33,5 +33,17 @@
 			<p><small>#foreach( $x in $y){#foreach( $z in $x)[$z]#end}#end</small></p>
 		#end
 		</div>
+		
+		<h1>TEST 1</h1>
+		<p>$test_1_result</p>
+		
+		<h1>TEST 2</h1>
+		<p>$test_2_result</p>
+		
+		<h1>TEST 3</h1>
+		<p>$test_3_result</p>
+		
+		<h1>TEST 4</h1>
+		<p>$test_4_result</p>
 	</body>
 </html>

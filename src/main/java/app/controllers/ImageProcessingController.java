@@ -156,6 +156,7 @@ public class ImageProcessingController {
 				}
 			}
 
+			model.put("test_1_result", tmpString1);
 			/**
 			 * RANDOMIZED SEARCH VERSION 2
 			 * 
@@ -190,6 +191,7 @@ public class ImageProcessingController {
 				}
 			}
 
+			model.put("test_2_result", tmpString2);
 			/**
 			 * INCREMENTAL SEARCH NON-RGB
 			 * 
@@ -250,8 +252,8 @@ public class ImageProcessingController {
 					}
 				}
 				Tools.println("\n" + maxValue + " " + values[maxIndex].getKey());
+				model.put("test_3_result", values[maxIndex].getKey());
 			}
-
 			/**
 			 * INCREMENTAL SEARCH RGB
 			 * 
@@ -311,6 +313,7 @@ public class ImageProcessingController {
 				}
 				if (maxIndex != -1) {
 					Tools.println("\n" + maxValue + " " + values[maxIndex].getKey());
+					model.put("test_4_result", values[maxIndex].getKey());
 				} else {
 					Tools.println("maxIndex is -1");
 				}

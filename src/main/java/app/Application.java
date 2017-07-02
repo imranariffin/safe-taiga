@@ -75,9 +75,9 @@ public class Application {
 		 */
 		get("*", ViewUtil.notFound);
 
-		//Tools.createDatabases();
-		//Tools.createImageDump();
-		Tools.InsertTextDumpToDatabase();
+		// Tools.createDatabases();
+		// Tools.createImageDump();
+		// Tools.InsertTextDumpToDatabase();
 
 		System.out.println("SERVER:END");
 	}
@@ -95,7 +95,6 @@ public class Application {
 			username = dbUri.getUserInfo().split(":")[0];
 			password = dbUri.getUserInfo().split(":")[1];
 			dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
-			System.out.println("dbUrl:" + dbUrl);
 		} else {
 			dbUrl = "jdbc:postgresql://" + "localhost" + ":" + "5432" + "/postgres";
 			username = "postgres";
