@@ -133,8 +133,8 @@ public class ScriptCreator {
 
 		for (int a = 1; a <= ImageProcessing.TRIAL_VALUE; a++) {
 
-			int x = ThreadLocalRandom.current().nextInt(0, ImageProcessing.DIVISOR_VALUE + 1);
-			int y = ThreadLocalRandom.current().nextInt(0, ImageProcessing.DIVISOR_VALUE + 1);
+			int x = ThreadLocalRandom.current().nextInt(0, ImageProcessing.DIVISOR_VALUE);
+			int y = ThreadLocalRandom.current().nextInt(0, ImageProcessing.DIVISOR_VALUE);
 
 			for (int c = 0; c < 3; c++) {
 				script += "(pixel_rgb[" + (x + 1) + "][" + (y + 1) + "][" + (c + 1) + "] BETWEEN " + "("
@@ -158,9 +158,9 @@ public class ScriptCreator {
 		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb WHERE ";
 
 		int x = ThreadLocalRandom.current().nextInt(0,
-				(ImageProcessing.DIVISOR_VALUE - ImageProcessing.TRIAL_VALUE) + 1);
+				(ImageProcessing.DIVISOR_VALUE - ImageProcessing.TRIAL_VALUE));
 		int y = ThreadLocalRandom.current().nextInt(0,
-				(ImageProcessing.DIVISOR_VALUE - ImageProcessing.TRIAL_VALUE) + 1);
+				(ImageProcessing.DIVISOR_VALUE - ImageProcessing.TRIAL_VALUE));
 
 		for (int a = 0; a < ImageProcessing.TRIAL_VALUE; a++) {
 			for (int b = 0; b < ImageProcessing.TRIAL_VALUE; b++) {
