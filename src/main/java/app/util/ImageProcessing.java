@@ -17,10 +17,26 @@ import javax.imageio.ImageIO;
 
 public class ImageProcessing {
 
-	public static final int IMG_WIDTH = 640;
-	public static final int IMG_HEIGHT = 360;
-	public static final int DIVISOR_VALUE = 20;
-	public static final int BUFFER_VALUE = 5;
+	/**
+	 * TODO: USE DATABASE TO ASSIGN THESE VALUES
+	 */
+	public static final int IMG_WIDTH = 640; // Determine the width of the
+												// parsed image, will also
+												// determine the resized width
+												// of
+												// any image uploaded
+	public static final int IMG_HEIGHT = 360; // Determine the height of the
+												// parsed image,will also
+												// determine the resized height
+												// of any image uploaded
+	public static final int DIVISOR_VALUE = 5; // Determine the number of box
+												// (width and length)
+	public static final int BUFFER_VALUE = 7; // Determine the range to check
+												// for RGB values
+	public static final int TRIAL_VALUE = 1; // Determine the width and length
+												// of the nearby box to check
+	public static final int FRAME_SKIP = 72; // Determine the frames to skip
+												// when parsing video
 
 	public static BufferedImage partitionImage(BufferedImage originalImage, int[][][] partitionArrayRGB) {
 		Tools.println("\nFROM:ImageProcessing:START:partitionImage");

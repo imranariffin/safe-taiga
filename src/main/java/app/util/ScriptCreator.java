@@ -7,8 +7,17 @@ public class ScriptCreator {
 	public final static String CREATE_BOARDS = "CREATE TABLE IF NOT EXISTS boards ( boardlink VARCHAR(5), boardname VARCHAR(25), boarddescription VARCHAR(100), PRIMARY KEY(boardlink));";
 	public final static String CREATE_THREADS = "CREATE TABLE IF NOT EXISTS threads (threadid SERIAL, boardlink VARCHAR(5), threadtext TEXT, PRIMARY KEY (threadid), FOREIGN KEY (boardlink) REFERENCES boards(boardlink));";
 	public final static String CREATE_POSTS = "CREATE TABLE IF NOT EXISTS posts (postid SERIAL, threadid INTEGER, posttext TEXT, PRIMARY KEY (postid), FOREIGN KEY (threadid) REFERENCES threads(threadid));";
-	public final static String CREATE_IMAGEDB = "CREATE TABLE IF NOT EXISTS imagedb_anime_rgb (name TEXT, episode INT, panel INT, pixel_rgb INT[10][10][3], PRIMARY KEY(name, episode, panel));";
-	public final static String CREATE_IMAGEDB_USER_IMAGE_REQUEST = "CREATE TABLE IF NOT EXISTS imagedb_user_image_request (image_id SERIAL, request_ip TEXT, pixel_rgb INT[10][10][3], PRIMARY KEY(image_id));";
+	public final static String CREATE_IMAGEDB_ANIME_RGB = "CREATE TABLE IF NOT EXISTS imagedb_anime_rgb (name TEXT, episode INT, panel INT, pixel_rgb INT["
+			+ ImageProcessing.DIVISOR_VALUE + "][" + ImageProcessing.DIVISOR_VALUE
+			+ "][3], PRIMARY KEY(name, episode, panel));";
+	public final static String CREATE_IMAGEDB_USER_IMAGE_REQUEST = "CREATE TABLE IF NOT EXISTS imagedb_user_image_request (image_id SERIAL, request_ip TEXT, pixel_rgb INT["
+			+ ImageProcessing.DIVISOR_VALUE + "][" + ImageProcessing.DIVISOR_VALUE + "][3], PRIMARY KEY(image_id));";
+
+	public final static String DROP_BOARDS = "DROP TABLE IF EXISTS boards;";
+	public final static String DROP_THREADS = "DROP TABLE IF EXISTS threads;";
+	public final static String DROP_POSTS = "DROP TABLE IF EXISTS posts;";
+	public final static String DROP_IMAGEDB_ANIME_RGB = "DROP TABLE IF EXISTS imagedb_anime_rgb;";
+	public final static String DROP_IMAGEDB_USER_IMAGE_REQUEST = "DROP TABLE IF EXISTS imagedb_user_image_request;";
 
 	public final static String SELECT_ALL_FROM_BOARDS = "SELECT * FROM boards;";
 	public final static String SELECT_ALL_FROM_THREADS = "SELECT * FROM threads;";
@@ -54,7 +63,7 @@ public class ScriptCreator {
 				for (int c = 1; c <= 3; c++) {
 					selectString += "AVG(pixel_rgb[" + a + "][ " + b + "][" + c + "]) AS \"" + a + ":" + b + ":" + c
 							+ "\"";
-					if (a == 10 && b == 10 && c == 3) {
+					if (a == ImageProcessing.DIVISOR_VALUE && b == ImageProcessing.DIVISOR_VALUE && c == 3) {
 						selectString += "";
 					} else {
 						selectString += ", ";
@@ -70,25 +79,25 @@ public class ScriptCreator {
 
 	public static String getMinMaxOfImageDb() {
 
-		String selectString = "SELECT ";
+		String script = "SELECT ";
 		for (int a = 1; a <= ImageProcessing.DIVISOR_VALUE; a++) {
 			for (int b = 1; b <= ImageProcessing.DIVISOR_VALUE; b++) {
 				for (int c = 1; c <= 3; c++) {
-					selectString += "MIN(pixel_rgb[" + a + "][" + b + "][" + c + "]) AS \"MIN:" + a + ":" + b + ":" + c
+					script += "MIN(pixel_rgb[" + a + "][" + b + "][" + c + "]) AS \"MIN:" + a + ":" + b + ":" + c
 							+ "\", ";
-					selectString += "MAX(pixel_rgb[" + a + "][" + b + "][" + c + "]) AS \"MAX:" + a + ":" + b + ":" + c
+					script += "MAX(pixel_rgb[" + a + "][" + b + "][" + c + "]) AS \"MAX:" + a + ":" + b + ":" + c
 							+ "\"";
 					if (a == ImageProcessing.DIVISOR_VALUE && b == ImageProcessing.DIVISOR_VALUE && c == 3) {
-						selectString += "";
+						script += "";
 					} else {
-						selectString += ", ";
+						script += ", ";
 					}
 				}
 			}
 		}
 
-		selectString += " FROM imagedb_anime_rgb;";
-		return selectString;
+		script += " FROM imagedb_anime_rgb;";
+		return script;
 	}
 
 	public static String findMatchingImageDataBruteForce(int[][][] partitionArrayRGB) {
@@ -104,7 +113,7 @@ public class ScriptCreator {
 				for (int c = 1; c <= 3; c++) {
 					script += "(pixel_rgb[" + a + "][" + b + "][" + c + "] BETWEEN " + "("
 							+ partitionArrayRGB[a - 1][b - 1][c - 1] + " - " + ImageProcessing.BUFFER_VALUE + ") AND ("
-							+ partitionArrayRGB[a - 1][b - 1][c - 1] + " + " + ImageProcessing.BUFFER_VALUE + ")) ";
+							+ partitionArrayRGB[a - 1][b - 1][c - 1] + " + " + ImageProcessing.BUFFER_VALUE + "))";
 					if (a == ImageProcessing.DIVISOR_VALUE && b == ImageProcessing.DIVISOR_VALUE && c == 3) {
 						script += "";
 					} else {
@@ -114,25 +123,24 @@ public class ScriptCreator {
 			}
 		}
 
-		script += "ORDER BY name, episode, panel;";
+		script += ";";
 		return script;
 	}
 
 	public static String findMatchingImageDataRandomized(int[][][] partitionArrayRGB) {
 
-		int trialValue = 5;
 		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb WHERE ";
 
-		for (int a = 1; a <= trialValue; a++) {
+		for (int a = 1; a <= ImageProcessing.TRIAL_VALUE; a++) {
 
-			int x = ThreadLocalRandom.current().nextInt(1, 10 + 1);
-			int y = ThreadLocalRandom.current().nextInt(1, 10 + 1);
+			int x = ThreadLocalRandom.current().nextInt(0, ImageProcessing.DIVISOR_VALUE + 1);
+			int y = ThreadLocalRandom.current().nextInt(0, ImageProcessing.DIVISOR_VALUE + 1);
 
-			for (int c = 1; c <= 3; c++) {
-				script += "(pixel_rgb[" + x + "][" + y + "][" + c + "] BETWEEN " + "("
-						+ partitionArrayRGB[x - 1][y - 1][c - 1] + " - " + ImageProcessing.BUFFER_VALUE + ") AND ("
-						+ partitionArrayRGB[x - 1][y - 1][c - 1] + " + " + ImageProcessing.BUFFER_VALUE + ")) ";
-				if (a == trialValue && c == 3) {
+			for (int c = 0; c < 3; c++) {
+				script += "(pixel_rgb[" + (x + 1) + "][" + (y + 1) + "][" + (c + 1) + "] BETWEEN " + "("
+						+ partitionArrayRGB[x][y][c] + " - " + ImageProcessing.BUFFER_VALUE + ") AND ("
+						+ partitionArrayRGB[x][y][c] + " + " + ImageProcessing.BUFFER_VALUE + "))";
+				if (a == ImageProcessing.TRIAL_VALUE && c == 2) {
 					script += "";
 				} else {
 					script += "AND ";
@@ -141,26 +149,26 @@ public class ScriptCreator {
 			}
 		}
 
-		script += "ORDER BY name, episode, panel;";
+		script += ";";
 		return script;
 	}
 
 	public static String findMatchingImageDataRandomizedV2(int[][][] partitionArrayRGB) {
 
-		int trialValue = 2;
 		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb WHERE ";
 
-		int x = ThreadLocalRandom.current().nextInt(1, (ImageProcessing.DIVISOR_VALUE - trialValue) + 1);
-		int y = ThreadLocalRandom.current().nextInt(1, (ImageProcessing.DIVISOR_VALUE - trialValue) + 1);
+		int x = ThreadLocalRandom.current().nextInt(0,
+				(ImageProcessing.DIVISOR_VALUE - ImageProcessing.TRIAL_VALUE) + 1);
+		int y = ThreadLocalRandom.current().nextInt(0,
+				(ImageProcessing.DIVISOR_VALUE - ImageProcessing.TRIAL_VALUE) + 1);
 
-		for (int a = 0; a < trialValue; a++) {
-			for (int b = 0; b < trialValue; b++) {
-				for (int c = 1; c <= 3; c++) {
-					script += "(pixel_rgb[" + (x + a) + "][" + (y + b) + "][" + c + "] BETWEEN " + "("
-							+ partitionArrayRGB[x + a - 1][y + b - 1][c - 1] + " - " + ImageProcessing.BUFFER_VALUE
-							+ ") AND (" + partitionArrayRGB[x + a - 1][y + b - 1][c - 1] + " + "
-							+ ImageProcessing.BUFFER_VALUE + ")) ";
-					if (a == (trialValue - 1) && b == (trialValue - 1) && c == 3) {
+		for (int a = 0; a < ImageProcessing.TRIAL_VALUE; a++) {
+			for (int b = 0; b < ImageProcessing.TRIAL_VALUE; b++) {
+				for (int c = 0; c < 3; c++) {
+					script += "(pixel_rgb[" + (x + a + 1) + "][" + (y + b + 1) + "][" + (c + 1) + "] BETWEEN " + "("
+							+ partitionArrayRGB[x + a][y + b][c] + " - " + ImageProcessing.BUFFER_VALUE + ") AND ("
+							+ partitionArrayRGB[x + a][y + b][c] + " + " + ImageProcessing.BUFFER_VALUE + "))";
+					if (a == (ImageProcessing.TRIAL_VALUE - 1) && b == (ImageProcessing.TRIAL_VALUE - 1) && c == 2) {
 						script += "";
 					} else {
 						script += "AND ";
@@ -170,7 +178,7 @@ public class ScriptCreator {
 			}
 		}
 
-		script += "ORDER BY name, episode, panel;";
+		script += ";";
 		return script;
 	}
 
@@ -179,9 +187,9 @@ public class ScriptCreator {
 		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb WHERE ";
 
 		script += "(pixel_rgb[" + (x + 1) + "][" + (y + 1) + "][" + (z + 1) + "] BETWEEN " + "(" + value + " - "
-				+ ImageProcessing.BUFFER_VALUE + ") AND (" + value + " + " + ImageProcessing.BUFFER_VALUE + ")) ";
+				+ ImageProcessing.BUFFER_VALUE + ") AND (" + value + " + " + ImageProcessing.BUFFER_VALUE + "))";
 
-		script += "ORDER BY name, episode, panel;";
+		script += ";";
 		return script;
 	}
 
@@ -191,13 +199,12 @@ public class ScriptCreator {
 
 		for (int a = 0; a < 3; a++) {
 			script += "(pixel_rgb[" + (x + 1) + "][" + (y + 1) + "][" + (a + 1) + "] BETWEEN " + "(" + array[a] + " - "
-					+ ImageProcessing.BUFFER_VALUE + ") AND (" + array[a] + " + " + ImageProcessing.BUFFER_VALUE
-					+ ")) ";
+					+ ImageProcessing.BUFFER_VALUE + ") AND (" + array[a] + " + " + ImageProcessing.BUFFER_VALUE + "))";
 			if (a < 2) {
 				script += " AND ";
 			}
 		}
-		script += "ORDER BY name, episode, panel;";
+		script += ";";
 		return script;
 	}
 }

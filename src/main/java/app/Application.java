@@ -7,6 +7,7 @@ import static spark.Spark.staticFiles;
 import static spark.debug.DebugScreen.enableDebugScreen;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -73,7 +74,11 @@ public class Application {
 		 * NOT FOUND
 		 */
 		get("*", ViewUtil.notFound);
-		// Tools.InsertTextDumpToDatabase();
+
+		//Tools.createDatabases();
+		//Tools.createImageDump();
+		Tools.InsertTextDumpToDatabase();
+
 		System.out.println("SERVER:END");
 	}
 

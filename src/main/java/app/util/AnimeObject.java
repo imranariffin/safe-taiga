@@ -33,11 +33,7 @@ public class AnimeObject {
 		this.panels = new int[numberOfPanels];
 	}
 
-	public void setPanels(int[] givenPanels) throws Exception {
-		if (givenPanels.length != numberOfEpisodes) {
-			throw new Exception("panel count mismatch");
-		} else {
-			panels = givenPanels;
-		}
+	public void setPanels(int[] givenPanels) {
+		panels = givenPanels;
 	}
 }

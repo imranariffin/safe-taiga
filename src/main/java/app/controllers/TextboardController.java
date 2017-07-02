@@ -33,12 +33,7 @@ public class TextboardController {
 		@SuppressWarnings("rawtypes")
 		ArrayList<Map> arrayOfBoardsFromDatabase = new ArrayList<Map>();
 		try (Connection connection = app.Application.getConnection()) {
-
 			Statement stmt = connection.createStatement();
-
-			// If the table does not exist for whatever reason, create them
-			Tools.println("Executing script:" + ScriptCreator.CREATE_BOARDS);
-			stmt.executeUpdate(ScriptCreator.CREATE_BOARDS);
 
 			// Just a simple SELECT ALL script
 			Tools.println("Executing script:" + ScriptCreator.SELECT_ALL_FROM_BOARDS);
@@ -108,14 +103,7 @@ public class TextboardController {
 		ArrayList<Map> arrayOfThreadsFromDatabase = new ArrayList<Map>();
 
 		try (Connection connection = app.Application.getConnection()) {
-
 			Statement stmt = connection.createStatement();
-
-			/**
-			 * Create threads if not exist
-			 */
-			Tools.println("Executing script:" + ScriptCreator.CREATE_THREADS);
-			stmt.executeUpdate(ScriptCreator.CREATE_THREADS);
 
 			// Select all thread based on the given boardlink
 			String selectAllThreadFromBoardGivenBoardlink = ScriptCreator
@@ -186,14 +174,7 @@ public class TextboardController {
 		String threadtext = "NULL_THREADTEXT_DOES_NOT_EXIST";
 
 		try (Connection connection = app.Application.getConnection()) {
-
 			Statement stmt = connection.createStatement();
-
-			/**
-			 * Create posts table if not exist
-			 */
-			Tools.println("Executing script:" + ScriptCreator.CREATE_POSTS);
-			stmt.executeUpdate(ScriptCreator.CREATE_POSTS);
 
 			/**
 			 * Get threadtext from the table
@@ -266,11 +247,6 @@ public class TextboardController {
 				Statement stmt = connection.createStatement();
 
 				/**
-				 * Create boards table if not exist
-				 */
-				stmt.executeUpdate(ScriptCreator.CREATE_BOARDS);
-
-				/**
 				 * Insert value into the table
 				 */
 				final String SCRIPT_INSERT_BOARD = "INSERT INTO boards (boardlink, boardname, boarddescription) VALUES ('"
@@ -309,12 +285,6 @@ public class TextboardController {
 
 			try (Connection connection = app.Application.getConnection()) {
 				Statement stmt = connection.createStatement();
-
-				/**
-				 * Create threads table if not exist
-				 */
-				stmt.executeUpdate(ScriptCreator.CREATE_THREADS);
-				Tools.println("Executing script:" + ScriptCreator.CREATE_THREADS);
 
 				// Create a new thread instance in the threads table
 				final String SCRIPT_INSERT_THREAD = "INSERT INTO threads (boardlink, threadtext) VALUES ('"
@@ -357,12 +327,6 @@ public class TextboardController {
 
 			try (Connection connection = app.Application.getConnection()) {
 				Statement stmt = connection.createStatement();
-
-				/**
-				 * Create threads table if not exist
-				 */
-				stmt.executeUpdate(ScriptCreator.CREATE_THREADS);
-				Tools.println("Executing script:" + ScriptCreator.CREATE_THREADS);
 
 				// Create a new thread instance in the threads table
 				final String SCRIPT_INSERT_POST = "INSERT INTO posts (threadid, posttext) VALUES ('" + currentThread

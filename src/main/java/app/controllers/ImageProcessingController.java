@@ -36,6 +36,9 @@ import spark.Route;
 
 public class ImageProcessingController {
 
+	public static boolean BOOL_SCRIPT = false;
+	public static boolean BOOL_MATCHING_NAME = false;
+
 	public static Route serveImageUpload = (Request request, Response response) -> {
 		Tools.println("\nFROM:ImageProcessingController:START:serveImageUpload");
 		Map<String, Object> model = new HashMap<String, Object>();
@@ -45,7 +48,7 @@ public class ImageProcessingController {
 		model.put("partitionArrayRGB", new int[ImageProcessing.DIVISOR_VALUE][ImageProcessing.DIVISOR_VALUE][3]);
 
 		Tools.println("END:serveImageUpload\n");
-		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD, "Image Upload", "OK");
+		return ViewUtil.render(request, model, Reference.Templates.IMAGE_PROCESSING, "Image Upload", "OK");
 	};
 
 	public static Route handleImageUpload = (Request request, Response response) -> {
@@ -110,13 +113,7 @@ public class ImageProcessingController {
 		 */
 
 		try (Connection connection = app.Application.getConnection()) {
-
 			Statement stmt = connection.createStatement();
-
-			/**
-			 * Create image database if not exist
-			 */
-			stmt.executeUpdate(ScriptCreator.CREATE_IMAGEDB_USER_IMAGE_REQUEST);
 
 			/**
 			 * Insert into database the image data sent by user
@@ -126,53 +123,97 @@ public class ImageProcessingController {
 
 			String insertIntoImageDbUserImageRequest = ScriptCreator.insertIntoImageDbUserImageRequest(requestIp,
 					partitionArrayRGB);
-
 			stmt.executeUpdate(insertIntoImageDbUserImageRequest);
 
+			/**
+			 * RANDOMIZED SEARCH
+			 * 
+			 * Find matching boxes given a randomized boxes
+			 * 
+			 * This is good for cropped pictures
+			 */
+			Tools.println("TEST 1");
 			String findMatchingImageDataRandomized = ScriptCreator.findMatchingImageDataRandomized(partitionArrayRGB);
-			Tools.println(findMatchingImageDataRandomized);
+			Tools.println(findMatchingImageDataRandomized, BOOL_SCRIPT);
+
 			ResultSet rs = stmt.executeQuery(findMatchingImageDataRandomized);
 
 			LinkedList<String> matchResult1 = new LinkedList<String>();
+			String tmpString1 = "";
 			while (rs.next()) {
-				Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
-						+ rs.getString("panel"));
+				tmpString1 = "matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
+						+ rs.getString("panel");
+				Tools.println(tmpString1, BOOL_MATCHING_NAME);
+				matchResult1.add(tmpString1);
 			}
 
 			if (matchResult1.isEmpty()) {
 				Tools.println("Test 1: None found");
+			} else {
+				Tools.println("Test 1: Found");
+				for (int a = 0; a < matchResult1.size(); a++) {
+					Tools.println(matchResult1.get(a));
+				}
 			}
 
+			/**
+			 * RANDOMIZED SEARCH VERSION 2
+			 * 
+			 * Find a matching BOX given a randomized BOX, so we will start from
+			 * a pixel, then iterate x -- > x + a and y --> y + a
+			 * 
+			 * This is also specially good for cropped pictures
+			 */
+			Tools.println("TEST 2");
 			String findMatchingImageDataRandomizedV2 = ScriptCreator
 					.findMatchingImageDataRandomizedV2(partitionArrayRGB);
-			Tools.println(findMatchingImageDataRandomizedV2);
+			Tools.println(findMatchingImageDataRandomizedV2, BOOL_SCRIPT);
+
 			rs = stmt.executeQuery(findMatchingImageDataRandomizedV2);
 
 			LinkedList<String> matchResult2 = new LinkedList<String>();
+			String tmpString2 = "";
 			while (rs.next()) {
-				Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
-						+ rs.getString("panel"));
+				tmpString2 = "matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
+						+ rs.getString("panel");
+
+				Tools.println(tmpString2, BOOL_MATCHING_NAME);
+				matchResult2.add(tmpString2);
 			}
 
 			if (matchResult2.isEmpty()) {
 				Tools.println("Test 2: None found");
+			} else {
+				Tools.println("Test 2: Found");
+				for (int a = 0; a < matchResult2.size(); a++) {
+					Tools.println(matchResult2.get(a));
+				}
 			}
 
+			/**
+			 * INCREMENTAL SEARCH NON-RGB
+			 * 
+			 * Incremental search using non-RGB i.e. we search each RGB as 3
+			 * separate 1-tuple
+			 */
+			Tools.println("TEST 3");
 			String findMatchingImageDataIncremental;
 			Map<String, ImagePanelData> imageMatchMap = new HashMap<String, ImagePanelData>();
+			String tmpString3 = "";
 
 			for (int a = 0; a < ImageProcessing.DIVISOR_VALUE; a++) {
 				for (int b = 0; b < ImageProcessing.DIVISOR_VALUE; b++) {
 					for (int c = 0; c < 3; c++) {
 						findMatchingImageDataIncremental = ScriptCreator.findMatchingImageDataIncremental(a, b, c,
 								partitionArrayRGB[a][b][c]);
-						Tools.println("Execute Query:" + findMatchingImageDataIncremental);
+						Tools.println("Execute Query:" + findMatchingImageDataIncremental, BOOL_SCRIPT);
 
 						rs = stmt.executeQuery(findMatchingImageDataIncremental);
 
 						while (rs.next()) {
-							Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
-									+ rs.getString("panel"), false);
+							tmpString3 = "matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
+									+ rs.getString("panel");
+							Tools.println(tmpString3, BOOL_MATCHING_NAME);
 							ImagePanelData panelData = new ImagePanelData(rs.getString("name"), rs.getInt(2),
 									rs.getInt(3));
 							if (!(imageMatchMap.containsKey(panelData.getKey()))) {
@@ -192,6 +233,7 @@ public class ImageProcessingController {
 				Tools.println("Test 3: Found");
 				String[] keys = new String[imageMatchMap.size()];
 				ImagePanelData[] values = new ImagePanelData[imageMatchMap.size()];
+
 				int index = 0;
 				for (Map.Entry<String, ImagePanelData> mapEntry : imageMatchMap.entrySet()) {
 					keys[index] = mapEntry.getKey();
@@ -206,25 +248,33 @@ public class ImageProcessingController {
 						maxValue = values[a].getWeight();
 						maxIndex = a;
 					}
-					Tools.println(values[a].getWeight() + " " + values[a].getKey(), false);
 				}
 				Tools.println("\n" + maxValue + " " + values[maxIndex].getKey());
 			}
 
+			/**
+			 * INCREMENTAL SEARCH RGB
+			 * 
+			 * Incremental search using RGB i.e. we search matching RGB as
+			 * 3-tuple
+			 */
+			Tools.println("TEST 4");
 			String findMatchingImageDataIncrementalRGB;
 			Map<String, ImagePanelData> imageMatchMapRGB = new HashMap<String, ImagePanelData>();
+			String tmpString4 = "";
 
 			for (int a = 0; a < ImageProcessing.DIVISOR_VALUE; a++) {
 				for (int b = 0; b < ImageProcessing.DIVISOR_VALUE; b++) {
 					findMatchingImageDataIncrementalRGB = ScriptCreator.findMatchingImageDataIncrementalRGB(a, b,
 							partitionArrayRGB[a][b]);
-					Tools.println("Execute Query:" + findMatchingImageDataIncrementalRGB);
+					Tools.println("Execute Query:" + findMatchingImageDataIncrementalRGB, BOOL_SCRIPT);
 
 					rs = stmt.executeQuery(findMatchingImageDataIncrementalRGB);
 
 					while (rs.next()) {
-						Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
-								+ rs.getString("panel"));
+						tmpString4 = "matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
+								+ rs.getString("panel");
+						Tools.println(tmpString4, BOOL_MATCHING_NAME);
 						String key = "" + rs.getString("name") + ":" + rs.getInt(2) + ":" + rs.getInt(3);
 						if (!(imageMatchMapRGB.containsKey(key))) {
 							imageMatchMapRGB.put(key,
@@ -243,6 +293,7 @@ public class ImageProcessingController {
 				Tools.println("Test 4: Found");
 				String[] keys = new String[imageMatchMapRGB.size()];
 				ImagePanelData[] values = new ImagePanelData[imageMatchMapRGB.size()];
+
 				int index = 0;
 				for (Map.Entry<String, ImagePanelData> mapEntry : imageMatchMapRGB.entrySet()) {
 					keys[index] = mapEntry.getKey();
@@ -257,9 +308,12 @@ public class ImageProcessingController {
 						maxValue = values[a].getWeight();
 						maxIndex = a;
 					}
-					Tools.println(values[a].getWeight() + " " + values[a].getKey());
 				}
-				Tools.println("\n" + maxValue + " " + values[maxIndex].getKey());
+				if (maxIndex != -1) {
+					Tools.println("\n" + maxValue + " " + values[maxIndex].getKey());
+				} else {
+					Tools.println("maxIndex is -1");
+				}
 			}
 
 		} catch (Exception e) {
