@@ -27,7 +27,12 @@ public class Application {
 			IMAGES_OUTPUT_RESIZED_DIR;
 
 	public static void main(String[] args) {
-		enableDebugScreen();
+		if (System.getenv("IS_HEROKU") == null) {
+			enableDebugScreen();
+			Tools.println("Debug screen enabled");
+		} else {
+			Tools.println("Debug screen disabled");
+		}
 
 		int portNumber;
 		try {

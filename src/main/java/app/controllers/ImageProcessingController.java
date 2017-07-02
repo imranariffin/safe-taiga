@@ -284,7 +284,7 @@ public class ImageProcessingController {
 				 * optimized by merging this process with above conversion
 				 */
 				int maxIndex = -1;
-				int maxValue = 0;
+				int maxValue = -1;
 				for (int a = 0; a < values.length; a++) {
 					if (values[a].getWeight() > maxValue) {
 						maxValue = values[a].getWeight();
@@ -353,7 +353,7 @@ public class ImageProcessingController {
 				 * optimized by merging this process with above conversion
 				 */
 				int maxIndex = -1;
-				int maxValue = 0;
+				int maxValue = -1;
 				for (int a = 0; a < values.length; a++) {
 					if (values[a].getWeight() > maxValue) {
 						maxValue = values[a].getWeight();
