@@ -35,15 +35,36 @@
 		</div>
 		
 		<h1>TEST 1</h1>
-		<p>$test_1_result</p>
+		#if($test_1_boolean)
+			#foreach ($panelData in $test_1_result)
+				<p>Name: $panelData.getName() Episode: $panelData.getEpisode()</p>
+			#end
+		#else
+			<p>None found</p>
+		#end
 		
 		<h1>TEST 2</h1>
-		<p>$test_2_result</p>
+		#if($test_2_boolean)
+			#foreach ($panelData in $test_2_result)
+				<p>Name: $panelData.getName() Episode: $panelData.getEpisode()</p>
+			#end
+		#else
+			<p>None found</p>
+		#end
 		
 		<h1>TEST 3</h1>
-		<p>$test_3_result</p>
+		#if($test_3_boolean)
+			<p>Name: $test_3_result.getName() Episode: $test_3_result.getEpisode()</p>
+		#else
+			<p>None found</p>
+		#end
 		
 		<h1>TEST 4</h1>
-		<p>$test_4_result</p>
+		#if($test_4_boolean)
+			<p>Name: $test_4_result.getName() Episode: $test_4_result.getEpisode()</p>
+		#else
+			<p>None found</p>
+		#end
+		
 	</body>
 </html>

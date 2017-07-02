@@ -12,6 +12,12 @@ public class ImagePanelData {
 		this.panel = panel;
 	}
 
+	public ImagePanelData(String name, String episode, String panel) {
+		this.name = name;
+		this.episode = Integer.valueOf(episode);
+		this.panel = Integer.valueOf(panel);
+	}
+
 	public String getKey() {
 		return "" + name + ":" + episode + ":" + panel;
 	}

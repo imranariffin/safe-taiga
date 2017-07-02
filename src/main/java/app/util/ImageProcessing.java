@@ -31,7 +31,7 @@ public class ImageProcessing {
 												// of any image uploaded
 	public static final int DIVISOR_VALUE = 5; // Determine the number of box
 												// (width and length)
-	public static final int BUFFER_VALUE = 7; // Determine the range to check
+	public static final int BUFFER_VALUE = 1; // Determine the range to check
 												// for RGB values
 	public static final int TRIAL_VALUE = 1; // Determine the width and length
 												// of the nearby box to check

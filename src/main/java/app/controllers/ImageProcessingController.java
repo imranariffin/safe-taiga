@@ -22,6 +22,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.Part;
 
+import app.util.AnimeObject;
 import app.util.FileManager;
 import app.util.ImageProcessing;
 import app.util.Reference;
@@ -126,6 +127,17 @@ public class ImageProcessingController {
 			stmt.executeUpdate(insertIntoImageDbUserImageRequest);
 
 			/**
+			 * INITIALIZE VARIABLES
+			 * 
+			 * for image searching
+			 */
+			ImagePanelData tmpImagePanel;
+			Map<String, ImagePanelData> matchResult;
+			String tmpString;
+			String[] keys;
+			ImagePanelData[] values;
+
+			/**
 			 * RANDOMIZED SEARCH
 			 * 
 			 * Find matching boxes given a randomized boxes
@@ -138,25 +150,37 @@ public class ImageProcessingController {
 
 			ResultSet rs = stmt.executeQuery(findMatchingImageDataRandomized);
 
-			LinkedList<String> matchResult1 = new LinkedList<String>();
-			String tmpString1 = "";
+			matchResult = new HashMap<String, ImagePanelData>();
 			while (rs.next()) {
-				tmpString1 = "matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
-						+ rs.getString("panel");
-				Tools.println(tmpString1, BOOL_MATCHING_NAME);
-				matchResult1.add(tmpString1);
+				Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
+						+ rs.getString("panel"), BOOL_MATCHING_NAME);
+				tmpImagePanel = new ImagePanelData(rs.getString("name"), rs.getString("episode"),
+						rs.getString("panel"));
+				matchResult.put(tmpImagePanel.getKey(), tmpImagePanel);
 			}
 
-			if (matchResult1.isEmpty()) {
+			if (matchResult.isEmpty()) {
 				Tools.println("Test 1: None found");
+				model.put("test_1_boolean", false);
 			} else {
 				Tools.println("Test 1: Found");
-				for (int a = 0; a < matchResult1.size(); a++) {
-					Tools.println(matchResult1.get(a));
+				model.put("test_1_boolean", true);
+				values = new ImagePanelData[matchResult.size()];
+
+				int index = 0;
+				for (Map.Entry<String, ImagePanelData> mapEntry : matchResult.entrySet()) {
+					values[index] = mapEntry.getValue();
+					index++;
 				}
+
+				model.put("test_1_result", values); // Return a list of result,
+													// since this is randomized
+													// search specialized in
+													// cropped
+													// pictures, duplicates are
+													// expected
 			}
 
-			model.put("test_1_result", tmpString1);
 			/**
 			 * RANDOMIZED SEARCH VERSION 2
 			 * 
@@ -172,26 +196,37 @@ public class ImageProcessingController {
 
 			rs = stmt.executeQuery(findMatchingImageDataRandomizedV2);
 
-			LinkedList<String> matchResult2 = new LinkedList<String>();
-			String tmpString2 = "";
+			matchResult = new HashMap<String, ImagePanelData>();
 			while (rs.next()) {
-				tmpString2 = "matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
-						+ rs.getString("panel");
-
-				Tools.println(tmpString2, BOOL_MATCHING_NAME);
-				matchResult2.add(tmpString2);
+				Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
+						+ rs.getString("panel"), BOOL_MATCHING_NAME);
+				tmpImagePanel = new ImagePanelData(rs.getString("name"), rs.getString("episode"),
+						rs.getString("panel"));
+				matchResult.put(tmpImagePanel.getKey(), tmpImagePanel);
 			}
 
-			if (matchResult2.isEmpty()) {
+			if (matchResult.isEmpty()) {
 				Tools.println("Test 2: None found");
+				model.put("test_2_boolean", false);
 			} else {
 				Tools.println("Test 2: Found");
-				for (int a = 0; a < matchResult2.size(); a++) {
-					Tools.println(matchResult2.get(a));
+				model.put("test_2_boolean", true);
+				values = new ImagePanelData[matchResult.size()];
+
+				int index = 0;
+				for (Map.Entry<String, ImagePanelData> mapEntry : matchResult.entrySet()) {
+					values[index] = mapEntry.getValue();
+					index++;
 				}
+
+				model.put("test_2_result", values); // Return a list of result,
+													// since this is randomized
+													// search specialized in
+													// cropped
+													// pictures, duplicates are
+													// expected
 			}
 
-			model.put("test_2_result", tmpString2);
 			/**
 			 * INCREMENTAL SEARCH NON-RGB
 			 * 
@@ -200,8 +235,7 @@ public class ImageProcessingController {
 			 */
 			Tools.println("TEST 3");
 			String findMatchingImageDataIncremental;
-			Map<String, ImagePanelData> imageMatchMap = new HashMap<String, ImagePanelData>();
-			String tmpString3 = "";
+			matchResult = new HashMap<String, ImagePanelData>();
 
 			for (int a = 0; a < ImageProcessing.DIVISOR_VALUE; a++) {
 				for (int b = 0; b < ImageProcessing.DIVISOR_VALUE; b++) {
@@ -213,15 +247,14 @@ public class ImageProcessingController {
 						rs = stmt.executeQuery(findMatchingImageDataIncremental);
 
 						while (rs.next()) {
-							tmpString3 = "matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
-									+ rs.getString("panel");
-							Tools.println(tmpString3, BOOL_MATCHING_NAME);
+							Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
+									+ rs.getString("panel"), BOOL_MATCHING_NAME);
 							ImagePanelData panelData = new ImagePanelData(rs.getString("name"), rs.getInt(2),
 									rs.getInt(3));
-							if (!(imageMatchMap.containsKey(panelData.getKey()))) {
-								imageMatchMap.put(panelData.getKey(), panelData);
+							if (!(matchResult.containsKey(panelData.getKey()))) {
+								matchResult.put(panelData.getKey(), panelData);
 							} else {
-								imageMatchMap.get(panelData.getKey()).incrementWeight();
+								matchResult.get(panelData.getKey()).incrementWeight();
 							}
 
 						}
@@ -229,80 +262,27 @@ public class ImageProcessingController {
 				}
 			}
 
-			if (imageMatchMap.isEmpty()) {
+			if (matchResult.isEmpty()) {
 				Tools.println("Test 3: None found");
+				model.put("test_3_boolean", false);
 			} else {
 				Tools.println("Test 3: Found");
-				String[] keys = new String[imageMatchMap.size()];
-				ImagePanelData[] values = new ImagePanelData[imageMatchMap.size()];
+				model.put("test_3_boolean", true);
+				values = new ImagePanelData[matchResult.size()];
 
+				/**
+				 * Convert map to array
+				 */
 				int index = 0;
-				for (Map.Entry<String, ImagePanelData> mapEntry : imageMatchMap.entrySet()) {
-					keys[index] = mapEntry.getKey();
+				for (Map.Entry<String, ImagePanelData> mapEntry : matchResult.entrySet()) {
 					values[index] = mapEntry.getValue();
 					index++;
 				}
 
-				int maxIndex = -1;
-				int maxValue = 0;
-				for (int a = 0; a < values.length; a++) {
-					if (values[a].getWeight() > maxValue) {
-						maxValue = values[a].getWeight();
-						maxIndex = a;
-					}
-				}
-				Tools.println("\n" + maxValue + " " + values[maxIndex].getKey());
-				model.put("test_3_result", values[maxIndex].getKey());
-			}
-			/**
-			 * INCREMENTAL SEARCH RGB
-			 * 
-			 * Incremental search using RGB i.e. we search matching RGB as
-			 * 3-tuple
-			 */
-			Tools.println("TEST 4");
-			String findMatchingImageDataIncrementalRGB;
-			Map<String, ImagePanelData> imageMatchMapRGB = new HashMap<String, ImagePanelData>();
-			String tmpString4 = "";
-
-			for (int a = 0; a < ImageProcessing.DIVISOR_VALUE; a++) {
-				for (int b = 0; b < ImageProcessing.DIVISOR_VALUE; b++) {
-					findMatchingImageDataIncrementalRGB = ScriptCreator.findMatchingImageDataIncrementalRGB(a, b,
-							partitionArrayRGB[a][b]);
-					Tools.println("Execute Query:" + findMatchingImageDataIncrementalRGB, BOOL_SCRIPT);
-
-					rs = stmt.executeQuery(findMatchingImageDataIncrementalRGB);
-
-					while (rs.next()) {
-						tmpString4 = "matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
-								+ rs.getString("panel");
-						Tools.println(tmpString4, BOOL_MATCHING_NAME);
-						String key = "" + rs.getString("name") + ":" + rs.getInt(2) + ":" + rs.getInt(3);
-						if (!(imageMatchMapRGB.containsKey(key))) {
-							imageMatchMapRGB.put(key,
-									new ImagePanelData("" + rs.getString("name"), rs.getInt(2), rs.getInt(3)));
-						} else {
-							imageMatchMapRGB.get(key).incrementWeight();
-						}
-
-					}
-				}
-			}
-
-			if (imageMatchMapRGB.isEmpty()) {
-				Tools.println("Test 4: None found");
-			} else {
-				Tools.println("Test 4: Found");
-				String[] keys = new String[imageMatchMapRGB.size()];
-				ImagePanelData[] values = new ImagePanelData[imageMatchMapRGB.size()];
-
-				int index = 0;
-				for (Map.Entry<String, ImagePanelData> mapEntry : imageMatchMapRGB.entrySet()) {
-					keys[index] = mapEntry.getKey();
-					values[index] = mapEntry.getValue();
-					index++;
-				}
-
+				/**
+				 * Find the image with the highest weight <-- can be further
+				 * optimized by merging this process with above conversion
+				 */
 				int maxIndex = -1;
 				int maxValue = 0;
 				for (int a = 0; a < values.length; a++) {
@@ -312,8 +292,78 @@ public class ImageProcessingController {
 					}
 				}
 				if (maxIndex != -1) {
-					Tools.println("\n" + maxValue + " " + values[maxIndex].getKey());
-					model.put("test_4_result", values[maxIndex].getKey());
+					Tools.println(maxValue + " " + values[maxIndex].getKey());
+					model.put("test_3_result", new ImagePanelData(values[maxIndex].getKey().split(":")[0],
+							values[maxIndex].getKey().split(":")[1], values[maxIndex].getKey().split(":")[2]));
+				} else {
+					Tools.println("maxIndex is -1");
+				}
+			}
+			/**
+			 * INCREMENTAL SEARCH RGB
+			 * 
+			 * Incremental search using RGB i.e. we search matching RGB as
+			 * 3-tuple
+			 */
+			Tools.println("TEST 4");
+			String findMatchingImageDataIncrementalRGB;
+			matchResult = new HashMap<String, ImagePanelData>();
+			for (int a = 0; a < ImageProcessing.DIVISOR_VALUE; a++) {
+				for (int b = 0; b < ImageProcessing.DIVISOR_VALUE; b++) {
+					findMatchingImageDataIncrementalRGB = ScriptCreator.findMatchingImageDataIncrementalRGB(a, b,
+							partitionArrayRGB[a][b]);
+					Tools.println("Execute Query:" + findMatchingImageDataIncrementalRGB, BOOL_SCRIPT);
+
+					rs = stmt.executeQuery(findMatchingImageDataIncrementalRGB);
+
+					while (rs.next()) {
+						Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
+								+ rs.getString("panel"), BOOL_MATCHING_NAME);
+						String key = "" + rs.getString("name") + ":" + rs.getInt(2) + ":" + rs.getInt(3);
+						if (!(matchResult.containsKey(key))) {
+							matchResult.put(key,
+									new ImagePanelData("" + rs.getString("name"), rs.getInt(2), rs.getInt(3)));
+						} else {
+							matchResult.get(key).incrementWeight();
+						}
+
+					}
+				}
+			}
+
+			if (matchResult.isEmpty()) {
+				Tools.println("Test 4: None found");
+				model.put("test_4_boolean", false);
+			} else {
+				Tools.println("Test 4: Found");
+				model.put("test_4_boolean", true);
+				values = new ImagePanelData[matchResult.size()];
+
+				/**
+				 * Convert map to array
+				 */
+				int index = 0;
+				for (Map.Entry<String, ImagePanelData> mapEntry : matchResult.entrySet()) {
+					values[index] = mapEntry.getValue();
+					index++;
+				}
+
+				/**
+				 * Find the image with the highest weight <-- can be further
+				 * optimized by merging this process with above conversion
+				 */
+				int maxIndex = -1;
+				int maxValue = 0;
+				for (int a = 0; a < values.length; a++) {
+					if (values[a].getWeight() > maxValue) {
+						maxValue = values[a].getWeight();
+						maxIndex = a;
+					}
+				}
+				if (maxIndex != -1) {
+					Tools.println(maxValue + " " + values[maxIndex].getKey());
+					model.put("test_4_result", new ImagePanelData(values[maxIndex].getKey().split(":")[0],
+							values[maxIndex].getKey().split(":")[1], values[maxIndex].getKey().split(":")[2]));
 				} else {
 					Tools.println("maxIndex is -1");
 				}
