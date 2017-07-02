@@ -29,13 +29,12 @@
 		<br>
 		<img src='$imagefile'>
 		</div>
-		*#
 		<div>
 		#foreach( $y in $partitionArrayRGB )
 			<p><small>#foreach( $x in $y){#foreach( $z in $x)[$z]#end}#end</small></p>
 		#end
 		</div>
-		
+		*#
 		<h1>TEST 1</h1>
 		#if($test_1_boolean)
 			#foreach ($panelData in $test_1_result)
