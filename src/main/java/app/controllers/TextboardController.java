@@ -182,7 +182,9 @@ public class TextboardController {
 			Tools.println("Executing script:" + ScriptCreator.selectThreadFromThreadsGivenThreadid(threadid));
 			ResultSet rs = stmt.executeQuery(ScriptCreator.selectThreadFromThreadsGivenThreadid(threadid));
 			rs.next();
+			
 			threadtext = rs.getString(Reference.CommonStrings.THREADTEXT);
+			
 			model.put(Reference.CommonStrings.THREADID, threadid);
 			model.put(Reference.CommonStrings.THREADTEXT, threadtext);
 
@@ -240,6 +242,11 @@ public class TextboardController {
 		String requestedBoardName = request.queryParams(Reference.VTL.INPUT_BOARDNAME);
 		String requestedBoardDescription = request.queryParams(Reference.VTL.INPUT_BOARDDESCRIPTION);
 
+		// Validate requested names
+		requestedBoardLink = Tools.convertToQuerySafe(requestedBoardLink);
+		requestedBoardName = Tools.convertToQuerySafe(requestedBoardName);
+		requestedBoardDescription = Tools.convertToQuerySafe(requestedBoardDescription);
+
 		if (TextboardLogic.checkIfBoardIsAvailable(requestedBoardLink)) {
 			Tools.println("The requested boardlink:" + requestedBoardLink + " is available!");
 
@@ -275,6 +282,9 @@ public class TextboardController {
 
 		String requestedThreadText = request.queryParams(Reference.VTL.INPUT_THREADTEXT);
 		String currentBoard = request.params(Reference.CommonStrings.BOARDLINK);
+
+		// Validate requested names
+		requestedThreadText = Tools.convertToQuerySafe(requestedThreadText);
 
 		// Verify retrieved data
 		Tools.println(Reference.VTL.INPUT_THREADTEXT + ":" + requestedThreadText);
@@ -316,6 +326,9 @@ public class TextboardController {
 		String requestedPostText = request.queryParams(Reference.VTL.INPUT_POSTTEXT);
 		String currentBoard = request.params(Reference.CommonStrings.BOARDLINK);
 		String currentThread = request.params(Reference.CommonStrings.THREADID);
+
+		// Validate requested names
+		requestedPostText = Tools.convertToQuerySafe(requestedPostText);
 
 		// Verify retrieved data
 		Tools.println(Reference.VTL.INPUT_POSTTEXT + ":" + requestedPostText);

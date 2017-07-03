@@ -21,6 +21,7 @@ public class Tools {
 	public static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("yuruyuri-season1", 12),
 			new AnimeObject("yuruyuri-season2", 12), new AnimeObject("yuruyuri-season3", 12),
 			new AnimeObject("codegeass-season2", 25), new AnimeObject("codegeass-season1", 25) };
+	public final static String SAFE_STRING = "X1U8N2YTR87134678V349T9V3841CM89XY4398V";
 	public static boolean devmode = true;
 
 	public static void println(String text) {
@@ -220,16 +221,20 @@ public class Tools {
 			 * CREATE TABLES FOR IMAGEPROCESSING
 			 */
 			// Create imagedb_anime_rgb table if not exist
-			Tools.println("Execute script:" + ScriptCreator.DROP_IMAGEDB_ANIME_RGB);
-			stmt.executeUpdate(ScriptCreator.DROP_IMAGEDB_ANIME_RGB);
-			Tools.println("Execute script:" + ScriptCreator.CREATE_IMAGEDB_ANIME_RGB);
-			stmt.executeUpdate(ScriptCreator.CREATE_IMAGEDB_ANIME_RGB);
+			// Tools.println("Execute script:" +
+			// ScriptCreator.DROP_IMAGEDB_ANIME_RGB);
+			// stmt.executeUpdate(ScriptCreator.DROP_IMAGEDB_ANIME_RGB);
+			// Tools.println("Execute script:" +
+			// ScriptCreator.CREATE_IMAGEDB_ANIME_RGB);
+			// stmt.executeUpdate(ScriptCreator.CREATE_IMAGEDB_ANIME_RGB);
 
 			// Create imagedb_anime_rgb table if not exist
-			Tools.println("Execute script:" + ScriptCreator.DROP_IMAGEDB_USER_IMAGE_REQUEST);
-			stmt.executeUpdate(ScriptCreator.DROP_IMAGEDB_USER_IMAGE_REQUEST);
-			Tools.println("Execute script:" + ScriptCreator.CREATE_IMAGEDB_USER_IMAGE_REQUEST);
-			stmt.executeUpdate(ScriptCreator.CREATE_IMAGEDB_USER_IMAGE_REQUEST);
+			// Tools.println("Execute script:" +
+			// ScriptCreator.DROP_IMAGEDB_USER_IMAGE_REQUEST);
+			// stmt.executeUpdate(ScriptCreator.DROP_IMAGEDB_USER_IMAGE_REQUEST);
+			// Tools.println("Execute script:" +
+			// ScriptCreator.CREATE_IMAGEDB_USER_IMAGE_REQUEST);
+			// stmt.executeUpdate(ScriptCreator.CREATE_IMAGEDB_USER_IMAGE_REQUEST);
 
 			/**
 			 * DROP TABLES FOR TEXTBOARD
@@ -327,5 +332,21 @@ public class Tools {
 
 	public static void println(int nextInt) {
 		println(Integer.toString(nextInt));
+	}
+
+	public static String convertToQuerySafe(String givenString) {
+		String safeString = "";
+		for (int a = 0; a < givenString.length(); a++) {
+			if (givenString.charAt(a) == '\'') {
+				safeString += SAFE_STRING;
+			} else {
+				safeString += givenString.charAt(a);
+			}
+		}
+		return safeString;
+	}
+
+	public static String revertQuerySafeString(String safeString) {
+		return safeString.replaceAll(SAFE_STRING, "'");
 	}
 }

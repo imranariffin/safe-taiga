@@ -80,7 +80,7 @@ public class Application {
 		 */
 		get("*", ViewUtil.notFound);
 
-		// Tools.createDatabases();
+		Tools.createDatabases();
 		// Tools.createImageDump();
 		// Tools.InsertTextDumpToDatabase();
 
