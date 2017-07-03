@@ -157,10 +157,8 @@ public class ScriptCreator {
 
 		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb WHERE ";
 
-		int x = ThreadLocalRandom.current().nextInt(0,
-				(ImageProcessing.DIVISOR_VALUE - ImageProcessing.TRIAL_VALUE));
-		int y = ThreadLocalRandom.current().nextInt(0,
-				(ImageProcessing.DIVISOR_VALUE - ImageProcessing.TRIAL_VALUE));
+		int x = ThreadLocalRandom.current().nextInt(0, (ImageProcessing.DIVISOR_VALUE - ImageProcessing.TRIAL_VALUE));
+		int y = ThreadLocalRandom.current().nextInt(0, (ImageProcessing.DIVISOR_VALUE - ImageProcessing.TRIAL_VALUE));
 
 		for (int a = 0; a < ImageProcessing.TRIAL_VALUE; a++) {
 			for (int b = 0; b < ImageProcessing.TRIAL_VALUE; b++) {

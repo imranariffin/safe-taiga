@@ -301,6 +301,7 @@ public class ImageProcessingController {
 					Tools.println("maxIndex is -1");
 				}
 			}
+
 			/**
 			 * INCREMENTAL SEARCH RGB
 			 * 
