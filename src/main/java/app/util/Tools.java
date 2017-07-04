@@ -173,6 +173,9 @@ public class Tools {
 							// Get the BufferedImage from the frame
 							image = frameConverter.getBufferedImage(frame);
 
+							// resize image
+							image = ImageProcessing.resizeImage(image);
+
 							/**
 							 * PARTITION IMAGE
 							 */
@@ -192,7 +195,6 @@ public class Tools {
 
 							// Write the text file
 							FileManager.writeTripleArrayToString(partitionRGBArray, outputTextName);
-							Tools.println(outputImageName);
 
 							/**
 							 * GLOBAL DIFFERENCE
@@ -374,32 +376,20 @@ public class Tools {
 	}
 
 	public static String convertTripleArrayToString(int[][][] tripleArray) {
-		Tools.println("\nFROM:ImageProcessing:START:getStringFromTripleArray");
+		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getStringFromTripleArray");
 		String outputText = "";
-		for (int a = 0; a < tripleArray.length; a++) { // Y-axis
-			for (int b = 0; b < tripleArray[a].length; b++) { // X-axis
-				for (int c = 0; c < tripleArray[a][b].length; c++) {
-					outputText += tripleArray[b][a][c] + " ";
-				}
-			}
-			outputText += System.lineSeparator();
-		}
-		Tools.println("END:getStringFromTripleArray\n");
-		return outputText;
-	}
 
-	public static String convertTripleArrayToString(float[][][] tripleArray) {
-		Tools.println("\nFROM:ImageProcessing:START:getStringFromTripleArray");
-		String outputText = "";
-		for (int a = 0; a < tripleArray.length; a++) { // Y-axis
-			for (int b = 0; b < tripleArray[a].length; b++) { // X-axis
-				for (int c = 0; c < tripleArray[a][b].length; c++) {
-					outputText += tripleArray[b][a][c] + " ";
+		Tools.println("y:" + tripleArray.length + System.lineSeparator() + "x:" + tripleArray[0].length
+				+ System.lineSeparator() + "z:" + tripleArray[0][0].length);
+		for (int y = 0; y < tripleArray.length; y++) { // Y-axis
+			for (int x = 0; x < tripleArray[y].length; x++) { // X-axis
+				for (int z = 0; z < tripleArray[y][x].length; z++) { // Z-axis
+					outputText += tripleArray[y][x][z] + " ";
 				}
 			}
 			outputText += System.lineSeparator();
 		}
-		Tools.println("END:getStringFromTripleArray\n");
+		Tools.println("END:getStringFromTripleArray" + System.lineSeparator());
 		return outputText;
 	}
 }
