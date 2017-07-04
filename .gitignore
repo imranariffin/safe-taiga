@@ -5,4 +5,5 @@ target
 videos
 public
 dev_output/images
+dev_output/text
 *.mp4

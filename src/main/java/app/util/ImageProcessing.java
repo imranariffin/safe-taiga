@@ -176,9 +176,6 @@ public class ImageProcessing {
 				// do stuff in the partition
 				for (int c = 0; c < blockSizeY; c++) { // Y-axis
 					for (int d = 0; d < blockSizeX; d++) { // X-axis
-						Tools.println("Red:" + partitionArrayRGB[b][a][0] + System.lineSeparator() + "Green:"
-								+ partitionArrayRGB[b][a][1] + System.lineSeparator() + "Blue:"
-								+ partitionArrayRGB[b][a][2]);
 						Color newColor = new Color(partitionArrayRGB[b][a][0], partitionArrayRGB[b][a][1],
 								partitionArrayRGB[b][a][2]);
 						bufferedImage.setRGB((d + blockStartX), (c + blockStartY), newColor.getRGB());

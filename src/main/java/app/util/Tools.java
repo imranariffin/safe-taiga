@@ -120,19 +120,34 @@ public class Tools {
 					Java2DFrameConverter frameConverter = new Java2DFrameConverter();
 
 					/**
-					 * Iterators
+					 * GLOBAL VARIABLES
 					 */
 					int i = 0; // the frame iterator
 					int panel = 0; // the panel iterator
-					int[][][] partitionArrayRGB; // float array for RGB
+					BufferedImage image; // the image
+					Frame frame;
+
+					/**
+					 * VARIABLES FOR IMAGE PARTITIONING
+					 */
+					int[][][] partitionRGBArray; // float array for RGB
 					String outputImageName; // name of the output partitioned
 											// image
 					String outputTextName; // name of the output partitioned
 											// text dump
-					BufferedImage image; // the image
+
+					/**
+					 * VARIABLES FOR IMAGE GLOBAL DIFFERENCE
+					 */
+					int[][][] globalDifferenceRGBArray; // float array for RGB
+					String globalDifferenceOutputImageName; // name of the
+															// output global
+															// difference image
+					String globalDifferenceOutputTextName; // name of the output
+															// global difference
+															// text dump
 
 					Tools.println("begin parsing video");
-					Frame frame;
 
 					/**
 					 * Create image and text folders
@@ -140,8 +155,14 @@ public class Tools {
 
 					File IMAGE_FOLDER = new File("dev_output/images/output/partition/" + animeName);
 					IMAGE_FOLDER.mkdirs();
-					File TEXT_FOLDER = new File("dev_output/text/" + animeName);
+					File TEXT_FOLDER = new File("dev_output/text/partition/" + animeName);
 					TEXT_FOLDER.mkdirs();
+
+					File IMAGE_FOLDER_GLOBALDIFFERENCE = new File(
+							"dev_output/images/output/globaldifference/" + animeName);
+					IMAGE_FOLDER_GLOBALDIFFERENCE.mkdirs();
+					File TEXT_FOLDER_GLOBALDIFFERENCE = new File("dev_output/text/globaldifference/" + animeName);
+					TEXT_FOLDER_GLOBALDIFFERENCE.mkdirs();
 
 					FFmpegFrameGrabber g = new FFmpegFrameGrabber(
 							"videos/" + animeName + "/" + animeName + "_" + episode + ".mkv");
@@ -152,24 +173,49 @@ public class Tools {
 							// Get the BufferedImage from the frame
 							image = frameConverter.getBufferedImage(frame);
 
+							/**
+							 * PARTITION IMAGE
+							 */
 							// Assign the location we want to save the image and
 							// the text file
 							outputImageName = "dev_output/images/output/partition/" + animeName + "/" + animeName + "_"
 									+ episode + "_" + panel + ".png";
-							outputTextName = "dev_output/text/" + animeName + "/" + animeName + "_" + episode + "_"
-									+ panel + ".txt";
+							outputTextName = "dev_output/text/partition/" + animeName + "/" + animeName + "_" + episode
+									+ "_" + panel + ".txt";
 
 							// Get the partition RGB array of the image
-							partitionArrayRGB = ImageProcessing.getPartitionArray(image);
+							partitionRGBArray = ImageProcessing.getPartitionArray(image);
 
 							// Write the image based on the partition RGB array
-							ImageIO.write(ImageProcessing.getPartitionedBufferedImage(partitionArrayRGB), "png",
+							ImageIO.write(ImageProcessing.getPartitionedBufferedImage(partitionRGBArray), "png",
 									new File(outputImageName));
 
 							// Write the text file
-							FileManager.writeTripleArrayToString(partitionArrayRGB, outputTextName);
+							FileManager.writeTripleArrayToString(partitionRGBArray, outputTextName);
 							Tools.println(outputImageName);
-							panel++;
+
+							/**
+							 * GLOBAL DIFFERENCE
+							 */
+							// Assign the location we want to save the image and
+							// the text file
+							globalDifferenceOutputImageName = "dev_output/images/output/globaldifference/" + animeName
+									+ "/" + animeName + "_" + episode + "_" + panel + ".png";
+							globalDifferenceOutputTextName = "dev_output/text/globaldifference/" + animeName + "/"
+									+ animeName + "_" + episode + "_" + panel + ".txt";
+
+							// Get the partition RGB array of the image
+							globalDifferenceRGBArray = ImageProcessing.getGlobalDifferenceArray(image);
+
+							// Write the image based on the partition RGB array
+							ImageIO.write(ImageProcessing.getBufferedImageGivenArray(globalDifferenceRGBArray), "png",
+									new File(globalDifferenceOutputImageName));
+
+							// Write the text file
+							FileManager.writeTripleArrayToString(globalDifferenceRGBArray,
+									globalDifferenceOutputTextName);
+
+							panel++; // move to the next panel
 						} else {
 							// do nothing
 						}
