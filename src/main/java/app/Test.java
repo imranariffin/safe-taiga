@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import app.util.ImageProcessing;
 import app.util.Tools;
 
-public class SettingUp {
+public class Test {
 
 	public static void main(String[] args) {
 		while (true) {

@@ -18,6 +18,7 @@ import app.controllers.ImageProcessingController;
 import app.controllers.RootController;
 import app.controllers.TextboardController;
 import app.util.Reference;
+import app.util.SettingUp;
 import app.util.Tools;
 import app.util.ViewUtil;
 
@@ -27,6 +28,8 @@ public class Application {
 			IMAGES_OUTPUT_RESIZED_DIR, IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR, TEXT_OUTPUT_GLOBALDIFFERENCE_DIR;
 
 	public static void main(String[] args) {
+		// long tStart = System.currentTimeMillis();
+
 		if (System.getenv("IS_HEROKU") == null) {
 			enableDebugScreen();
 			Tools.println("Debug screen enabled");
@@ -36,14 +39,18 @@ public class Application {
 
 		int portNumber;
 		try {
+
 			portNumber = Integer.valueOf(System.getenv("PORT"));
 		} catch (Exception e) {
-			Tools.println("System running locally, setting port to the default 5000");
+			Tools.println("No .env file specified, defaulting to port:5000");
 			portNumber = 5000;
 		}
 		Tools.println("PORT:" + portNumber);
 		port(portNumber);
 
+		/**
+		 * Required directories
+		 */
 		IMAGES_OTHER_DIR = new File("public/images/other");
 		IMAGES_OUTPUT_PARTITION_DIR = new File("public/images/output/partition");
 		IMAGES_OUTPUT_RESIZED_DIR = new File("public/images/output/resized");
@@ -84,17 +91,15 @@ public class Application {
 		 */
 		get("*", ViewUtil.notFound);
 
-		long tStart = System.currentTimeMillis();
-
-		Tools.createDatabases();
-		Tools.createImageDumpFloat();
-		Tools.InsertTextDumpToDatabase();
+		SettingUp.createDatabases();
+		// SettingUp.createImageDumpFloat();
+		// SettingUp.InsertTextDumpToDatabase();
 
 		long tEnd = System.currentTimeMillis();
-		long tDelta = tEnd - tStart;
-		double elapsedSeconds = tDelta / 1000.0;
+		// long tDelta = tEnd - tStart;
+		// double elapsedSeconds = tDelta / 1000.0;
 
-		Tools.println("time taken in seconds:" + elapsedSeconds);
+		// Tools.println("time taken in seconds:" + elapsedSeconds);
 
 		Tools.println("SERVER READY");
 	}
@@ -113,8 +118,8 @@ public class Application {
 			password = dbUri.getUserInfo().split(":")[1];
 			dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
 		} else {
-			dbUrl = "jdbc:postgresql://" + "localhost" + ":" + "5432" + "/postgres";
-			username = "postgres";
+			dbUrl = "jdbc:postgresql://" + "localhost" + ":" + "5432" + "/hanif-topology";
+			username = "hanif-topology";
 			password = "5771";
 		}
 
