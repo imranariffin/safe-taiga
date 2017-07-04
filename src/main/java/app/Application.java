@@ -28,7 +28,7 @@ public class Application {
 			IMAGES_OUTPUT_RESIZED_DIR, IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR, TEXT_OUTPUT_GLOBALDIFFERENCE_DIR;
 
 	public static void main(String[] args) {
-		// long tStart = System.currentTimeMillis();
+		long tStart = System.currentTimeMillis();
 
 		if (System.getenv("IS_HEROKU") == null) {
 			enableDebugScreen();
@@ -93,13 +93,13 @@ public class Application {
 
 		SettingUp.createDatabases();
 		// SettingUp.createImageDumpFloat();
-		// SettingUp.InsertTextDumpToDatabase();
+		SettingUp.InsertTextDumpToDatabase();
 
 		long tEnd = System.currentTimeMillis();
-		// long tDelta = tEnd - tStart;
-		// double elapsedSeconds = tDelta / 1000.0;
+		long tDelta = tEnd - tStart;
+		double elapsedSeconds = tDelta / 1000.0;
 
-		// Tools.println("time taken in seconds:" + elapsedSeconds);
+		Tools.println("time taken in seconds:" + elapsedSeconds);
 
 		Tools.println("SERVER READY");
 	}
