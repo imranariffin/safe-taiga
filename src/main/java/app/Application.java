@@ -84,11 +84,19 @@ public class Application {
 		 */
 		get("*", ViewUtil.notFound);
 
+		long tStart = System.currentTimeMillis();
+
 		Tools.createDatabases();
 		Tools.createImageDumpFloat();
 		Tools.InsertTextDumpToDatabase();
 
-		System.out.println("SERVER:END");
+		long tEnd = System.currentTimeMillis();
+		long tDelta = tEnd - tStart;
+		double elapsedSeconds = tDelta / 1000.0;
+
+		Tools.println("time taken in seconds:" + elapsedSeconds);
+
+		Tools.println("SERVER READY");
 	}
 
 	public static Connection getConnection() throws URISyntaxException, SQLException {

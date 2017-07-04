@@ -22,7 +22,7 @@ public class Tools {
 			new AnimeObject("yuruyuri-season2", 12), new AnimeObject("yuruyuri-season3", 12),
 			new AnimeObject("codegeass-season2", 25), new AnimeObject("codegeass-season1", 25) };
 	public final static String SAFE_STRING = "X1U8N2YTR87134678V349T9V3841CM89XY4398V";
-	public static boolean devmode = true;
+	public static boolean devmode = false;
 
 	public static void println(String text) {
 		if (devmode) {
@@ -217,9 +217,11 @@ public class Tools {
 							FileManager.writeTripleArrayToString(globalDifferenceRGBArray,
 									globalDifferenceOutputTextName);
 
+							/**
+							 * GLOBAL DIFFERENCE LOCALIZED
+							 */
+
 							panel++; // move to the next panel
-						} else {
-							// do nothing
 						}
 						i++;
 					}

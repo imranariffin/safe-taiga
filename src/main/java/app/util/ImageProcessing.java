@@ -35,7 +35,7 @@ public class ImageProcessing {
 												// for RGB values
 	public static final int TRIAL_VALUE = 1; // Determine the width and length
 												// of the nearby box to check
-	public static final int FRAME_SKIP = 72; // Determine the frames to skip
+	public static final int FRAME_SKIP = 144; // Determine the frames to skip
 												// when parsing video
 
 	public static BufferedImage resizeImage(BufferedImage originalImage) throws IOException {
@@ -168,7 +168,7 @@ public class ImageProcessing {
 		// Variables for iterating through the image array
 		int blockStartX = 0;
 		int blockStartY = 0;
-		
+
 		// Assign RGB color to the new image
 		for (int a = 0; a < DIVISOR_VALUE; a++) { // Y-axis
 			for (int b = 0; b < DIVISOR_VALUE; b++) { // X-axis
@@ -225,9 +225,67 @@ public class ImageProcessing {
 
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				RGBArray[y][x][0] = Math.abs(RGBArray[y][x][0] - globalAverageRed);
-				RGBArray[y][x][1] = Math.abs(RGBArray[y][x][1] - globalAverageGreen);
-				RGBArray[y][x][2] = Math.abs(RGBArray[y][x][2] - globalAverageBlue);
+				RGBArray[y][x][0] = RGBArray[y][x][0] - globalAverageRed;
+				RGBArray[y][x][1] = RGBArray[y][x][1] - globalAverageGreen;
+				RGBArray[y][x][2] = RGBArray[y][x][2] - globalAverageBlue;
+
+				// Filter out negatives
+				if (RGBArray[y][x][0] < 0) {
+					RGBArray[y][x][0] = 0;
+				}
+
+				if (RGBArray[y][x][1] < 0) {
+					RGBArray[y][x][1] = 0;
+				}
+				if (RGBArray[y][x][2] < 0) {
+					RGBArray[y][x][2] = 0;
+				}
+			}
+		}
+
+		Tools.println("END:getGlobalDifference" + System.lineSeparator());
+		return RGBArray;
+	}
+
+	public static int[][][] getGlobalDifferenceArrayBinary(BufferedImage givenImage) {
+		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getGlobalDifferenceArray");
+
+		int width = givenImage.getWidth(); // Y-axis
+		int height = givenImage.getHeight(); // X-axis
+
+		/**
+		 * Verify the information of the image
+		 */
+		Tools.println("width:" + width + System.lineSeparator() + "height:" + height);
+
+		int[][][] RGBArray = new int[height][width][3];
+		float globalSum = 0;
+
+		for (int y = 0; y < height; y++) { // y-axis
+			for (int x = 0; x < width; x++) { // x-axis
+				Color colorAtXY = new Color(givenImage.getRGB(x, y));
+				globalSum += (colorAtXY.getRed() + colorAtXY.getGreen() + colorAtXY.getBlue());
+
+				RGBArray[y][x][0] = colorAtXY.getRed();
+				RGBArray[y][x][1] = colorAtXY.getGreen();
+				RGBArray[y][x][2] = colorAtXY.getBlue();
+			}
+		}
+
+		int globalAverage = Math.round(globalSum / (width * height));
+
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				int localValue = RGBArray[y][x][0] + RGBArray[y][x][1] + RGBArray[y][x][2];
+				if (localValue < globalSum) {
+					RGBArray[y][x][0] = 0;
+					RGBArray[y][x][1] = 0;
+					RGBArray[y][x][2] = 0;
+				} else {
+					RGBArray[y][x][0] = 255;
+					RGBArray[y][x][1] = 255;
+					RGBArray[y][x][2] = 255;
+				}
 			}
 		}
 
