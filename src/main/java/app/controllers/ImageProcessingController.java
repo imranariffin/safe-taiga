@@ -2,8 +2,10 @@ package app.controllers;
 
 import static app.Application.IMAGES_INPUT_DIR;
 import static app.Application.IMAGES_OUTPUT_PARTITION_DIR;
+import static app.Application.IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR;
 import static app.Application.IMAGES_OUTPUT_RESIZED_DIR;
 import static app.Application.TEXT_OUTPUT_PARTITION_DIR;
+import static app.Application.TEXT_OUTPUT_GLOBALDIFFERENCE_DIR;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -70,7 +72,7 @@ public class ImageProcessingController {
 		 * Prepare required variables
 		 */
 		BufferedImage originalImage, resizedImage, partitionedImage, globalDifferenceImage;
-		float[][][] partitioningRGBArray, globalDifferenceRGBArray;
+		int[][][] partitioningRGBArray, globalDifferenceRGBArray;
 
 		// Remove any file type post fix
 		String filename = tempFile.getFileName().toString().substring(0,
@@ -78,9 +80,13 @@ public class ImageProcessingController {
 
 		// Files directory
 		String savedImageDir = IMAGES_INPUT_DIR.toPath() + "/" + filename + ".png";
-		String outputTextDir = TEXT_OUTPUT_PARTITION_DIR.toPath() + "/" + filename + ".txt";
 		String outputResizedImage = IMAGES_OUTPUT_RESIZED_DIR.toPath() + "/" + filename + ".png";
+
 		String outputPartitionedImage = IMAGES_OUTPUT_PARTITION_DIR.toPath() + "/" + filename + ".png";
+		String outputPartitionedtText = TEXT_OUTPUT_PARTITION_DIR.toPath() + "/" + filename + ".txt";
+
+		String outputGlobalDifferenceImage = IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR.toPath() + "/" + filename + ".png";
+		String outputGlobalDifferenceText = TEXT_OUTPUT_GLOBALDIFFERENCE_DIR.toPath() + "/" + filename + ".txt";
 
 		// Logging
 		Tools.print("Uploaded file '" +
@@ -88,7 +94,7 @@ public class ImageProcessingController {
 				getFileName(request.raw().getPart("uploaded_file")) + "' saved as '" + tempFile.toAbsolutePath() + "'"
 				+ "\nbase filename:" + filename + "\ntemporary image is saved at:" + savedImageDir
 				+ "\nresized image saved at:" + outputResizedImage + "\ntext created from partitioning saved at:"
-				+ outputTextDir + "\npartitioned image created at:" + outputPartitionedImage);
+				+ outputPartitionedtText + "\npartitioned image created at:" + outputPartitionedImage);
 
 		originalImage = ImageIO.read(new File(savedImageDir));
 
@@ -114,7 +120,7 @@ public class ImageProcessingController {
 		ImageIO.write(partitionedImage, "png", new File(outputPartitionedImage));
 
 		// Write partitioned image data to a text file
-		FileManager.writeStringToFile(Tools.convertTripleArrayToString(partitioningRGBArray), outputTextDir);
+		FileManager.writeStringToFile(Tools.convertTripleArrayToString(partitioningRGBArray), outputPartitionedtText);
 
 		/**
 		 * GLOBAL DIFFERENCE
@@ -122,8 +128,18 @@ public class ImageProcessingController {
 		 * Find the global average RGB values of the image and take the
 		 * difference of all individual RGB with the global average
 		 */
-
+		// Get resized image global difference RGB array
 		globalDifferenceRGBArray = ImageProcessing.getGlobalDifferenceArray(resizedImage);
+
+		// Get the BufferedImage from the global difference RGB array
+		globalDifferenceImage = ImageProcessing.getBufferedImageGivenArray(globalDifferenceRGBArray);
+
+		// Save the partitioned image for future inquiries
+		ImageIO.write(globalDifferenceImage, "png", new File(outputGlobalDifferenceImage));
+
+		// Write partitioned image data to a text file
+		FileManager.writeStringToFile(Tools.convertTripleArrayToString(globalDifferenceRGBArray),
+				outputGlobalDifferenceText);
 		/**
 		 * Insert into database
 		 */

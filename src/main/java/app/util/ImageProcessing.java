@@ -85,7 +85,7 @@ public class ImageProcessing {
 		}
 	}
 
-	public static float[][][] getPartitionArray(BufferedImage originalImage) {
+	public static int[][][] getPartitionArray(BufferedImage originalImage) {
 		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getImageRGBPartitionValues");
 
 		int width = originalImage.getWidth();
@@ -95,7 +95,7 @@ public class ImageProcessing {
 		int blockSizeY = height / DIVISOR_VALUE;
 
 		// Array for the average values of partitioned images
-		float[][][] partitionArrayRGB = new float[DIVISOR_VALUE][DIVISOR_VALUE][3];
+		int[][][] partitionArrayRGB = new int[DIVISOR_VALUE][DIVISOR_VALUE][3];
 
 		// Variables for iterating through the image array
 		int blockStartX = 0;
@@ -103,9 +103,9 @@ public class ImageProcessing {
 		int blockCardinality = blockSizeX * blockSizeY;
 
 		// Placeholder variables when iterating the image
-		float partitionTotalValueRed = 0;
-		float partitionTotalValueGreen = 0;
-		float partitionTotalValueBlue = 0;
+		int partitionTotalValueRed = 0;
+		int partitionTotalValueGreen = 0;
+		int partitionTotalValueBlue = 0;
 
 		for (int a = 0; a < DIVISOR_VALUE; a++) { // Y-axis
 			for (int b = 0; b < DIVISOR_VALUE; b++) { // X-axis
@@ -146,7 +146,7 @@ public class ImageProcessing {
 		return partitionArrayRGB;
 	}
 
-	public static BufferedImage getPartitionedBufferedImage(float[][][] partitionArrayRGB) {
+	public static BufferedImage getPartitionedBufferedImage(int[][][] partitionArrayRGB) {
 		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getPartitionedBufferedImage");
 
 		BufferedImage bufferedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -197,11 +197,12 @@ public class ImageProcessing {
 		return bufferedImage;
 	}
 
-	public static float[][][] getGlobalDifferenceArray(BufferedImage resizedImage) {
+	public static int[][][] getGlobalDifferenceArray(BufferedImage resizedImage) {
 		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getGlobalDifferenceArray");
 
 		int width = resizedImage.getWidth();
 		int height = resizedImage.getHeight();
+		int[][][] RGBArray = new int[width][height][3];
 
 		float globalSumRed = 0, globalSumGreen = 0, globalSumBlue = 0;
 		for (int y = 0; y < width; y++) { // y-axis
@@ -210,14 +211,51 @@ public class ImageProcessing {
 				globalSumRed += colorAtXY.getRed();
 				globalSumGreen += colorAtXY.getGreen();
 				globalSumBlue += colorAtXY.getBlue();
+
+				RGBArray[y][x][0] = colorAtXY.getRed();
+				RGBArray[y][x][1] = colorAtXY.getGreen();
+				RGBArray[y][x][2] = colorAtXY.getBlue();
 			}
 		}
 
-		float globalAverageRed = globalSumRed / (width * height);
-		float globalAverageGreen = globalSumGreen / (width * height);
-		float globalAverageBlue = globalSumBlue / (width * height);
+		int globalAverageRed = Math.round(globalSumRed / (width * height));
+		int globalAverageGreen = Math.round(globalSumGreen / (width * height));
+		int globalAverageBlue = Math.round(globalSumBlue / (width * height));
+
+		for (int y = 0; y < width; y++) {
+			for (int x = 0; x < height; x++) {
+				RGBArray[y][x][0] = Math.abs(RGBArray[y][x][0] - globalAverageRed);
+				RGBArray[y][x][1] = Math.abs(RGBArray[y][x][1] - globalAverageGreen);
+				RGBArray[y][x][2] = Math.abs(RGBArray[y][x][2] - globalAverageBlue);
+			}
+		}
 
 		Tools.println("END:getGlobalDifference" + System.lineSeparator());
-		return null;
+		return RGBArray;
+	}
+
+	public static BufferedImage getBufferedImageGivenArray(int[][][] givenArray) {
+		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getPartitionedBufferedImage");
+
+		BufferedImage bufferedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, BufferedImage.TYPE_INT_RGB);
+
+		/**
+		 * Verify information of the image
+		 */
+		Tools.println("DIVISOR VALUE:" + DIVISOR_VALUE + System.lineSeparator() + "width:" + givenArray.length
+				+ System.lineSeparator() + "height:" + givenArray[0].length);
+
+		// Validate values of RGB array
+		Tools.println(Tools.convertTripleArrayToString(givenArray));
+		// Assign RGB color to the new image
+		for (int y = 0; y < givenArray.length; y++) { // Y-axis
+			for (int x = 0; x < givenArray[y].length; x++) { // X-axis
+				Color newColor = new Color(givenArray[y][x][0], givenArray[y][x][1], givenArray[y][x][2]);
+				bufferedImage.setRGB(x, y, newColor.getRGB());
+			}
+		}
+
+		Tools.println("END:getPartitionedBufferedImage" + System.lineSeparator());
+		return bufferedImage;
 	}
 }

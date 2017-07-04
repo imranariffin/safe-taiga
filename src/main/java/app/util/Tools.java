@@ -124,7 +124,7 @@ public class Tools {
 					 */
 					int i = 0; // the frame iterator
 					int panel = 0; // the panel iterator
-					float[][][] partitionArrayRGB; // float array for RGB
+					int[][][] partitionArrayRGB; // float array for RGB
 					String outputImageName; // name of the output partitioned
 											// image
 					String outputTextName; // name of the output partitioned
