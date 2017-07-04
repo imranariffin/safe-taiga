@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import app.util.Reference;
-import app.util.ScriptCreator;
+import app.util.ScriptManager;
 import app.util.ViewUtil;
 import app.util.Tools;
 
@@ -36,8 +36,8 @@ public class TextboardController {
 			Statement stmt = connection.createStatement();
 
 			// Just a simple SELECT ALL script
-			Tools.println("Executing script:" + ScriptCreator.SELECT_ALL_FROM_BOARDS);
-			ResultSet rs = stmt.executeQuery(ScriptCreator.SELECT_ALL_FROM_BOARDS);
+			Tools.println("Executing script:" + ScriptManager.SELECT_ALL_FROM_BOARDS);
+			ResultSet rs = stmt.executeQuery(ScriptManager.SELECT_ALL_FROM_BOARDS);
 
 			while (rs.next()) {
 				Map<String, String> board = new HashMap<String, String>();
@@ -106,7 +106,7 @@ public class TextboardController {
 			Statement stmt = connection.createStatement();
 
 			// Select all thread based on the given boardlink
-			String selectAllThreadFromBoardGivenBoardlink = ScriptCreator
+			String selectAllThreadFromBoardGivenBoardlink = ScriptManager
 					.selectAllThreadFromThreadsGivenBoardLink(boardlink);
 			Tools.println("Executing script:" + selectAllThreadFromBoardGivenBoardlink);
 			ResultSet rs = stmt.executeQuery(selectAllThreadFromBoardGivenBoardlink);
@@ -179,8 +179,8 @@ public class TextboardController {
 			/**
 			 * Get threadtext from the table
 			 */
-			Tools.println("Executing script:" + ScriptCreator.selectThreadFromThreadsGivenThreadid(threadid));
-			ResultSet rs = stmt.executeQuery(ScriptCreator.selectThreadFromThreadsGivenThreadid(threadid));
+			Tools.println("Executing script:" + ScriptManager.selectThreadFromThreadsGivenThreadid(threadid));
+			ResultSet rs = stmt.executeQuery(ScriptManager.selectThreadFromThreadsGivenThreadid(threadid));
 			rs.next();
 			
 			threadtext = rs.getString(Reference.CommonStrings.THREADTEXT);
@@ -189,8 +189,8 @@ public class TextboardController {
 			model.put(Reference.CommonStrings.THREADTEXT, threadtext);
 
 			// Select all thread based on the given boardlink
-			Tools.println("Executing script:" + ScriptCreator.selectAllPostFromPostsGivenThreadId(threadid));
-			rs = stmt.executeQuery(ScriptCreator.selectAllPostFromPostsGivenThreadId(threadid));
+			Tools.println("Executing script:" + ScriptManager.selectAllPostFromPostsGivenThreadId(threadid));
+			rs = stmt.executeQuery(ScriptManager.selectAllPostFromPostsGivenThreadId(threadid));
 
 			while (rs.next()) {
 				Map<String, String> post = new HashMap<String, String>();

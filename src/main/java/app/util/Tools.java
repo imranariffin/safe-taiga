@@ -48,38 +48,6 @@ public class Tools {
 		}
 	}
 
-	public static String convertTripleArrayToString(int[][][] tripleArray) {
-		/**
-		 * create string for the RGBs
-		 */
-
-		String script = "'{";
-		for (int a = 0; a < tripleArray.length; a++) { // y-axis
-			script += "{";
-			for (int b = 0; b < tripleArray[a].length; b++) { // x-axis
-				script += "{";
-				for (int c = 0; c < tripleArray[a][b].length; c++) {
-					script += tripleArray[a][b][c];
-					if (c < (tripleArray[a][b].length - 1)) {
-						script += ",";
-					}
-				}
-				if (b < (tripleArray[a].length - 1)) {
-					script += "},";
-				} else {
-					script += "}";
-				}
-			}
-			if (a < (tripleArray.length - 1)) {
-				script += "},";
-			} else {
-				script += "}";
-			}
-		}
-		script += "}'";
-		return script;
-	}
-
 	public static void InsertTextDumpToDatabase() {
 
 		String insertScript = "";
@@ -111,11 +79,11 @@ public class Tools {
 
 						Statement stmt = connection.createStatement();
 
-						partitionArrayRGB = FileManager.parsePartitionTextOutput("dev_output/text/"
+						partitionArrayRGB = FileManager.parseIntegerPartitionTextOutput("dev_output/text/"
 								+ animeArray[animeNumber].getName() + "/" + animeArray[animeNumber].getName() + "_"
 								+ episodeNumber + "_" + panelNumber + ".txt");
 
-						insertScript = ScriptCreator.insertIntoImagedbAnimeRgb(animeArray[animeNumber].getName(),
+						insertScript = ScriptManager.insertIntoImagedbAnimeRgb(animeArray[animeNumber].getName(),
 								episodeNumber, panelNumber, partitionArrayRGB);
 
 						Tools.println("Executing script:" + insertScript);
@@ -137,7 +105,7 @@ public class Tools {
 		}
 	}
 
-	public static void createImageDump() {
+	public static void createImageDumpFloat() {
 		try {
 			/**
 			 * Create required folders
@@ -156,12 +124,11 @@ public class Tools {
 					 */
 					int i = 0; // the frame iterator
 					int panel = 0; // the panel iterator
-					int[][][] partitionArrayRGB; // int array for RGB
+					float[][][] partitionArrayRGB; // float array for RGB
 					String outputImageName; // name of the output partitioned
 											// image
 					String outputTextName; // name of the output partitioned
-											// text
-											// dump
+											// text dump
 					BufferedImage image; // the image
 
 					Tools.println("begin parsing video");
@@ -181,14 +148,25 @@ public class Tools {
 					g.start();
 					while ((frame = g.grabImage()) != null) {
 						if ((i % ImageProcessing.FRAME_SKIP) == 0) {
+
+							// Get the BufferedImage from the frame
 							image = frameConverter.getBufferedImage(frame);
+
+							// Assign the location we want to save the image and
+							// the text file
 							outputImageName = "dev_output/images/output/partition/" + animeName + "/" + animeName + "_"
 									+ episode + "_" + panel + ".png";
 							outputTextName = "dev_output/text/" + animeName + "/" + animeName + "_" + episode + "_"
 									+ panel + ".txt";
-							partitionArrayRGB = ImageProcessing.getImageRGBPartitionValues(image);
-							ImageIO.write(ImageProcessing.partitionImage(ImageProcessing.resizeImage(image),
-									partitionArrayRGB), "png", new File(outputImageName));
+
+							// Get the partition RGB array of the image
+							partitionArrayRGB = ImageProcessing.getPartitionArray(image);
+
+							// Write the image based on the partition RGB array
+							ImageIO.write(ImageProcessing.getPartitionedBufferedImage(partitionArrayRGB), "png",
+									new File(outputImageName));
+
+							// Write the text file
 							FileManager.writeTripleArrayToString(partitionArrayRGB, outputTextName);
 							Tools.println(outputImageName);
 							panel++;
@@ -224,9 +202,8 @@ public class Tools {
 			// Tools.println("Execute script:" +
 			// ScriptCreator.DROP_IMAGEDB_ANIME_RGB);
 			// stmt.executeUpdate(ScriptCreator.DROP_IMAGEDB_ANIME_RGB);
-			// Tools.println("Execute script:" +
-			// ScriptCreator.CREATE_IMAGEDB_ANIME_RGB);
-			// stmt.executeUpdate(ScriptCreator.CREATE_IMAGEDB_ANIME_RGB);
+			Tools.println("Execute script:" + ScriptManager.CREATE_IMAGEDB_ANIME_RGB);
+			stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_ANIME_RGB);
 
 			// Create imagedb_anime_rgb table if not exist
 			// Tools.println("Execute script:" +
@@ -240,30 +217,30 @@ public class Tools {
 			 * DROP TABLES FOR TEXTBOARD
 			 */
 			// Drop table if exist
-			Tools.println("Execute script:" + ScriptCreator.DROP_POSTS);
-			stmt.executeUpdate(ScriptCreator.DROP_POSTS);
+			Tools.println("Execute script:" + ScriptManager.DROP_POSTS);
+			stmt.executeUpdate(ScriptManager.DROP_POSTS);
 
 			// Drop table if exist
-			Tools.println("Execute script:" + ScriptCreator.DROP_THREADS);
-			stmt.executeUpdate(ScriptCreator.DROP_THREADS);
+			Tools.println("Execute script:" + ScriptManager.DROP_THREADS);
+			stmt.executeUpdate(ScriptManager.DROP_THREADS);
 
 			// Drop table if exist
-			Tools.println("Execute script:" + ScriptCreator.DROP_BOARDS);
-			stmt.executeUpdate(ScriptCreator.DROP_BOARDS);
+			Tools.println("Execute script:" + ScriptManager.DROP_BOARDS);
+			stmt.executeUpdate(ScriptManager.DROP_BOARDS);
 			/**
 			 * CREATE TABLES FOR TEXTBOARD
 			 */
 			// Create imagedb_anime_rgb table if not exist
-			Tools.println("Execute script:" + ScriptCreator.CREATE_BOARDS);
-			stmt.executeUpdate(ScriptCreator.CREATE_BOARDS);
+			Tools.println("Execute script:" + ScriptManager.CREATE_BOARDS);
+			stmt.executeUpdate(ScriptManager.CREATE_BOARDS);
 
 			// Create imagedb_anime_rgb table if not exist
-			Tools.println("Execute script:" + ScriptCreator.CREATE_THREADS);
-			stmt.executeUpdate(ScriptCreator.CREATE_THREADS);
+			Tools.println("Execute script:" + ScriptManager.CREATE_THREADS);
+			stmt.executeUpdate(ScriptManager.CREATE_THREADS);
 
 			// Create imagedb_anime_rgb table if not exist
-			Tools.println("Execute script:" + ScriptCreator.CREATE_POSTS);
-			stmt.executeUpdate(ScriptCreator.CREATE_POSTS);
+			Tools.println("Execute script:" + ScriptManager.CREATE_POSTS);
+			stmt.executeUpdate(ScriptManager.CREATE_POSTS);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -276,8 +253,8 @@ public class Tools {
 
 		try (Connection connection = app.Application.getConnection()) {
 			Statement stmt = connection.createStatement();
-			Tools.println(ScriptCreator.selectAverageOfImageDb());
-			ResultSet rs = stmt.executeQuery(ScriptCreator.selectAverageOfImageDb());
+			Tools.println(ScriptManager.selectAverageOfImageDb());
+			ResultSet rs = stmt.executeQuery(ScriptManager.selectAverageOfImageDb());
 
 			rs.next();
 			String averageOfRGB = "";
@@ -304,8 +281,8 @@ public class Tools {
 	public static void getImageDbMinMax() {
 		try (Connection connection = app.Application.getConnection()) {
 			Statement stmt = connection.createStatement();
-			Tools.println(ScriptCreator.getMinMaxOfImageDb());
-			ResultSet rs = stmt.executeQuery(ScriptCreator.getMinMaxOfImageDb());
+			Tools.println(ScriptManager.getMinMaxOfImageDb());
+			ResultSet rs = stmt.executeQuery(ScriptManager.getMinMaxOfImageDb());
 
 			rs.next();
 			String minMaxOfRGB = "";
@@ -348,5 +325,35 @@ public class Tools {
 
 	public static String revertQuerySafeString(String safeString) {
 		return safeString.replaceAll(SAFE_STRING, "'");
+	}
+
+	public static String convertTripleArrayToString(int[][][] tripleArray) {
+		Tools.println("\nFROM:ImageProcessing:START:getStringFromTripleArray");
+		String outputText = "";
+		for (int a = 0; a < tripleArray.length; a++) { // Y-axis
+			for (int b = 0; b < tripleArray[a].length; b++) { // X-axis
+				for (int c = 0; c < tripleArray[a][b].length; c++) {
+					outputText += tripleArray[b][a][c] + " ";
+				}
+			}
+			outputText += System.lineSeparator();
+		}
+		Tools.println("END:getStringFromTripleArray\n");
+		return outputText;
+	}
+
+	public static String convertTripleArrayToString(float[][][] tripleArray) {
+		Tools.println("\nFROM:ImageProcessing:START:getStringFromTripleArray");
+		String outputText = "";
+		for (int a = 0; a < tripleArray.length; a++) { // Y-axis
+			for (int b = 0; b < tripleArray[a].length; b++) { // X-axis
+				for (int c = 0; c < tripleArray[a][b].length; c++) {
+					outputText += tripleArray[b][a][c] + " ";
+				}
+			}
+			outputText += System.lineSeparator();
+		}
+		Tools.println("END:getStringFromTripleArray\n");
+		return outputText;
 	}
 }

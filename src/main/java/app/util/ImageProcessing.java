@@ -31,58 +31,15 @@ public class ImageProcessing {
 												// of any image uploaded
 	public static final int DIVISOR_VALUE = 5; // Determine the number of box
 												// (width and length)
-	public static final int BUFFER_VALUE = 1; // Determine the range to check
+	public static final int BUFFER_VALUE = 5; // Determine the range to check
 												// for RGB values
 	public static final int TRIAL_VALUE = 1; // Determine the width and length
 												// of the nearby box to check
 	public static final int FRAME_SKIP = 72; // Determine the frames to skip
 												// when parsing video
 
-	public static BufferedImage partitionImage(BufferedImage originalImage, int[][][] partitionArrayRGB) {
-		Tools.println("\nFROM:ImageProcessing:START:partitionImage");
-
-		// parse required information about the image
-		int width = originalImage.getWidth();
-		int height = originalImage.getHeight();
-		int blockSizeX = width / DIVISOR_VALUE;
-		int blockSizeY = height / DIVISOR_VALUE;
-
-		/**
-		 * Verify information of the image
-		 */
-		Tools.println("divisor image:" + DIVISOR_VALUE + "\n" + "width:" + width + "\n" + "height:" + height + "\n"
-				+ "blockSizeX:" + blockSizeX + "\n" + "blockSizeY:" + blockSizeY);
-
-		// Variables for iterating through the image array
-		int blockStartX = 0;
-		int blockStartY = 0;
-
-		// Assign RGB color to the new image
-		for (int a = 0; a < DIVISOR_VALUE; a++) { // Y-axis
-			for (int b = 0; b < DIVISOR_VALUE; b++) { // X-axis
-				// do stuff in the partition
-				for (int c = 0; c < blockSizeY; c++) { // Y-axis
-					for (int d = 0; d < blockSizeX; d++) { // X-axis
-						Color newColor = new Color(partitionArrayRGB[b][a][0], partitionArrayRGB[b][a][1],
-								partitionArrayRGB[b][a][2]);
-						originalImage.setRGB((d + blockStartX), (c + blockStartY), newColor.getRGB());
-					}
-				}
-				// move to the next X block
-				blockStartX += blockSizeX;
-			}
-			// move to the next Y block
-			blockStartY += blockSizeY;
-			// reset blockStartX
-			blockStartX = 0;
-		}
-
-		Tools.println("END:partitionImage\n");
-		return originalImage;
-	}
-
 	public static BufferedImage resizeImage(BufferedImage originalImage) throws IOException {
-		Tools.println("\nFROM:ImageProcessing:START:resizeImage");
+		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:resizeImage");
 
 		int type = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_RGB : originalImage.getType();
 		BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
@@ -90,12 +47,12 @@ public class ImageProcessing {
 		g.drawImage(originalImage, 0, 0, IMG_WIDTH, IMG_HEIGHT, null);
 		g.dispose();
 
-		Tools.println("END:resizeImage\n");
+		Tools.println("END:resizeImage" + System.lineSeparator());
 		return resizedImage;
 	}
 
 	public static void resizeImageWithHint(String fileName) throws IOException {
-		Tools.println("\nSTART:resizeImageWithHinting:FROM:ImageProcessing");
+		Tools.println("System.lineSeperator()START:resizeImageWithHinting:FROM:ImageProcessing");
 		BufferedImage originalImage = ImageIO.read(new File("images/input/" + fileName));
 		int type = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
 		BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
@@ -109,7 +66,7 @@ public class ImageProcessing {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		ImageIO.write(resizedImage, "png", new File("images/input/resizedwithhint/" + fileName));
-		Tools.println("END:resizeImageWithHinting\n");
+		Tools.println("END:resizeImageWithHinting" + System.lineSeparator());
 	}
 
 	public static void convertToPng(String filename) {
@@ -128,20 +85,17 @@ public class ImageProcessing {
 		}
 	}
 
-	public static int[][][] getImageRGBPartitionValues(BufferedImage originalImage) {
-		Tools.println("\nFROM:ImageProcessing:START:getImageRGBPartitionValues");
+	public static float[][][] getPartitionArray(BufferedImage originalImage) {
+		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getImageRGBPartitionValues");
 
-		// BufferedImage image;
-		int width;
-		int height;
-		width = originalImage.getWidth();
-		height = originalImage.getHeight();
+		int width = originalImage.getWidth();
+		int height = originalImage.getHeight();
 
 		int blockSizeX = width / DIVISOR_VALUE;
 		int blockSizeY = height / DIVISOR_VALUE;
 
 		// Array for the average values of partitioned images
-		int[][][] partitionArrayRGB = new int[DIVISOR_VALUE][DIVISOR_VALUE][3];
+		float[][][] partitionArrayRGB = new float[DIVISOR_VALUE][DIVISOR_VALUE][3];
 
 		// Variables for iterating through the image array
 		int blockStartX = 0;
@@ -149,9 +103,9 @@ public class ImageProcessing {
 		int blockCardinality = blockSizeX * blockSizeY;
 
 		// Placeholder variables when iterating the image
-		int partitionTotalValueRed = 0;
-		int partitionTotalValueGreen = 0;
-		int partitionTotalValueBlue = 0;
+		float partitionTotalValueRed = 0;
+		float partitionTotalValueGreen = 0;
+		float partitionTotalValueBlue = 0;
 
 		for (int a = 0; a < DIVISOR_VALUE; a++) { // Y-axis
 			for (int b = 0; b < DIVISOR_VALUE; b++) { // X-axis
@@ -188,22 +142,82 @@ public class ImageProcessing {
 			blockStartX = 0;
 		}
 
-		Tools.println("END:getImageRGBPartitionValues\n");
+		Tools.println("END:getImageRGBPartitionValues" + System.lineSeparator());
 		return partitionArrayRGB;
 	}
 
-	public static String getStringFromTripleArray(int[][][] tripleArray) {
-		Tools.println("\nFROM:ImageProcessing:START:getStringFromTripleArray");
-		String outputText = "";
-		for (int a = 0; a < tripleArray.length; a++) { // Y-axis
-			for (int b = 0; b < tripleArray[a].length; b++) { // X-axis
-				for (int c = 0; c < tripleArray[a][b].length; c++) {
-					outputText += tripleArray[b][a][c] + " ";
+	public static BufferedImage getPartitionedBufferedImage(float[][][] partitionArrayRGB) {
+		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getPartitionedBufferedImage");
+
+		BufferedImage bufferedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, BufferedImage.TYPE_INT_RGB);
+
+		// Parse required information about the image
+		int width = bufferedImage.getWidth();
+		int height = bufferedImage.getHeight();
+		int blockSizeX = width / DIVISOR_VALUE;
+		int blockSizeY = height / DIVISOR_VALUE;
+
+		/**
+		 * Verify information of the image
+		 */
+		Tools.println("DIVISOR VALUE:" + DIVISOR_VALUE + System.lineSeparator() + "width:" + width
+				+ System.lineSeparator() + "height:" + height + System.lineSeparator() + "blockSizeX:" + blockSizeX
+				+ System.lineSeparator() + "blockSizeY:" + blockSizeY);
+
+		// Variables for iterating through the image array
+		int blockStartX = 0;
+		int blockStartY = 0;
+
+		// Validate values of RGB array
+		Tools.println(Tools.convertTripleArrayToString(partitionArrayRGB));
+		// Assign RGB color to the new image
+		for (int a = 0; a < DIVISOR_VALUE; a++) { // Y-axis
+			for (int b = 0; b < DIVISOR_VALUE; b++) { // X-axis
+				// do stuff in the partition
+				for (int c = 0; c < blockSizeY; c++) { // Y-axis
+					for (int d = 0; d < blockSizeX; d++) { // X-axis
+						Tools.println("Red:" + partitionArrayRGB[b][a][0] + System.lineSeparator() + "Green:"
+								+ partitionArrayRGB[b][a][1] + System.lineSeparator() + "Blue:"
+								+ partitionArrayRGB[b][a][2]);
+						Color newColor = new Color(partitionArrayRGB[b][a][0], partitionArrayRGB[b][a][1],
+								partitionArrayRGB[b][a][2]);
+						bufferedImage.setRGB((d + blockStartX), (c + blockStartY), newColor.getRGB());
+					}
 				}
+				// move to the next X block
+				blockStartX += blockSizeX;
 			}
-			outputText += "\n";
+			// move to the next Y block
+			blockStartY += blockSizeY;
+			// reset blockStartX
+			blockStartX = 0;
 		}
-		Tools.println("END:getStringFromTripleArray\n");
-		return outputText;
+
+		Tools.println("END:getPartitionedBufferedImage" + System.lineSeparator());
+		return bufferedImage;
+	}
+
+	public static float[][][] getGlobalDifferenceArray(BufferedImage resizedImage) {
+		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getGlobalDifferenceArray");
+
+		int width = resizedImage.getWidth();
+		int height = resizedImage.getHeight();
+
+		float globalSumRed = 0, globalSumGreen = 0, globalSumBlue = 0;
+		for (int y = 0; y < width; y++) { // y-axis
+			for (int x = 0; x < height; x++) { // x-axis
+				Color colorAtXY = new Color(resizedImage.getRGB(x, y));
+				globalSumRed += colorAtXY.getRed();
+				globalSumGreen += colorAtXY.getGreen();
+				globalSumBlue += colorAtXY.getBlue();
+			}
+		}
+
+		float globalAverageRed = globalSumRed / (width * height);
+		float globalAverageGreen = globalSumGreen / (width * height);
+		float globalAverageBlue = globalSumBlue / (width * height);
+
+		Tools.println("END:getGlobalDifference" + System.lineSeparator());
+		return null;
 	}
 }

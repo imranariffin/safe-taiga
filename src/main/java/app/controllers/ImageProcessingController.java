@@ -15,18 +15,16 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.Part;
 
-import app.util.AnimeObject;
 import app.util.FileManager;
 import app.util.ImageProcessing;
 import app.util.Reference;
-import app.util.ScriptCreator;
+import app.util.ScriptManager;
 import app.util.Tools;
 import app.util.ViewUtil;
 import app.util.ImagePanelData;
@@ -37,8 +35,8 @@ import spark.Route;
 
 public class ImageProcessingController {
 
-	public static boolean BOOL_SCRIPT = false;
-	public static boolean BOOL_MATCHING_NAME = false;
+	public static boolean BOOL_SCRIPT = true;
+	public static boolean BOOL_MATCHING_NAME = true;
 
 	public static Route serveImageUpload = (Request request, Response response) -> {
 		Tools.println("\nFROM:ImageProcessingController:START:serveImageUpload");
@@ -71,11 +69,13 @@ public class ImageProcessingController {
 		/**
 		 * Prepare required variables
 		 */
-		BufferedImage originalImage;
-		int[][][] partitionArrayRGB = null;
+		BufferedImage originalImage, resizedImage, partitionedImage, globalDifferenceImage;
+		float[][][] partitioningRGBArray, globalDifferenceRGBArray;
 
+		// Remove any file type post fix
 		String filename = tempFile.getFileName().toString().substring(0,
 				tempFile.getFileName().toString().length() - 4);
+
 		// Files directory
 		String savedImageDir = IMAGES_INPUT_DIR.toPath() + "/" + filename + ".png";
 		String outputTextDir = TEXT_OUTPUT_PARTITION_DIR.toPath() + "/" + filename + ".txt";
@@ -90,25 +90,40 @@ public class ImageProcessingController {
 				+ "\nresized image saved at:" + outputResizedImage + "\ntext created from partitioning saved at:"
 				+ outputTextDir + "\npartitioned image created at:" + outputPartitionedImage);
 
+		originalImage = ImageIO.read(new File(savedImageDir));
+
+		// Resize the image
+		resizedImage = ImageProcessing.resizeImage(originalImage);
+
+		// Save resized image for future inquiries
+		ImageIO.write(resizedImage, "png", new File(outputResizedImage));
+
 		/**
-		 * Reformat the image
+		 * PARTITION IMAGE
+		 * 
+		 * Divide the image into several equally sized boxes and find the
+		 * average RGB values for each box then assign them to the box
 		 */
-		originalImage = ImageIO.read(new File(savedImageDir)); // already saved
-																// above
-		originalImage = ImageProcessing.resizeImage(originalImage);
-		// saved resized image for future inquiries
-		ImageIO.write(originalImage, "png", new File(outputResizedImage));
+		// Get resized image partitioning RGB array
+		partitioningRGBArray = ImageProcessing.getPartitionArray(resizedImage);
 
-		// get image RGB array
-		partitionArrayRGB = ImageProcessing.getImageRGBPartitionValues(originalImage);
+		// Partition the resized image based on the partitioning array
+		partitionedImage = ImageProcessing.getPartitionedBufferedImage(partitioningRGBArray);
 
-		originalImage = ImageProcessing.partitionImage(originalImage, partitionArrayRGB);
-		// saved partitioned image for future inquiries
-		ImageIO.write(originalImage, "png", new File(outputPartitionedImage));
+		// Save the partitioned image for future inquiries
+		ImageIO.write(partitionedImage, "png", new File(outputPartitionedImage));
 
-		// write image data to a text file
-		FileManager.writeStringToFile(ImageProcessing.getStringFromTripleArray(partitionArrayRGB), outputTextDir);
+		// Write partitioned image data to a text file
+		FileManager.writeStringToFile(Tools.convertTripleArrayToString(partitioningRGBArray), outputTextDir);
 
+		/**
+		 * GLOBAL DIFFERENCE
+		 * 
+		 * Find the global average RGB values of the image and take the
+		 * difference of all individual RGB with the global average
+		 */
+
+		globalDifferenceRGBArray = ImageProcessing.getGlobalDifferenceArray(resizedImage);
 		/**
 		 * Insert into database
 		 */
@@ -119,23 +134,8 @@ public class ImageProcessingController {
 			/**
 			 * Insert into database the image data sent by user
 			 */
-			String requestIp = request.ip();
-			Tools.println("userIp:" + requestIp);
-
-			String insertIntoImageDbUserImageRequest = ScriptCreator.insertIntoImageDbUserImageRequest(requestIp,
-					partitionArrayRGB);
-			stmt.executeUpdate(insertIntoImageDbUserImageRequest);
-
-			/**
-			 * INITIALIZE VARIABLES
-			 * 
-			 * for image searching
-			 */
-			ImagePanelData tmpImagePanel;
-			Map<String, ImagePanelData> matchResult;
-			String tmpString;
-			String[] keys;
-			ImagePanelData[] values;
+			// ImageProcessingManager.insertImageDataToDatabase(stmt,
+			// request.ip(), partitioningRGBArray);
 
 			/**
 			 * RANDOMIZED SEARCH
@@ -144,8 +144,15 @@ public class ImageProcessingController {
 			 * 
 			 * This is good for cropped pictures
 			 */
+
+			// Initialize variable for image search
+			ImagePanelData tmpImagePanel;
+			Map<String, ImagePanelData> matchResult;
+			ImagePanelData[] values;
+
 			Tools.println("TEST 1");
-			String findMatchingImageDataRandomized = ScriptCreator.findMatchingImageDataRandomized(partitionArrayRGB);
+			String findMatchingImageDataRandomized = ScriptManager
+					.findMatchingImageDataRandomized(partitioningRGBArray);
 			Tools.println(findMatchingImageDataRandomized, BOOL_SCRIPT);
 
 			ResultSet rs = stmt.executeQuery(findMatchingImageDataRandomized);
@@ -190,8 +197,8 @@ public class ImageProcessingController {
 			 * This is also specially good for cropped pictures
 			 */
 			Tools.println("TEST 2");
-			String findMatchingImageDataRandomizedV2 = ScriptCreator
-					.findMatchingImageDataRandomizedV2(partitionArrayRGB);
+			String findMatchingImageDataRandomizedV2 = ScriptManager
+					.findMatchingImageDataRandomizedV2(partitioningRGBArray);
 			Tools.println(findMatchingImageDataRandomizedV2, BOOL_SCRIPT);
 
 			rs = stmt.executeQuery(findMatchingImageDataRandomizedV2);
@@ -241,8 +248,8 @@ public class ImageProcessingController {
 			for (int a = 0; a < ImageProcessing.DIVISOR_VALUE; a++) {
 				for (int b = 0; b < ImageProcessing.DIVISOR_VALUE; b++) {
 					for (int c = 0; c < 3; c++) {
-						findMatchingImageDataIncremental = ScriptCreator.findMatchingImageDataIncremental(a, b, c,
-								partitionArrayRGB[a][b][c]);
+						findMatchingImageDataIncremental = ScriptManager.findMatchingImageDataIncremental(a, b, c,
+								partitioningRGBArray[a][b][c]);
 						Tools.println("Execute Query:" + findMatchingImageDataIncremental, BOOL_SCRIPT);
 
 						rs = stmt.executeQuery(findMatchingImageDataIncremental);
@@ -314,8 +321,8 @@ public class ImageProcessingController {
 			matchResult = new HashMap<String, ImagePanelData>();
 			for (int a = 0; a < ImageProcessing.DIVISOR_VALUE; a++) {
 				for (int b = 0; b < ImageProcessing.DIVISOR_VALUE; b++) {
-					findMatchingImageDataIncrementalRGB = ScriptCreator.findMatchingImageDataIncrementalRGB(a, b,
-							partitionArrayRGB[a][b]);
+					findMatchingImageDataIncrementalRGB = ScriptManager.findMatchingImageDataIncrementalRGB(a, b,
+							partitioningRGBArray[a][b]);
 					Tools.println("Execute Query:" + findMatchingImageDataIncrementalRGB, BOOL_SCRIPT);
 
 					rs = stmt.executeQuery(findMatchingImageDataIncrementalRGB);
@@ -380,10 +387,10 @@ public class ImageProcessingController {
 					Reference.CommonStrings.NAME_IMAGEPROCESSING);
 		}
 
-		if (partitionArrayRGB == null) {
+		if (partitioningRGBArray == null) {
 			throw new NullPointerException("partitionArrayRGB is null");
 		} else {
-			model.put("partitionArrayRGB", partitionArrayRGB);
+			model.put("partitionArrayRGB", partitioningRGBArray);
 		}
 		model.put("imagefile", outputPartitionedImage.substring(7, outputPartitionedImage.length()));
 		model.put("imagemessage", "partitioned image");

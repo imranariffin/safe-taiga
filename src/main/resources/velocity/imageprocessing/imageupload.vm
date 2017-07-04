@@ -23,13 +23,27 @@
 				<button>Upload picture</button>
 			</form>
 		</div>
-		#**
+		
 		<div>
-		<h1>$imagemessage</h1>
+		<h1>$ORIGINAL_IMAGE_MESSAGE</h1>
 		<br>
-		<img src='$imagefile'>
+		<img src='$ORIGINAL_IMAGE_FILE'>
 		</div>
+		
 		<div>
+		<h1>$PARTITION_IMAGE_MESSAGE</h1>
+		<br>
+		<img src='$PARTITION_IMAGE_FILE'>
+		</div>
+		
+		<div>
+		<h1>$GLOBALDIFFERENCE_IMAGE_MESSAGE</h1>
+		<br>
+		<img src='$GLOBALDIFFERENCE_IMAGE_FILE'>
+		</div>
+		
+		<div>
+		#**
 		#foreach( $y in $partitionArrayRGB )
 			<p><small>#foreach( $x in $y){#foreach( $z in $x)[$z]#end}#end</small></p>
 		#end

@@ -81,8 +81,8 @@ public class Application {
 		get("*", ViewUtil.notFound);
 
 		Tools.createDatabases();
-		// Tools.createImageDump();
-		// Tools.InsertTextDumpToDatabase();
+		Tools.createImageDumpFloat();
+		Tools.InsertTextDumpToDatabase();
 
 		System.out.println("SERVER:END");
 	}
