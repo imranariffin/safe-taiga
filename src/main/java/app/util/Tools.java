@@ -35,7 +35,12 @@ public class Tools {
 		}
 	}
 
+	public static void println(int nextInt) {
+		println(Integer.toString(nextInt));
+	}
+
 	public static void getImageDbAverageRGB() {
+		Tools.println(System.lineSeparator() + "FROM:Tools:START:getImageDbAverageRGB");
 
 		try (Connection connection = app.Application.getConnection()) {
 			Statement stmt = connection.createStatement();
@@ -56,15 +61,19 @@ public class Tools {
 					Tools.println("");
 				}
 			}
-			FileManager.writeStringToFile(averageOfRGB, "dev_output/averageOfRGB.txt");
+			FileManager.log(averageOfRGB, "dev_output/averageOfRGB.txt");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
+
+		Tools.println("END:getImageDbAverageRGB");
 	}
 
 	public static void getImageDbMinMax() {
+		Tools.println(System.lineSeparator() + "FROM:Tools:START:getImageDbMinMax");
+
 		try (Connection connection = app.Application.getConnection()) {
 			Statement stmt = connection.createStatement();
 			Tools.println(ScriptManager.getMinMaxOfImageDb());
@@ -85,19 +94,19 @@ public class Tools {
 					Tools.println("");
 				}
 			}
-			FileManager.writeStringToFile(minMaxOfRGB, "dev_output/minMaxOfRGB.txt");
+			FileManager.log(minMaxOfRGB, "dev_output/minMaxOfRGB.txt");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-	}
 
-	public static void println(int nextInt) {
-		println(Integer.toString(nextInt));
+		Tools.println("END:getImageDbMinMax");
 	}
 
 	public static String convertToQuerySafe(String givenString) {
+		Tools.println(System.lineSeparator() + "FROM:Tools:START:convertToQuerySafe");
+
 		String safeString = "";
 		for (int a = 0; a < givenString.length(); a++) {
 			if (givenString.charAt(a) == '\'') {
@@ -106,19 +115,21 @@ public class Tools {
 				safeString += givenString.charAt(a);
 			}
 		}
+
+		Tools.println("END:convertToQuerySafe");
 		return safeString;
 	}
 
 	public static String revertQuerySafeString(String safeString) {
+		Tools.println("FROM:Tools:START:revertQuerySafeString");
+		Tools.println("END:revertQuerySafeString");
 		return safeString.replaceAll(SAFE_STRING, "'");
 	}
 
 	public static String convertTripleArrayToString(int[][][] tripleArray) {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getStringFromTripleArray");
-		String outputText = "";
+		Tools.println(System.lineSeparator() + "FROM:Tools:START:getStringFromTripleArray");
 
-		Tools.println("y:" + tripleArray.length + System.lineSeparator() + "x:" + tripleArray[0].length
-				+ System.lineSeparator() + "z:" + tripleArray[0][0].length);
+		String outputText = "";
 		for (int y = 0; y < tripleArray.length; y++) { // Y-axis
 			for (int x = 0; x < tripleArray[y].length; x++) { // X-axis
 				for (int z = 0; z < tripleArray[y][x].length; z++) { // Z-axis
@@ -127,6 +138,7 @@ public class Tools {
 			}
 			outputText += System.lineSeparator();
 		}
+
 		Tools.println("END:getStringFromTripleArray" + System.lineSeparator());
 		return outputText;
 	}

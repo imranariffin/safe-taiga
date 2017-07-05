@@ -198,7 +198,7 @@ public class SettingUp {
 						}
 						i++;
 					}
-					FileManager.writeStringToFile("" + panel,
+					FileManager.log("" + panel,
 							"dev_output/description/" + animeName + "_" + episode + ".txt");
 					g.stop();
 					Tools.println("end parsing video");

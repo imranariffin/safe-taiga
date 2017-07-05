@@ -10,6 +10,8 @@ import java.io.PrintWriter;
 
 public class FileManager {
 
+	private static boolean logging = false;
+
 	public static String readFile(String filename) throws IOException {
 
 		String readString = "";
@@ -104,20 +106,22 @@ public class FileManager {
 		return partitionArrayRGB;
 	}
 
-	public static void writeStringToFile(String text, String pathFile) {
-		Tools.println("\nFROM:WriteFile:START:writeStringToFile");
-		Tools.println("writing to:" + pathFile);
-		FileWriter write;
-		try {
-			write = new FileWriter(pathFile);
-			PrintWriter print_line = new PrintWriter(write);
-			print_line.printf("%s", text);
-			print_line.close();
-		} catch (IOException e) {
-			Tools.println("FAILURE WRITING FILE" + "\n" + "pathFile:" + pathFile + "\n" + "text:" + text);
-			Tools.println("message" + e.getMessage());
+	public static void log(String text, String pathFile) {
+		if (logging) {
+			Tools.println("\nFROM:WriteFile:START:writeStringToFile");
+			Tools.println("writing to:" + pathFile);
+			FileWriter write;
+			try {
+				write = new FileWriter(pathFile);
+				PrintWriter print_line = new PrintWriter(write);
+				print_line.printf("%s", text);
+				print_line.close();
+			} catch (IOException e) {
+				Tools.println("FAILURE WRITING FILE" + "\n" + "pathFile:" + pathFile + "\n" + "text:" + text);
+				Tools.println("message" + e.getMessage());
+			}
+			Tools.println("END:writeStringToFile\n");
 		}
-		Tools.println("END:writeStringToFile\n");
 	}
 
 	public static void writeTripleArrayToString(int[][][] tripleArray, String pathFile) {

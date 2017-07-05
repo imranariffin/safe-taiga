@@ -8,14 +8,19 @@ import static app.Application.TEXT_OUTPUT_PARTITION_DIR;
 import static app.Application.TEXT_OUTPUT_GLOBALDIFFERENCE_DIR;
 
 import java.awt.image.BufferedImage;
+
 import java.io.File;
 import java.io.InputStream;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.SQLException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +34,7 @@ import app.util.Reference;
 import app.util.ScriptManager;
 import app.util.Tools;
 import app.util.ViewUtil;
-import app.util.ImagePanelData;
+import app.util.AnimePanel;
 
 import spark.Request;
 import spark.Response;
@@ -38,7 +43,7 @@ import spark.Route;
 public class ImageProcessingController {
 
 	public static boolean BOOL_SCRIPT = true;
-	public static boolean BOOL_MATCHING_NAME = true;
+	public static boolean BOOL_MATCHING_NAME = false;
 
 	public static Route serveImageUpload = (Request request, Response response) -> {
 		Tools.println("\nFROM:ImageProcessingController:START:serveImageUpload");
@@ -56,8 +61,10 @@ public class ImageProcessingController {
 		Tools.println("\nFROM:ImageProcessingController:START:handleImageUpload");
 		Map<String, Object> model = new HashMap<String, Object>();
 
+		/**
+		 * Get uploaded image file
+		 */
 		Path tempFile = Files.createTempFile(IMAGES_INPUT_DIR.toPath(), "", ".png");
-
 		request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 
 		try (InputStream input = request.raw().getPart("uploaded_file").getInputStream()) {
@@ -120,7 +127,8 @@ public class ImageProcessingController {
 		ImageIO.write(partitionedImage, "png", new File(outputPartitionedImage));
 
 		// Write partitioned image data to a text file
-		FileManager.writeStringToFile(Tools.convertTripleArrayToString(partitioningRGBArray), outputPartitionedtText);
+		// FileManager.log(Tools.convertTripleArrayToString(partitioningRGBArray),
+		// outputPartitionedtText);
 
 		/**
 		 * GLOBAL DIFFERENCE
@@ -138,8 +146,7 @@ public class ImageProcessingController {
 		ImageIO.write(globalDifferenceImage, "png", new File(outputGlobalDifferenceImage));
 
 		// Write partitioned image data to a text file
-		FileManager.writeStringToFile(Tools.convertTripleArrayToString(globalDifferenceRGBArray),
-				outputGlobalDifferenceText);
+		// FileManager.log(Tools.convertTripleArrayToString(globalDifferenceRGBArray),outputGlobalDifferenceText);
 		/**
 		 * Insert into database
 		 */
@@ -160,49 +167,7 @@ public class ImageProcessingController {
 			 * 
 			 * This is good for cropped pictures
 			 */
-
-			// Initialize variable for image search
-			ImagePanelData tmpImagePanel;
-			Map<String, ImagePanelData> matchResult;
-			ImagePanelData[] values;
-
-			Tools.println("TEST 1");
-			String findMatchingImageDataRandomized = ScriptManager
-					.findMatchingImageDataRandomized(partitioningRGBArray);
-			Tools.println(findMatchingImageDataRandomized, BOOL_SCRIPT);
-
-			ResultSet rs = stmt.executeQuery(findMatchingImageDataRandomized);
-
-			matchResult = new HashMap<String, ImagePanelData>();
-			while (rs.next()) {
-				Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
-						+ rs.getString("panel"), BOOL_MATCHING_NAME);
-				tmpImagePanel = new ImagePanelData(rs.getString("name"), rs.getString("episode"),
-						rs.getString("panel"));
-				matchResult.put(tmpImagePanel.getKey(), tmpImagePanel);
-			}
-
-			if (matchResult.isEmpty()) {
-				Tools.println("Test 1: None found");
-				model.put("test_1_boolean", false);
-			} else {
-				Tools.println("Test 1: Found");
-				model.put("test_1_boolean", true);
-				values = new ImagePanelData[matchResult.size()];
-
-				int index = 0;
-				for (Map.Entry<String, ImagePanelData> mapEntry : matchResult.entrySet()) {
-					values[index] = mapEntry.getValue();
-					index++;
-				}
-
-				model.put("test_1_result", values); // Return a list of result,
-													// since this is randomized
-													// search specialized in
-													// cropped
-													// pictures, duplicates are
-													// expected
-			}
+			ImageProcessingManager.findMatchingImageDataRandomized(stmt, model, partitioningRGBArray);
 
 			/**
 			 * RANDOMIZED SEARCH VERSION 2
@@ -212,44 +177,8 @@ public class ImageProcessingController {
 			 * 
 			 * This is also specially good for cropped pictures
 			 */
-			Tools.println("TEST 2");
-			String findMatchingImageDataRandomizedV2 = ScriptManager
-					.findMatchingImageDataRandomizedV2(partitioningRGBArray);
-			Tools.println(findMatchingImageDataRandomizedV2, BOOL_SCRIPT);
-
-			rs = stmt.executeQuery(findMatchingImageDataRandomizedV2);
-
-			matchResult = new HashMap<String, ImagePanelData>();
-			while (rs.next()) {
-				Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
-						+ rs.getString("panel"), BOOL_MATCHING_NAME);
-				tmpImagePanel = new ImagePanelData(rs.getString("name"), rs.getString("episode"),
-						rs.getString("panel"));
-				matchResult.put(tmpImagePanel.getKey(), tmpImagePanel);
-			}
-
-			if (matchResult.isEmpty()) {
-				Tools.println("Test 2: None found");
-				model.put("test_2_boolean", false);
-			} else {
-				Tools.println("Test 2: Found");
-				model.put("test_2_boolean", true);
-				values = new ImagePanelData[matchResult.size()];
-
-				int index = 0;
-				for (Map.Entry<String, ImagePanelData> mapEntry : matchResult.entrySet()) {
-					values[index] = mapEntry.getValue();
-					index++;
-				}
-
-				model.put("test_2_result", values); // Return a list of result,
-													// since this is randomized
-													// search specialized in
-													// cropped
-													// pictures, duplicates are
-													// expected
-			}
-
+			Tools.println("TEST 3");
+			ImageProcessingManager.findMatchingImageDataRandomizedV2(stmt, model, partitioningRGBArray);
 			/**
 			 * INCREMENTAL SEARCH NON-RGB
 			 * 
@@ -257,74 +186,7 @@ public class ImageProcessingController {
 			 * separate 1-tuple
 			 */
 			Tools.println("TEST 3");
-			boolean test3Found = false;
-			String findMatchingImageDataIncremental;
-			matchResult = new HashMap<String, ImagePanelData>();
-
-			for (int a = 0; a < ImageProcessing.DIVISOR_VALUE; a++) {
-				for (int b = 0; b < ImageProcessing.DIVISOR_VALUE; b++) {
-					for (int c = 0; c < 3; c++) {
-						findMatchingImageDataIncremental = ScriptManager.findMatchingImageDataIncremental(a, b, c,
-								partitioningRGBArray[a][b][c]);
-						Tools.println("Execute Query:" + findMatchingImageDataIncremental, BOOL_SCRIPT);
-
-						rs = stmt.executeQuery(findMatchingImageDataIncremental);
-
-						while (rs.next()) {
-							Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
-									+ rs.getString("panel"), BOOL_MATCHING_NAME);
-							ImagePanelData panelData = new ImagePanelData(rs.getString("name"), rs.getInt(2),
-									rs.getInt(3));
-							if (!(matchResult.containsKey(panelData.getKey()))) {
-								matchResult.put(panelData.getKey(), panelData);
-							} else {
-								test3Found = true;
-								matchResult.get(panelData.getKey()).incrementWeight();
-							}
-
-						}
-					}
-				}
-			}
-
-			if (!test3Found) {
-				Tools.println("Test 3: None found");
-				model.put("test_3_boolean", false);
-			} else {
-				Tools.println("Test 3: Found");
-				model.put("test_3_boolean", true);
-				values = new ImagePanelData[matchResult.size()];
-
-				/**
-				 * Convert map to array
-				 */
-				int index = 0;
-				for (Map.Entry<String, ImagePanelData> mapEntry : matchResult.entrySet()) {
-					values[index] = mapEntry.getValue();
-					index++;
-				}
-
-				/**
-				 * Find the image with the highest weight <-- can be further
-				 * optimized by merging this process with above conversion
-				 */
-				int maxIndex = -1;
-				int maxValue = -1;
-				for (int a = 0; a < values.length; a++) {
-					if (values[a].getWeight() > maxValue) {
-						maxValue = values[a].getWeight();
-						maxIndex = a;
-					}
-				}
-				if (maxIndex != -1) {
-					Tools.println(maxValue + " " + values[maxIndex].getKey());
-					model.put("test_3_result", new ImagePanelData(values[maxIndex].getKey().split(":")[0],
-							values[maxIndex].getKey().split(":")[1], values[maxIndex].getKey().split(":")[2]));
-				} else {
-					Tools.println("maxIndex is -1");
-				}
-			}
-
+			ImageProcessingManager.findMatchingImageDataIncremental(stmt, model, partitioningRGBArray);
 			/**
 			 * INCREMENTAL SEARCH RGB
 			 * 
@@ -332,72 +194,9 @@ public class ImageProcessingController {
 			 * 3-tuple
 			 */
 			Tools.println("TEST 4");
-			boolean test4Found = false;
-			String findMatchingImageDataIncrementalRGB;
-			matchResult = new HashMap<String, ImagePanelData>();
-			for (int a = 0; a < ImageProcessing.DIVISOR_VALUE; a++) {
-				for (int b = 0; b < ImageProcessing.DIVISOR_VALUE; b++) {
-					findMatchingImageDataIncrementalRGB = ScriptManager.findMatchingImageDataIncrementalRGB(a, b,
-							partitioningRGBArray[a][b]);
-					Tools.println("Execute Query:" + findMatchingImageDataIncrementalRGB, BOOL_SCRIPT);
+			ImageProcessingManager.findMatchingImageDataIncrementalRGB(stmt, model, partitioningRGBArray);
 
-					rs = stmt.executeQuery(findMatchingImageDataIncrementalRGB);
-
-					while (rs.next()) {
-						Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
-								+ rs.getString("panel"), BOOL_MATCHING_NAME);
-						String key = "" + rs.getString("name") + ":" + rs.getInt(2) + ":" + rs.getInt(3);
-						if (!(matchResult.containsKey(key))) {
-							matchResult.put(key,
-									new ImagePanelData("" + rs.getString("name"), rs.getInt(2), rs.getInt(3)));
-						} else {
-							test4Found = true;
-							matchResult.get(key).incrementWeight();
-						}
-
-					}
-				}
-			}
-
-			if (!test4Found) {
-				Tools.println("Test 4: None found");
-				model.put("test_4_boolean", false);
-			} else {
-				Tools.println("Test 4: Found");
-				model.put("test_4_boolean", true);
-				values = new ImagePanelData[matchResult.size()];
-
-				/**
-				 * Convert map to array
-				 */
-				int index = 0;
-				for (Map.Entry<String, ImagePanelData> mapEntry : matchResult.entrySet()) {
-					values[index] = mapEntry.getValue();
-					index++;
-				}
-
-				/**
-				 * Find the image with the highest weight <-- can be further
-				 * optimized by merging this process with above conversion
-				 */
-				int maxIndex = -1;
-				int maxValue = -1;
-				for (int a = 0; a < values.length; a++) {
-					if (values[a].getWeight() > maxValue) {
-						maxValue = values[a].getWeight();
-						maxIndex = a;
-					}
-				}
-				if (maxIndex != -1) {
-					Tools.println(maxValue + " " + values[maxIndex].getKey());
-					model.put("test_4_result", new ImagePanelData(values[maxIndex].getKey().split(":")[0],
-							values[maxIndex].getKey().split(":")[1], values[maxIndex].getKey().split(":")[2]));
-				} else {
-					Tools.println("maxIndex is -1");
-				}
-			}
-
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.LINK_IMAGEPROCESSING,
 					Reference.CommonStrings.NAME_IMAGEPROCESSING);
@@ -408,8 +207,10 @@ public class ImageProcessingController {
 		} else {
 			model.put("partitionArrayRGB", partitioningRGBArray);
 		}
-		model.put("imagefile", outputPartitionedImage.substring(7, outputPartitionedImage.length()));
-		model.put("imagemessage", "partitioned image");
+		model.put("ORIGINAL_IMAGE_MESSAGE", "The original image");
+		// 7 to remove the substring 'public/'
+		Tools.println("original image directory:" + savedImageDir);
+		model.put("ORIGINAL_IMAGE_FILE", savedImageDir.substring(7, savedImageDir.length()));
 
 		Tools.println("END:handleImageUpload\n");
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD,
