@@ -231,6 +231,7 @@ public class SettingUp {
 
 			Tools.println("Execute script:" + ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
 			stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
+			
 			// Create imagedb_anime_rgb table if not exist
 			// Tools.println("Execute script:" +
 			// ScriptCreator.DROP_IMAGEDB_USER_IMAGE_REQUEST);

@@ -32,6 +32,7 @@ public class ImageHashing {
 				}
 			}
 		}
+		
 		return histogram;
 	}
 }
