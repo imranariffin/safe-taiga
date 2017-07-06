@@ -1,4 +1,6 @@
-package app.util;
+package app.structure;
+
+import app.util.Tools;
 
 public class AnimePanel {
 

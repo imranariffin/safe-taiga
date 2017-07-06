@@ -15,6 +15,8 @@ import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 import org.bytedeco.javacv.FrameGrabber.Exception;
 
+import app.structure.AnimeObject;
+
 public class SettingUp {
 
 	public static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("yuruyuri-season1", 12),
@@ -198,8 +200,7 @@ public class SettingUp {
 						}
 						i++;
 					}
-					FileManager.log("" + panel,
-							"dev_output/description/" + animeName + "_" + episode + ".txt");
+					FileManager.log("" + panel, "dev_output/description/" + animeName + "_" + episode + ".txt");
 					g.stop();
 					Tools.println("end parsing video");
 				}
@@ -228,6 +229,8 @@ public class SettingUp {
 			Tools.println("Execute script:" + ScriptManager.CREATE_IMAGEDB_ANIME_RGB);
 			stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_ANIME_RGB);
 
+			Tools.println("Execute script:" + ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
+			stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
 			// Create imagedb_anime_rgb table if not exist
 			// Tools.println("Execute script:" +
 			// ScriptCreator.DROP_IMAGEDB_USER_IMAGE_REQUEST);

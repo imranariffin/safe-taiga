@@ -30,11 +30,10 @@
 		<img src='$ORIGINAL_IMAGE_FILE'>
 		</div>
 		
-		#**
 		<div>
-		<h1>$PARTITION_IMAGE_MESSAGE</h1>
+		<h1>$PARTITIONED_IMAGE_MESSAGE</h1>
 		<br>
-		<img src='$PARTITION_IMAGE_FILE'>
+		<img src='$PARTITIONED_IMAGE_FILE'>
 		</div>
 		
 		<div>
@@ -42,7 +41,7 @@
 		<br>
 		<img src='$GLOBALDIFFERENCE_IMAGE_FILE'>
 		</div>
-		*#
+		
 		<div>
 		#**
 		#foreach( $y in $partitionArrayRGB )

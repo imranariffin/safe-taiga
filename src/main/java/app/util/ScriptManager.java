@@ -1,5 +1,11 @@
 package app.util;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ScriptManager {
@@ -20,6 +26,7 @@ public class ScriptManager {
 			+ ImageProcessing.DIVISOR_VALUE + "][" + ImageProcessing.DIVISOR_VALUE + "][3], PRIMARY KEY(image_id));";
 	public final static String CREATE_IMAGEDB_USER_IMAGE_REQUEST_FLOAT = "CREATE TABLE IF NOT EXISTS imagedb_user_image_request_float (image_id SERIAL, request_ip TEXT, pixel_rgb real["
 			+ ImageProcessing.DIVISOR_VALUE + "][" + ImageProcessing.DIVISOR_VALUE + "][3], PRIMARY KEY(image_id));";
+	public final static String CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE = "CREATE TABLE IF NOT EXISTS imagedb_user_image_request_byte (image_id SERIAL, request_ip TEXT, imagefile bytea);";
 
 	public final static String DROP_BOARDS = "DROP TABLE IF EXISTS boards;";
 	public final static String DROP_THREADS = "DROP TABLE IF EXISTS threads;";
@@ -115,6 +122,10 @@ public class ScriptManager {
 		String script = "INSERT INTO imagedb_user_image_request (request_ip, pixel_rgb) VALUES ('" + ipAddress + "', "
 				+ convertTripleArrayToQueryString(partitioningRGBArray) + ");";
 		return script;
+	}
+
+	public static void insertIntoImageDbUserImageRequest(String ipAddress, BufferedImage byteArray) {
+
 	}
 
 	public static String findMatchingImageDataBruteForce(int[][][] partitioningRGBArray) {

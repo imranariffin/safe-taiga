@@ -1,4 +1,4 @@
-package app.util;
+package app.structure;
 
 public class AnimeObject {
 

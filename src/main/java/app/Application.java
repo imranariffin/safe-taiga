@@ -90,7 +90,7 @@ public class Application {
 		 */
 		get("*", ViewUtil.notFound);
 
-		// SettingUp.createDatabases();
+		SettingUp.createDatabases();
 		// SettingUp.createImageDumpFloat();
 		// SettingUp.InsertTextDumpToDatabase();
 

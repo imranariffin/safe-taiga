@@ -28,14 +28,13 @@ import javax.imageio.ImageIO;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.Part;
 
+import app.structure.AnimePanel;
 import app.util.FileManager;
 import app.util.ImageProcessing;
 import app.util.Reference;
 import app.util.ScriptManager;
 import app.util.Tools;
 import app.util.ViewUtil;
-import app.util.AnimePanel;
-
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -86,7 +85,7 @@ public class ImageProcessingController {
 				tempFile.getFileName().toString().length() - 4);
 
 		// Files directory
-		String savedImageDir = IMAGES_INPUT_DIR.toPath() + "/" + filename + ".png";
+		String outputOriginalImage = IMAGES_INPUT_DIR.toPath() + "/" + filename + ".png";
 		String outputResizedImage = IMAGES_OUTPUT_RESIZED_DIR.toPath() + "/" + filename + ".png";
 
 		String outputPartitionedImage = IMAGES_OUTPUT_PARTITION_DIR.toPath() + "/" + filename + ".png";
@@ -99,11 +98,11 @@ public class ImageProcessingController {
 		Tools.print("Uploaded file '" +
 
 				getFileName(request.raw().getPart("uploaded_file")) + "' saved as '" + tempFile.toAbsolutePath() + "'"
-				+ "\nbase filename:" + filename + "\ntemporary image is saved at:" + savedImageDir
+				+ "\nbase filename:" + filename + "\ntemporary image is saved at:" + outputOriginalImage
 				+ "\nresized image saved at:" + outputResizedImage + "\ntext created from partitioning saved at:"
 				+ outputPartitionedtText + "\npartitioned image created at:" + outputPartitionedImage);
 
-		originalImage = ImageIO.read(new File(savedImageDir));
+		originalImage = ImageIO.read(new File(outputOriginalImage));
 
 		// Resize the image
 		resizedImage = ImageProcessing.resizeImage(originalImage);
@@ -151,66 +150,69 @@ public class ImageProcessingController {
 		 * Insert into database
 		 */
 
-		try (Connection connection = app.Application.getConnection()) {
-			Statement stmt = connection.createStatement();
+		/**
+		 * Insert into database the image data sent by user
+		 */
+		ImageProcessingManager.insertImageDataToDatabase(request.ip(), resizedImage);
+		/**
+		 * RANDOMIZED SEARCH
+		 * 
+		 * Find matching boxes given a randomized boxes
+		 * 
+		 * This is good for cropped pictures
+		 */
+		Tools.println("TEST 1");
+		ImageProcessingManager.findMatchingImageDataRandomized(model, partitioningRGBArray);
 
-			/**
-			 * Insert into database the image data sent by user
-			 */
-			// ImageProcessingManager.insertImageDataToDatabase(stmt,
-			// request.ip(), partitioningRGBArray);
+		/**
+		 * RANDOMIZED SEARCH VERSION 2
+		 * 
+		 * Find a matching BOX given a randomized BOX, so we will start from a
+		 * pixel, then iterate x -- > x + a and y --> y + a
+		 * 
+		 * This is also specially good for cropped pictures
+		 */
+		Tools.println("TEST 2");
+		ImageProcessingManager.findMatchingImageDataRandomizedV2(model, partitioningRGBArray);
 
-			/**
-			 * RANDOMIZED SEARCH
-			 * 
-			 * Find matching boxes given a randomized boxes
-			 * 
-			 * This is good for cropped pictures
-			 */
-			ImageProcessingManager.findMatchingImageDataRandomized(stmt, model, partitioningRGBArray);
+		/**
+		 * INCREMENTAL SEARCH NON-RGB
+		 * 
+		 * Incremental search using non-RGB i.e. we search each RGB as 3
+		 * separate 1-tuple
+		 */
+		Tools.println("TEST 3");
+		ImageProcessingManager.findMatchingImageDataIncremental(model, partitioningRGBArray);
 
-			/**
-			 * RANDOMIZED SEARCH VERSION 2
-			 * 
-			 * Find a matching BOX given a randomized BOX, so we will start from
-			 * a pixel, then iterate x -- > x + a and y --> y + a
-			 * 
-			 * This is also specially good for cropped pictures
-			 */
-			Tools.println("TEST 3");
-			ImageProcessingManager.findMatchingImageDataRandomizedV2(stmt, model, partitioningRGBArray);
-			/**
-			 * INCREMENTAL SEARCH NON-RGB
-			 * 
-			 * Incremental search using non-RGB i.e. we search each RGB as 3
-			 * separate 1-tuple
-			 */
-			Tools.println("TEST 3");
-			ImageProcessingManager.findMatchingImageDataIncremental(stmt, model, partitioningRGBArray);
-			/**
-			 * INCREMENTAL SEARCH RGB
-			 * 
-			 * Incremental search using RGB i.e. we search matching RGB as
-			 * 3-tuple
-			 */
-			Tools.println("TEST 4");
-			ImageProcessingManager.findMatchingImageDataIncrementalRGB(stmt, model, partitioningRGBArray);
+		/**
+		 * INCREMENTAL SEARCH RGB
+		 * 
+		 * Incremental search using RGB i.e. we search matching RGB as 3-tuple
+		 */
+		Tools.println("TEST 4");
+		ImageProcessingManager.findMatchingImageDataIncrementalRGB(model, partitioningRGBArray);
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.LINK_IMAGEPROCESSING,
-					Reference.CommonStrings.NAME_IMAGEPROCESSING);
-		}
-
-		if (partitioningRGBArray == null) {
-			throw new NullPointerException("partitionArrayRGB is null");
-		} else {
-			model.put("partitionArrayRGB", partitioningRGBArray);
-		}
-		model.put("ORIGINAL_IMAGE_MESSAGE", "The original image");
+		model.put("ORIGINAL_IMAGE_MESSAGE", "The original image, resized:");
 		// 7 to remove the substring 'public/'
-		Tools.println("original image directory:" + savedImageDir);
-		model.put("ORIGINAL_IMAGE_FILE", savedImageDir.substring(7, savedImageDir.length()));
+		Tools.println("Original image directory:" + outputOriginalImage);
+		model.put("ORIGINAL_IMAGE_FILE", outputResizedImage.substring(7, outputResizedImage.length()));
+
+		/**
+		 * Partitioned image
+		 */
+		model.put("PARTITIONED_IMAGE_MESSAGE", "Partitioned");
+		// 7 to remove the substring 'public/'
+		Tools.println("Partitioned image directory:" + outputPartitionedImage);
+		model.put("PARTITIONED_IMAGE_FILE", outputPartitionedImage.substring(7, outputPartitionedImage.length()));
+
+		/**
+		 * Global Difference
+		 */
+		model.put("GLOBALDIFFERENCE_IMAGE_MESSAGE", "Global Difference:");
+		// 7 to remove the substring 'public/'
+		Tools.println("Global difference image directory:" + outputGlobalDifferenceImage);
+		model.put("GLOBALDIFFERENCE_IMAGE_FILE",
+				outputGlobalDifferenceImage.substring(7, outputGlobalDifferenceImage.length()));
 
 		Tools.println("END:handleImageUpload\n");
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD,
