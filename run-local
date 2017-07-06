@@ -1,3 +1,3 @@
 #! /bin/dash
-mvn clean install
-heroku local
+mvn -DskipTests clean dependency:list install 
+java -jar target/myWebApp-Final.jar
