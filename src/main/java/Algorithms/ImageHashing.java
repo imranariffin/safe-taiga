@@ -2,7 +2,6 @@ package Algorithms;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-
 import app.structure.IntegerPair;
 
 public class ImageHashing {
