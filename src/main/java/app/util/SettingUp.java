@@ -13,6 +13,9 @@ import javax.imageio.ImageIO;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
+
+import Algorithms.ImageHashing;
+
 import org.bytedeco.javacv.FrameGrabber.Exception;
 
 import Managers.FileManager;
@@ -21,6 +24,9 @@ import app.structure.AnimeObject;
 
 public class SettingUp {
 
+	public static boolean PARTITION = false;
+	public static boolean GLOBALDIFFERENCE = false;
+	
 	public static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("yuruyuri-season1", 12),
 			new AnimeObject("yuruyuri-season2", 12), new AnimeObject("yuruyuri-season3", 12),
 			new AnimeObject("codegeass-season2", 25), new AnimeObject("codegeass-season1", 25) };
@@ -158,45 +164,63 @@ public class SettingUp {
 							 */
 							// Assign the location we want to save the image and
 							// the text file
-							outputImageName = "dev_output/images/output/partition/" + animeName + "/" + animeName + "_"
-									+ episode + "_" + panel + ".png";
-							outputTextName = "dev_output/text/partition/" + animeName + "/" + animeName + "_" + episode
-									+ "_" + panel + ".txt";
+							if (PARTITION) {
+								outputImageName = "dev_output/images/output/partition/" + animeName + "/" + animeName
+										+ "_" + episode + "_" + panel + ".png";
+								outputTextName = "dev_output/text/partition/" + animeName + "/" + animeName + "_"
+										+ episode + "_" + panel + ".txt";
 
-							// Get the partition RGB array of the image
-							partitionRGBArray = ImageProcessing.getPartitionArray(image);
+								// Get the partition RGB array of the image
+								partitionRGBArray = ImageProcessing.getPartitionArray(image);
 
-							// Write the image based on the partition RGB array
-							ImageIO.write(ImageProcessing.getPartitionedBufferedImage(partitionRGBArray), "png",
-									new File(outputImageName));
+								// Write the image based on the partition RGB
+								// array
+								ImageIO.write(ImageProcessing.getPartitionedBufferedImage(partitionRGBArray), "png",
+										new File(outputImageName));
 
-							// Write the text file
-							FileManager.writeTripleArrayToString(partitionRGBArray, outputTextName);
-
+								// Write the text file
+								// FileManager.writeTripleArrayToString(partitionRGBArray,
+								// outputTextName);
+							}
 							/**
 							 * GLOBAL DIFFERENCE
 							 */
-							// Assign the location we want to save the image and
-							// the text file
-							globalDifferenceOutputImageName = "dev_output/images/output/globaldifference/" + animeName
-									+ "/" + animeName + "_" + episode + "_" + panel + ".png";
-							globalDifferenceOutputTextName = "dev_output/text/globaldifference/" + animeName + "/"
-									+ animeName + "_" + episode + "_" + panel + ".txt";
+							if (GLOBALDIFFERENCE) {
+								// Assign the location we want to save the image
+								// and
+								// the text file
+								globalDifferenceOutputImageName = "dev_output/images/output/globaldifference/"
+										+ animeName + "/" + animeName + "_" + episode + "_" + panel + ".png";
+								globalDifferenceOutputTextName = "dev_output/text/globaldifference/" + animeName + "/"
+										+ animeName + "_" + episode + "_" + panel + ".txt";
 
-							// Get the partition RGB array of the image
-							globalDifferenceRGBArray = ImageProcessing.getGlobalDifferenceArray(image);
+								// Get the partition RGB array of the image
+								globalDifferenceRGBArray = ImageProcessing.getGlobalDifferenceArray(image);
 
-							// Write the image based on the partition RGB array
-							ImageIO.write(ImageProcessing.getBufferedImageGivenArray(globalDifferenceRGBArray), "png",
-									new File(globalDifferenceOutputImageName));
+								// Write the image based on the partition RGB
+								// array
+								ImageIO.write(ImageProcessing.getBufferedImageGivenArray(globalDifferenceRGBArray),
+										"png", new File(globalDifferenceOutputImageName));
 
-							// Write the text file
-							FileManager.writeTripleArrayToString(globalDifferenceRGBArray,
-									globalDifferenceOutputTextName);
+								// Write the text file
+								// FileManager.writeTripleArrayToString(globalDifferenceRGBArray,globalDifferenceOutputTextName);
+							}
 
 							/**
-							 * GLOBAL DIFFERENCE LOCALIZED
+							 * BASIC HISTOGRAM HASHING
 							 */
+							if (true) {
+								try (Connection connection = app.Application.getConnection()) {
+									Statement statement = connection.createStatement();
+									statement.executeUpdate(ScriptManager.insertBasicHistogramHash(animeName, episode,
+											panel,
+											ImageHashing.basicHistogramHash(ImageHashing.getRGBHistogram(image))));
+								} catch (SQLException e) {
+									e.printStackTrace();
+								} catch (URISyntaxException e) {
+									e.printStackTrace();
+								}
+							}
 
 							panel++; // move to the next panel
 						}
@@ -233,7 +257,9 @@ public class SettingUp {
 
 			Tools.println("Execute script:" + ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
 			stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
-			
+
+			Tools.println("Execute script:" + ScriptManager.CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
+			stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
 			// Create imagedb_anime_rgb table if not exist
 			// Tools.println("Execute script:" +
 			// ScriptCreator.DROP_IMAGEDB_USER_IMAGE_REQUEST);

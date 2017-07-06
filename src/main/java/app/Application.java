@@ -25,7 +25,7 @@ public class Application {
 
 	public static File IMAGES_INPUT_DIR, IMAGES_OTHER_DIR, IMAGES_OUTPUT_PARTITION_DIR, TEXT_OUTPUT_PARTITION_DIR,
 			IMAGES_OUTPUT_RESIZED_DIR, IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR, TEXT_OUTPUT_GLOBALDIFFERENCE_DIR,
-			IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR;
+			IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR, IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR;
 
 	public static void main(String[] args) {
 		long tStart = System.currentTimeMillis();
@@ -63,6 +63,8 @@ public class Application {
 
 		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR = new File("public/images/output/globaldifferencebinary");
 
+		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR = new File("public/images/output/globaldifferencebinaryRGB");
+
 		IMAGES_OTHER_DIR.mkdirs();
 		IMAGES_OUTPUT_PARTITION_DIR.mkdirs();
 		IMAGES_OUTPUT_RESIZED_DIR.mkdirs();
@@ -71,6 +73,7 @@ public class Application {
 		IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR.mkdirs();
 		TEXT_OUTPUT_GLOBALDIFFERENCE_DIR.mkdirs();
 		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR.mkdirs();
+		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR.mkdirs();
 
 		staticFiles.externalLocation("public");
 		staticFiles.expireTime(600L);
@@ -96,7 +99,7 @@ public class Application {
 		 */
 		get("*", ViewUtil.notFound);
 
-		SettingUp.createDatabases();
+		// SettingUp.createDatabases();
 		// SettingUp.createImageDumpFloat();
 		// SettingUp.InsertTextDumpToDatabase();
 

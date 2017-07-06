@@ -44,21 +44,23 @@ public class ImageHashing {
 		 * MOST BASIC CONVERSION, IMAGES WITH THE SAME PIXEL, EXCEPT MOVED
 		 * AROUND WILL COLLIDE
 		 */
-		String hashString = "";
+		int sum = 0;
 		for (int colorValueIndex = 0; colorValueIndex < histogram.length; colorValueIndex++) {
-			int sum = 0;
+			int localSum = 0;
 			if (histogram[colorValueIndex][0] != null) {
-				sum += histogram[colorValueIndex][0].b;
+				localSum += histogram[colorValueIndex][0].b;
 			}
 			if (histogram[colorValueIndex][1] != null) {
-				sum += histogram[colorValueIndex][1].b;
+				localSum += histogram[colorValueIndex][1].b;
 			}
 			if (histogram[colorValueIndex][1] != null) {
-				sum += histogram[colorValueIndex][1].b;
+				localSum += histogram[colorValueIndex][1].b;
 			}
-			hashString += toAlphabetic(sum);
-		}
 
+			sum += localSum / 3;
+		}
+		Tools.println(Integer.toString(sum), true);
+		String hashString = toAlphabetic(sum);
 		Tools.println("END:basicHistogramHash" + System.lineSeparator());
 		return hashString;
 	}

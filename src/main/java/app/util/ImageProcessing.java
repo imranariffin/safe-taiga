@@ -261,7 +261,7 @@ public class ImageProcessing {
 		Tools.println("width:" + width + System.lineSeparator() + "height:" + height);
 
 		int[][][] RGBArray = new int[height][width][3];
-		float globalSum = 0;
+		int globalSum = 0;
 
 		for (int y = 0; y < height; y++) { // y-axis
 			for (int x = 0; x < width; x++) { // x-axis
@@ -295,10 +295,67 @@ public class ImageProcessing {
 		return RGBArray;
 	}
 
+	public static int[][][] getGlobalDifferenceBinaryRGBArray(BufferedImage givenImage) {
+		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getGlobalDifferenceBinaryArray");
+
+		int width = givenImage.getWidth(); // Y-axis
+		int height = givenImage.getHeight(); // X-axis
+
+		/**
+		 * Verify the information of the image
+		 */
+		Tools.println("width:" + width + System.lineSeparator() + "height:" + height);
+
+		int[][][] RGBArray = new int[height][width][3];
+		int[] RGBglobalSum = new int[] { 0, 0, 0 };
+
+		for (int y = 0; y < height; y++) { // y-axis
+			for (int x = 0; x < width; x++) { // x-axis
+				Color colorAtXY = new Color(givenImage.getRGB(x, y));
+				RGBglobalSum[0] += colorAtXY.getRed();
+				RGBglobalSum[1] += colorAtXY.getGreen();
+				RGBglobalSum[2] += colorAtXY.getBlue();
+
+				RGBArray[y][x][0] = colorAtXY.getRed();
+				RGBArray[y][x][1] = colorAtXY.getGreen();
+				RGBArray[y][x][2] = colorAtXY.getBlue();
+			}
+		}
+
+		int[] globalAverage = new int[] { Math.round(RGBglobalSum[0] / (width * height)),
+				Math.round(RGBglobalSum[1] / (width * height)), Math.round(RGBglobalSum[2] / (width * height)) };
+
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				int[] localValue = new int[] { RGBArray[y][x][0], RGBArray[y][x][1], RGBArray[y][x][2] };
+				if (localValue[0] < globalAverage[0]) {
+					RGBArray[y][x][0] = 0;
+				} else {
+					RGBArray[y][x][0] = 255;
+				}
+				if (localValue[1] < globalAverage[1]) {
+					RGBArray[y][x][1] = 0;
+				} else {
+					RGBArray[y][x][1] = 255;
+				}
+				if (localValue[2] < globalAverage[2]) {
+					RGBArray[y][x][2] = 0;
+				} else {
+					RGBArray[y][x][2] = 255;
+				}
+			}
+		}
+
+		Tools.println("END:getGlobalDifferenceBinaryArray" + System.lineSeparator());
+		return RGBArray;
+
+	}
+
 	public static BufferedImage getBufferedImageGivenArray(int[][][] givenArray) {
 		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getBufferedImageGivenArray");
 
-		BufferedImage bufferedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, BufferedImage.TYPE_INT_RGB);
+		BufferedImage bufferedImage = new BufferedImage(givenArray[0].length, givenArray.length,
+				BufferedImage.TYPE_INT_RGB);
 
 		/**
 		 * Verify information of the image

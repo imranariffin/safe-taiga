@@ -26,6 +26,10 @@ public class Tools {
 		}
 	}
 
+	public static void println(int number, boolean bool) {
+		println(Integer.toString(number), bool);
+	}
+
 	public static void print(String text) {
 		if (logging) {
 			System.out.print(text);

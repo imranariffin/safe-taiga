@@ -20,6 +20,8 @@ public class ScriptManager {
 			+ ImageProcessing.DIVISOR_VALUE + "][" + ImageProcessing.DIVISOR_VALUE
 			+ "][3], PRIMARY KEY(name, episode, panel));";
 
+	public final static String CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH = "CREATE TABLE IF NOT EXISTS imagedb_anime_basic_histogram_hash (name TEXT, episode INT, panel INT, hash TEXT, PRIMARY KEY(name, episode, panel));";
+
 	public final static String CREATE_IMAGEDB_ANIME_RGB_FLOAT = "CREATE TABLE IF NOT EXISTS imagedb_anime_rgb_float (name TEXT, episode INT, panel INT, pixel_rgb real["
 			+ ImageProcessing.DIVISOR_VALUE + "][" + ImageProcessing.DIVISOR_VALUE
 			+ "][3], PRIMARY KEY(name, episode, panel));";
@@ -35,10 +37,10 @@ public class ScriptManager {
 	public final static String DROP_POSTS = "DROP TABLE IF EXISTS posts;";
 
 	public final static String DROP_IMAGEDB_ANIME_RGB_INTEGER = "DROP TABLE IF EXISTS imagedb_anime_rgb_integer;";
-	public final static String DROP_IMAGEDB_USER_IMAGE_REQUEST_INTEGER = "DROP TABLE IF EXISTS imagedb_user_image_request_integer;";
-
 	public final static String DROP_IMAGEDB_ANIME_RGB_FLOAT = "DROP TABLE IF EXISTS imagedb_anime_rgb_float;";
+	public final static String DROP_IMAGEDB_USER_IMAGE_REQUEST_INTEGER = "DROP TABLE IF EXISTS imagedb_user_image_request_integer;";
 	public final static String DROP_IMAGEDB_USER_IMAGE_REQUEST_FLOAT = "DROP TABLE IF EXISTS imagedb_user_image_request_float;";
+	public final static String DROP_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH = "DROP TABLE IF EXISTS imagedb_anime_basic_histogram_hash;";
 
 	public final static String SELECT_ALL_FROM_BOARDS = "SELECT * FROM boards;";
 	public final static String SELECT_ALL_FROM_THREADS = "SELECT * FROM threads;";
@@ -64,6 +66,12 @@ public class ScriptManager {
 
 	public static String selectAllThreadFromThreadsGivenBoardLink(String boardlink) {
 		return "SELECT * FROM threads AS thread WHERE thread.boardlink = '" + boardlink + "';";
+	}
+
+	public static String insertBasicHistogramHash(String name, int episode, int panel, String hash) {
+		String script = "INSERT INTO imagedb_anime_basic_histogram_hash (name, episode, panel, hash) VALUES ('" + name
+				+ "','" + Integer.toString(episode) + "','" + Integer.toString(panel) + "','" + hash + "');";
+		return script;
 	}
 
 	public static String insertIntoImagedbAnimeRgb(String name, int episode, int panel,

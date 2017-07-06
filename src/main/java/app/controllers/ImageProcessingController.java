@@ -7,6 +7,7 @@ import static app.Application.IMAGES_OUTPUT_RESIZED_DIR;
 import static app.Application.TEXT_OUTPUT_PARTITION_DIR;
 import static app.Application.TEXT_OUTPUT_GLOBALDIFFERENCE_DIR;
 import static app.Application.IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR;
+import static app.Application.IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR;
 
 import java.awt.image.BufferedImage;
 
@@ -17,11 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.SQLException;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,10 +26,7 @@ import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.Part;
 
 import Algorithms.ImageHashing;
-import Managers.FileManager;
 import Managers.ImageProcessingManager;
-import Managers.ScriptManager;
-import app.structure.AnimePanel;
 import app.util.ImageProcessing;
 import app.util.Reference;
 import app.util.Tools;
@@ -81,8 +74,9 @@ public class ImageProcessingController {
 		/**
 		 * Prepare required variables
 		 */
-		BufferedImage originalImage, resizedImage, partitionedImage, globalDifferenceImage, globalDifferenceBinaryImage;
-		int[][][] partitioningArray, globalDifferenceArray, globalDifferenceBinaryArray;
+		BufferedImage originalImage, resizedImage, partitionedImage, globalDifferenceImage, globalDifferenceBinaryImage,
+				globalDifferenceBinaryRGBImage;
+		int[][][] partitioningArray, globalDifferenceArray, globalDifferenceBinaryArray, globalDifferenceBinaryRGBArray;
 
 		// Remove any file type post fix
 		String filename = tempFile.getFileName().toString().substring(0,
@@ -101,6 +95,9 @@ public class ImageProcessingController {
 		String outputGlobalDifferenceBinaryImage = IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR.toPath() + "/" + filename
 				+ ".png";
 
+		String outputGlobalDifferenceBinaryRGBImage = IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR.toPath() + "/"
+				+ filename + ".png";
+
 		// Logging
 		Tools.print("Uploaded file '" +
 
@@ -112,8 +109,9 @@ public class ImageProcessingController {
 		originalImage = ImageIO.read(new File(outputOriginalImage));
 
 		// Resize the image
-		resizedImage = ImageProcessing.resizeImage(originalImage);
+		// resizedImage = ImageProcessing.resizeImage(originalImage);
 
+		resizedImage = originalImage;
 		// Save resized image for future inquiries
 		ImageIO.write(resizedImage, "png", new File(outputResizedImage));
 
@@ -160,6 +158,20 @@ public class ImageProcessingController {
 
 		// Save the image for future reference
 		ImageIO.write(globalDifferenceBinaryImage, "png", new File(outputGlobalDifferenceBinaryImage));
+
+		/**
+		 * GLOBAL DIFFERENCE BINARY RGB
+		 * 
+		 * The same as Global Difference but now strictly binary output 0 or 255
+		 */
+		// Get the resized image global difference binary RGB array
+		globalDifferenceBinaryRGBArray = ImageProcessing.getGlobalDifferenceBinaryRGBArray(resizedImage);
+
+		// Get the buffered image from the array
+		globalDifferenceBinaryRGBImage = ImageProcessing.getBufferedImageGivenArray(globalDifferenceBinaryRGBArray);
+
+		// Save the image for future reference
+		ImageIO.write(globalDifferenceBinaryRGBImage, "png", new File(outputGlobalDifferenceBinaryRGBImage));
 
 		/**
 		 * Insert into database the image data sent by user
@@ -234,6 +246,14 @@ public class ImageProcessingController {
 		model.put("GLOBALDIFFERENCEBINARY_IMAGE_FILE",
 				outputGlobalDifferenceBinaryImage.substring(7, outputGlobalDifferenceBinaryImage.length()));
 
+		/**
+		 * Global Difference Binary RGB
+		 */
+		model.put("GLOBALDIFFERENCEBINARYRGB_IMAGE_MESSAGE", "Global Difference Binary RGB:");
+		// 7 to remove the substring 'public/'
+		Tools.println("Global difference binary RGB image directory:" + outputGlobalDifferenceBinaryRGBImage);
+		model.put("GLOBALDIFFERENCEBINARYRGB_IMAGE_FILE",
+				outputGlobalDifferenceBinaryRGBImage.substring(7, outputGlobalDifferenceBinaryRGBImage.length()));
 		/**
 		 * BASIC HISTOGRAM HASHING
 		 */
