@@ -15,6 +15,8 @@ import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 import org.bytedeco.javacv.FrameGrabber.Exception;
 
+import Managers.FileManager;
+import Managers.ScriptManager;
 import app.structure.AnimeObject;
 
 public class SettingUp {

@@ -6,6 +6,7 @@ import static app.Application.IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR;
 import static app.Application.IMAGES_OUTPUT_RESIZED_DIR;
 import static app.Application.TEXT_OUTPUT_PARTITION_DIR;
 import static app.Application.TEXT_OUTPUT_GLOBALDIFFERENCE_DIR;
+import static app.Application.IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR;
 
 import java.awt.image.BufferedImage;
 
@@ -28,11 +29,13 @@ import javax.imageio.ImageIO;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.Part;
 
+import Algorithms.ImageHashing;
+import Managers.FileManager;
+import Managers.ImageProcessingManager;
+import Managers.ScriptManager;
 import app.structure.AnimePanel;
-import app.util.FileManager;
 import app.util.ImageProcessing;
 import app.util.Reference;
-import app.util.ScriptManager;
 import app.util.Tools;
 import app.util.ViewUtil;
 import spark.Request;
@@ -45,19 +48,19 @@ public class ImageProcessingController {
 	public static boolean BOOL_MATCHING_NAME = false;
 
 	public static Route serveImageUpload = (Request request, Response response) -> {
-		Tools.println("\nFROM:ImageProcessingController:START:serveImageUpload");
+		Tools.println(System.lineSeparator() + "FROM:ImageProcessingController:START:serveImageUpload");
 		Map<String, Object> model = new HashMap<String, Object>();
 
 		model.put("imagefile", "/images/other/image_placeholder.jpg");
 		model.put("imagemessage", "your uploaded image will replace the empty image below:");
 		model.put("partitionArrayRGB", new int[ImageProcessing.DIVISOR_VALUE][ImageProcessing.DIVISOR_VALUE][3]);
 
-		Tools.println("END:serveImageUpload\n");
+		Tools.println("END:serveImageUpload" + System.lineSeparator());
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_PROCESSING, "Image Upload", "OK");
 	};
 
 	public static Route handleImageUpload = (Request request, Response response) -> {
-		Tools.println("\nFROM:ImageProcessingController:START:handleImageUpload");
+		Tools.println(System.lineSeparator() + "FROM:ImageProcessingController:START:handleImageUpload");
 		Map<String, Object> model = new HashMap<String, Object>();
 
 		/**
@@ -70,6 +73,7 @@ public class ImageProcessingController {
 			Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
 		} catch (Exception e) {
 			e.printStackTrace();
+			Tools.println("END:handleImageUpload" + System.lineSeparator());
 			return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.LINK_IMAGEPROCESSING,
 					Reference.CommonStrings.NAME_IMAGEPROCESSING);
 		}
@@ -77,8 +81,8 @@ public class ImageProcessingController {
 		/**
 		 * Prepare required variables
 		 */
-		BufferedImage originalImage, resizedImage, partitionedImage, globalDifferenceImage;
-		int[][][] partitioningRGBArray, globalDifferenceRGBArray;
+		BufferedImage originalImage, resizedImage, partitionedImage, globalDifferenceImage, globalDifferenceBinaryImage;
+		int[][][] partitioningArray, globalDifferenceArray, globalDifferenceBinaryArray;
 
 		// Remove any file type post fix
 		String filename = tempFile.getFileName().toString().substring(0,
@@ -93,6 +97,9 @@ public class ImageProcessingController {
 
 		String outputGlobalDifferenceImage = IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR.toPath() + "/" + filename + ".png";
 		String outputGlobalDifferenceText = TEXT_OUTPUT_GLOBALDIFFERENCE_DIR.toPath() + "/" + filename + ".txt";
+
+		String outputGlobalDifferenceBinaryImage = IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR.toPath() + "/" + filename
+				+ ".png";
 
 		// Logging
 		Tools.print("Uploaded file '" +
@@ -117,17 +124,13 @@ public class ImageProcessingController {
 		 * average RGB values for each box then assign them to the box
 		 */
 		// Get resized image partitioning RGB array
-		partitioningRGBArray = ImageProcessing.getPartitionArray(resizedImage);
+		partitioningArray = ImageProcessing.getPartitionArray(resizedImage);
 
 		// Partition the resized image based on the partitioning array
-		partitionedImage = ImageProcessing.getPartitionedBufferedImage(partitioningRGBArray);
+		partitionedImage = ImageProcessing.getPartitionedBufferedImage(partitioningArray);
 
 		// Save the partitioned image for future inquiries
 		ImageIO.write(partitionedImage, "png", new File(outputPartitionedImage));
-
-		// Write partitioned image data to a text file
-		// FileManager.log(Tools.convertTripleArrayToString(partitioningRGBArray),
-		// outputPartitionedtText);
 
 		/**
 		 * GLOBAL DIFFERENCE
@@ -136,19 +139,27 @@ public class ImageProcessingController {
 		 * difference of all individual RGB with the global average
 		 */
 		// Get resized image global difference RGB array
-		globalDifferenceRGBArray = ImageProcessing.getGlobalDifferenceArray(resizedImage);
+		globalDifferenceArray = ImageProcessing.getGlobalDifferenceArray(resizedImage);
 
 		// Get the BufferedImage from the global difference RGB array
-		globalDifferenceImage = ImageProcessing.getBufferedImageGivenArray(globalDifferenceRGBArray);
+		globalDifferenceImage = ImageProcessing.getBufferedImageGivenArray(globalDifferenceArray);
 
 		// Save the partitioned image for future inquiries
 		ImageIO.write(globalDifferenceImage, "png", new File(outputGlobalDifferenceImage));
 
-		// Write partitioned image data to a text file
-		// FileManager.log(Tools.convertTripleArrayToString(globalDifferenceRGBArray),outputGlobalDifferenceText);
 		/**
-		 * Insert into database
+		 * GLOBAL DIFFERENCE BINARY
+		 * 
+		 * The same as Global Difference but now strictly binary output 0 or 255
 		 */
+		// Get the resized image global difference binary RGB array
+		globalDifferenceBinaryArray = ImageProcessing.getGlobalDifferenceBinaryArray(resizedImage);
+
+		// Get the buffered image from the array
+		globalDifferenceBinaryImage = ImageProcessing.getBufferedImageGivenArray(globalDifferenceBinaryArray);
+
+		// Save the image for future reference
+		ImageIO.write(globalDifferenceBinaryImage, "png", new File(outputGlobalDifferenceBinaryImage));
 
 		/**
 		 * Insert into database the image data sent by user
@@ -162,7 +173,7 @@ public class ImageProcessingController {
 		 * This is good for cropped pictures
 		 */
 		Tools.println("TEST 1");
-		ImageProcessingManager.findMatchingImageDataRandomized(model, partitioningRGBArray);
+		ImageProcessingManager.findMatchingImageDataRandomized(model, partitioningArray);
 
 		/**
 		 * RANDOMIZED SEARCH VERSION 2
@@ -173,7 +184,7 @@ public class ImageProcessingController {
 		 * This is also specially good for cropped pictures
 		 */
 		Tools.println("TEST 2");
-		ImageProcessingManager.findMatchingImageDataRandomizedV2(model, partitioningRGBArray);
+		ImageProcessingManager.findMatchingImageDataRandomizedV2(model, partitioningArray);
 
 		/**
 		 * INCREMENTAL SEARCH NON-RGB
@@ -182,7 +193,7 @@ public class ImageProcessingController {
 		 * separate 1-tuple
 		 */
 		Tools.println("TEST 3");
-		ImageProcessingManager.findMatchingImageDataIncremental(model, partitioningRGBArray);
+		ImageProcessingManager.findMatchingImageDataIncremental(model, partitioningArray);
 
 		/**
 		 * INCREMENTAL SEARCH RGB
@@ -190,7 +201,7 @@ public class ImageProcessingController {
 		 * Incremental search using RGB i.e. we search matching RGB as 3-tuple
 		 */
 		Tools.println("TEST 4");
-		ImageProcessingManager.findMatchingImageDataIncrementalRGB(model, partitioningRGBArray);
+		ImageProcessingManager.findMatchingImageDataIncrementalRGB(model, partitioningArray);
 
 		model.put("ORIGINAL_IMAGE_MESSAGE", "The original image, resized:");
 		// 7 to remove the substring 'public/'
@@ -214,25 +225,33 @@ public class ImageProcessingController {
 		model.put("GLOBALDIFFERENCE_IMAGE_FILE",
 				outputGlobalDifferenceImage.substring(7, outputGlobalDifferenceImage.length()));
 
-		Tools.println("END:handleImageUpload\n");
+		/**
+		 * Global Difference Binary
+		 */
+		model.put("GLOBALDIFFERENCEBINARY_IMAGE_MESSAGE", "Global Difference Binary:");
+		// 7 to remove the substring 'public/'
+		Tools.println("Global difference binary image directory:" + outputGlobalDifferenceBinaryImage);
+		model.put("GLOBALDIFFERENCEBINARY_IMAGE_FILE",
+				outputGlobalDifferenceBinaryImage.substring(7, outputGlobalDifferenceBinaryImage.length()));
+
+		/**
+		 * BASIC HISTOGRAM HASHING
+		 */
+		model.put("BASIC_HASH_STRING", ImageHashing.basicHistogramHash(ImageHashing.getRGBHistogram(resizedImage)));
+		Tools.println("END:handleImageUpload" + System.lineSeparator());
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD,
 				Reference.CommonStrings.NAME_IMAGEPROCESSING, "OK");
 	};
 
-	public static String printTrueFileName(String givenFileName) {
-		Tools.print("");
-		for (int a = givenFileName.length(); a > 0; a--) {
-			Tools.print(givenFileName.charAt(a) + "");
-		}
-		return "";
-	}
-
 	private static String getFileName(Part part) {
+		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getFileName");
 		for (String cd : part.getHeader("content-disposition").split(";")) {
 			if (cd.trim().startsWith("filename")) {
+				Tools.println("END:getFileName" + System.lineSeparator());
 				return cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
 			}
 		}
+		Tools.println("END:getFileName" + System.lineSeparator());
 		return null;
 	}
 }

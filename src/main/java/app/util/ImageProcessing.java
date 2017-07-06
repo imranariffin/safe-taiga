@@ -197,8 +197,8 @@ public class ImageProcessing {
 	public static int[][][] getGlobalDifferenceArray(BufferedImage givenImage) {
 		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getGlobalDifferenceArray");
 
-		int width = givenImage.getWidth(); // Y-axis
-		int height = givenImage.getHeight(); // X-axis
+		int width = givenImage.getWidth(); // X-axis
+		int height = givenImage.getHeight(); // Y-axis
 
 		/**
 		 * Verify the information of the image
@@ -249,8 +249,8 @@ public class ImageProcessing {
 		return RGBArray;
 	}
 
-	public static int[][][] getGlobalDifferenceArrayBinary(BufferedImage givenImage) {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getGlobalDifferenceArray");
+	public static int[][][] getGlobalDifferenceBinaryArray(BufferedImage givenImage) {
+		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getGlobalDifferenceBinaryArray");
 
 		int width = givenImage.getWidth(); // Y-axis
 		int height = givenImage.getHeight(); // X-axis
@@ -279,7 +279,7 @@ public class ImageProcessing {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				int localValue = RGBArray[y][x][0] + RGBArray[y][x][1] + RGBArray[y][x][2];
-				if (localValue < globalSum) {
+				if (localValue < globalAverage) {
 					RGBArray[y][x][0] = 0;
 					RGBArray[y][x][1] = 0;
 					RGBArray[y][x][2] = 0;
@@ -291,7 +291,7 @@ public class ImageProcessing {
 			}
 		}
 
-		Tools.println("END:getGlobalDifference" + System.lineSeparator());
+		Tools.println("END:getGlobalDifferenceBinaryArray" + System.lineSeparator());
 		return RGBArray;
 	}
 
@@ -303,7 +303,7 @@ public class ImageProcessing {
 		/**
 		 * Verify information of the image
 		 */
-		Tools.println("width:" + givenArray.length + System.lineSeparator() + "height:" + givenArray[0].length);
+		Tools.println("width:" + givenArray[0].length + System.lineSeparator() + "height:" + givenArray.length);
 
 		// Assign RGB color to the new image
 		for (int y = 0; y < givenArray.length; y++) { // Y-axis

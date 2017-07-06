@@ -1,4 +1,4 @@
-package app.util;
+package Managers;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.concurrent.ThreadLocalRandom;
+
+import app.util.ImageProcessing;
 
 public class ScriptManager {
 
@@ -122,10 +124,6 @@ public class ScriptManager {
 		String script = "INSERT INTO imagedb_user_image_request (request_ip, pixel_rgb) VALUES ('" + ipAddress + "', "
 				+ convertTripleArrayToQueryString(partitioningRGBArray) + ");";
 		return script;
-	}
-
-	public static void insertIntoImageDbUserImageRequest(String ipAddress, BufferedImage byteArray) {
-
 	}
 
 	public static String findMatchingImageDataBruteForce(int[][][] partitioningRGBArray) {

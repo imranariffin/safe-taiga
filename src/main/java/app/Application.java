@@ -24,7 +24,8 @@ import app.util.ViewUtil;
 public class Application {
 
 	public static File IMAGES_INPUT_DIR, IMAGES_OTHER_DIR, IMAGES_OUTPUT_PARTITION_DIR, TEXT_OUTPUT_PARTITION_DIR,
-			IMAGES_OUTPUT_RESIZED_DIR, IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR, TEXT_OUTPUT_GLOBALDIFFERENCE_DIR;
+			IMAGES_OUTPUT_RESIZED_DIR, IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR, TEXT_OUTPUT_GLOBALDIFFERENCE_DIR,
+			IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR;
 
 	public static void main(String[] args) {
 		long tStart = System.currentTimeMillis();
@@ -51,12 +52,16 @@ public class Application {
 		 * Required directories
 		 */
 		IMAGES_OTHER_DIR = new File("public/images/other");
-		IMAGES_OUTPUT_PARTITION_DIR = new File("public/images/output/partition");
-		IMAGES_OUTPUT_RESIZED_DIR = new File("public/images/output/resized");
-		TEXT_OUTPUT_PARTITION_DIR = new File("public/texts/output/partition");
 		IMAGES_INPUT_DIR = new File("public/images/input");
+		IMAGES_OUTPUT_RESIZED_DIR = new File("public/images/output/resized");
+
+		IMAGES_OUTPUT_PARTITION_DIR = new File("public/images/output/partition");
+		TEXT_OUTPUT_PARTITION_DIR = new File("public/texts/output/partition");
+
 		IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR = new File("public/images/output/globaldifference");
 		TEXT_OUTPUT_GLOBALDIFFERENCE_DIR = new File("public/texts/output/globaldifference");
+
+		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR = new File("public/images/output/globaldifferencebinary");
 
 		IMAGES_OTHER_DIR.mkdirs();
 		IMAGES_OUTPUT_PARTITION_DIR.mkdirs();
@@ -65,6 +70,7 @@ public class Application {
 		IMAGES_INPUT_DIR.mkdirs();
 		IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR.mkdirs();
 		TEXT_OUTPUT_GLOBALDIFFERENCE_DIR.mkdirs();
+		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR.mkdirs();
 
 		staticFiles.externalLocation("public");
 		staticFiles.expireTime(600L);

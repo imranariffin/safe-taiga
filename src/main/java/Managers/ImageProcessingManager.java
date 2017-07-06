@@ -1,4 +1,4 @@
-package app.controllers;
+package Managers;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -15,7 +15,6 @@ import java.util.Map;
 import app.structure.AnimePanel;
 import app.structure.IntegerPair;
 import app.util.ImageProcessing;
-import app.util.ScriptManager;
 import app.util.Tools;
 
 public class ImageProcessingManager {

@@ -43,6 +43,15 @@
 		</div>
 		
 		<div>
+		<h1>$GLOBALDIFFERENCEBINARY_IMAGE_MESSAGE</h1>
+		<br>
+		<img src='$GLOBALDIFFERENCEBINARY_IMAGE_FILE'>
+		</div>
+		
+		<p>Image Basic Histogram Hash</p>
+		<p>$BASIC_HASH_STRING</p>
+		
+		<div>
 		#**
 		#foreach( $y in $partitionArrayRGB )
 			<p><small>#foreach( $x in $y){#foreach( $z in $x)[$z]#end}#end</small></p>

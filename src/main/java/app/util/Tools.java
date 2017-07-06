@@ -6,6 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import Managers.FileManager;
+import Managers.ScriptManager;
+
 public class Tools {
 
 	public final static String SAFE_STRING = "X1U8N2YTR87134678V349T9V3841CM89XY4398V";
@@ -124,22 +127,5 @@ public class Tools {
 		Tools.println("FROM:Tools:START:revertQuerySafeString");
 		Tools.println("END:revertQuerySafeString");
 		return safeString.replaceAll(SAFE_STRING, "'");
-	}
-
-	public static String convertTripleArrayToString(int[][][] tripleArray) {
-		Tools.println(System.lineSeparator() + "FROM:Tools:START:getStringFromTripleArray");
-
-		String outputText = "";
-		for (int y = 0; y < tripleArray.length; y++) { // Y-axis
-			for (int x = 0; x < tripleArray[y].length; x++) { // X-axis
-				for (int z = 0; z < tripleArray[y][x].length; z++) { // Z-axis
-					outputText += tripleArray[y][x][z] + " ";
-				}
-			}
-			outputText += System.lineSeparator();
-		}
-
-		Tools.println("END:getStringFromTripleArray" + System.lineSeparator());
-		return outputText;
 	}
 }

@@ -1,4 +1,4 @@
-package app.util;
+package Managers;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -8,9 +8,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import app.util.ImageProcessing;
+import app.util.Tools;
+
 public class FileManager {
 
-	private static boolean logging = false;
+	private static boolean logging = true;
 
 	public static String readFile(String filename) throws IOException {
 
