@@ -52,6 +52,8 @@ public class ScriptManager {
 	public final static String SELECT_ALL_FROM_IMAGEDB_FLOAT = "SELECT * FROM imagedb_anime_rgb_float;";
 	public final static String SELECT_ALL_FROM_IMAGEDB_USER_IMAGE_REQUEST_FLOAT = "SELECT * FROM imagedb_user_image_request_float;";
 
+	public final static String CLEAR_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH = "DELETE FROM imagedb_anime_basic_histogram_hash";
+
 	public static String selectThreadFromThreadsGivenThreadid(String threadid) {
 		return "SELECT * FROM threads WHERE threadid = '" + threadid + "' LIMIT 1;";
 	}

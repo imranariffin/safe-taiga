@@ -100,16 +100,14 @@ public class Application {
 		get("*", ViewUtil.notFound);
 
 		// SettingUp.createDatabases();
-		// SettingUp.createImageDumpFloat();
+		SettingUp.createImageInfo();
 		// SettingUp.InsertTextDumpToDatabase();
 
 		long tEnd = System.currentTimeMillis();
 		long tDelta = tEnd - tStart;
 		double elapsedSeconds = tDelta / 1000.0;
 
-		Tools.println("time taken in seconds:" + elapsedSeconds);
-
-		Tools.println("SERVER READY");
+		Tools.println("SERVER READY, it took " + elapsedSeconds + " seconds");
 	}
 
 	public static Connection getConnection() throws URISyntaxException, SQLException {

@@ -43,34 +43,38 @@ public class ImageHashing {
 		/**
 		 * MOST BASIC CONVERSION, IMAGES WITH THE SAME PIXEL, EXCEPT MOVED
 		 * AROUND WILL COLLIDE
+		 * 
+		 * Apparently this hashing algorithm is GOD AWFUL because every frame
+		 * has the same value 'EX1' or something
 		 */
 		int sum = 0;
 		for (int colorValueIndex = 0; colorValueIndex < histogram.length; colorValueIndex++) {
-			int localSum = 0;
 			if (histogram[colorValueIndex][0] != null) {
-				localSum += histogram[colorValueIndex][0].b;
+				sum += histogram[colorValueIndex][0].b;
 			}
 			if (histogram[colorValueIndex][1] != null) {
-				localSum += histogram[colorValueIndex][1].b;
+				sum += histogram[colorValueIndex][1].b;
 			}
-			if (histogram[colorValueIndex][1] != null) {
-				localSum += histogram[colorValueIndex][1].b;
+			if (histogram[colorValueIndex][2] != null) {
+				sum += histogram[colorValueIndex][2].b;
 			}
-
-			sum += localSum / 3;
 		}
-		Tools.println(Integer.toString(sum), true);
-		String hashString = toAlphabetic(sum);
+		Tools.println("hash sum:" + sum);
+		String hashString = toSixtyTwoRadix(sum);
 		Tools.println("END:basicHistogramHash" + System.lineSeparator());
 		return hashString;
 	}
 
-	public static String toAlphabetic(int i) {
+	public static String someOtherHashing() {
+		return "";
+	}
+
+	public static String toSixtyTwoRadix(int i) {
 
 		// means negative value, so just recursively call this function again
 		// but adding negative sign as prefix
 		if (i < 0) {
-			return "-" + toAlphabetic(-i - 1);
+			return "-" + toSixtyTwoRadix(-i - 1);
 		}
 
 		// find remainder
@@ -83,14 +87,14 @@ public class ImageHashing {
 			if (quot == 0) {
 				return "" + letter;
 			} else {
-				return toAlphabetic(quot) + letter;
+				return toSixtyTwoRadix(quot) + letter;
 			}
 		} else if (rem < 36) {
 			char letter = (char) ((int) 'a' + (rem - 10));
 			if (quot == 0) {
 				return "" + letter;
 			} else {
-				return toAlphabetic(quot) + letter;
+				return toSixtyTwoRadix(quot) + letter;
 			}
 		} else {
 			// if x > 26 i.e. is a lowercase letter
@@ -99,7 +103,7 @@ public class ImageHashing {
 			if (quot == 0) {
 				return "" + letter;
 			} else {
-				return toAlphabetic(quot) + letter;
+				return toSixtyTwoRadix(quot) + letter;
 			}
 		}
 	}

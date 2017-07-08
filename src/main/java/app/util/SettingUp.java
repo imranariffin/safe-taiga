@@ -26,7 +26,8 @@ public class SettingUp {
 
 	public static boolean PARTITION = false;
 	public static boolean GLOBALDIFFERENCE = false;
-	
+	public static boolean BASICHISTOGRAMHASH = true;
+
 	public static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("yuruyuri-season1", 12),
 			new AnimeObject("yuruyuri-season2", 12), new AnimeObject("yuruyuri-season3", 12),
 			new AnimeObject("codegeass-season2", 25), new AnimeObject("codegeass-season1", 25) };
@@ -88,7 +89,7 @@ public class SettingUp {
 		}
 	}
 
-	public static void createImageDumpFloat() {
+	public static void createImageInfo() {
 		try {
 			/**
 			 * Create required folders
@@ -209,12 +210,14 @@ public class SettingUp {
 							/**
 							 * BASIC HISTOGRAM HASHING
 							 */
-							if (true) {
+							if (BASICHISTOGRAMHASH) {
 								try (Connection connection = app.Application.getConnection()) {
 									Statement statement = connection.createStatement();
-									statement.executeUpdate(ScriptManager.insertBasicHistogramHash(animeName, episode,
-											panel,
-											ImageHashing.basicHistogramHash(ImageHashing.getRGBHistogram(image))));
+									// statement.executeUpdate(ScriptManager.insertBasicHistogramHash(animeName,
+									// episode,panel,ImageHashing.basicHistogramHash(ImageHashing.getRGBHistogram(image))));
+									statement.executeUpdate("INSERT INTO imagedb_test (hash) VALUES ('"
+											+ ImageHashing.basicHistogramHash(ImageHashing.getRGBHistogram(image))
+											+ "');");
 								} catch (SQLException e) {
 									e.printStackTrace();
 								} catch (URISyntaxException e) {
@@ -260,6 +263,10 @@ public class SettingUp {
 
 			Tools.println("Execute script:" + ScriptManager.CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
 			stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
+
+			Tools.println("Execute script:" + ScriptManager.CLEAR_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
+			stmt.executeUpdate(ScriptManager.CLEAR_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
+
 			// Create imagedb_anime_rgb table if not exist
 			// Tools.println("Execute script:" +
 			// ScriptCreator.DROP_IMAGEDB_USER_IMAGE_REQUEST);

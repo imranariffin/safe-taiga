@@ -109,9 +109,8 @@ public class ImageProcessingController {
 		originalImage = ImageIO.read(new File(outputOriginalImage));
 
 		// Resize the image
-		// resizedImage = ImageProcessing.resizeImage(originalImage);
+		resizedImage = ImageProcessing.resizeImage(originalImage);
 
-		resizedImage = originalImage;
 		// Save resized image for future inquiries
 		ImageIO.write(resizedImage, "png", new File(outputResizedImage));
 
@@ -254,10 +253,14 @@ public class ImageProcessingController {
 		Tools.println("Global difference binary RGB image directory:" + outputGlobalDifferenceBinaryRGBImage);
 		model.put("GLOBALDIFFERENCEBINARYRGB_IMAGE_FILE",
 				outputGlobalDifferenceBinaryRGBImage.substring(7, outputGlobalDifferenceBinaryRGBImage.length()));
+
 		/**
 		 * BASIC HISTOGRAM HASHING
 		 */
-		model.put("BASIC_HASH_STRING", ImageHashing.basicHistogramHash(ImageHashing.getRGBHistogram(resizedImage)));
+		String hashString = ImageHashing.basicHistogramHash(ImageHashing.getRGBHistogram(resizedImage));
+		Tools.println("Hash string:" + hashString);
+		model.put("BASIC_HASH_STRING", hashString);
+
 		Tools.println("END:handleImageUpload" + System.lineSeparator());
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD,
 				Reference.CommonStrings.NAME_IMAGEPROCESSING, "OK");
