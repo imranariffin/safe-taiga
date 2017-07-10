@@ -1,4 +1,4 @@
-package app.util;
+package ImageProcessing;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.commons.io.FileUtils;
+
+import app.util.Tools;
+
 import javax.imageio.ImageIO;
 
 public class ImageProcessing {
@@ -33,15 +36,14 @@ public class ImageProcessing {
 												// of any image uploaded
 	public static final int DIVISOR_VALUE = 5; // Determine the number of box
 												// (width and length)
-	public static final int BUFFER_VALUE = 5; // Determine the range to check
+	public static final int BUFFER_VALUE = 10; // Determine the range to check
 												// for RGB values
 	public static final int TRIAL_VALUE = 1; // Determine the width and length
 												// of the nearby box to check
-	public static final int FRAME_SKIP = 144; // Determine the frames to skip
+	public static final int FRAME_SKIP = 1; // Determine the frames to skip
 												// when parsing video
 
 	public static BufferedImage resizeImage(BufferedImage originalImage) throws IOException {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:resizeImage");
 
 		int type = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_RGB : originalImage.getType();
 		BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
@@ -49,12 +51,11 @@ public class ImageProcessing {
 		g.drawImage(originalImage, 0, 0, IMG_WIDTH, IMG_HEIGHT, null);
 		g.dispose();
 
-		Tools.println("END:resizeImage" + System.lineSeparator());
 		return resizedImage;
 	}
 
 	public static void resizeImageWithHint(String fileName) throws IOException {
-		Tools.println("System.lineSeperator()START:resizeImageWithHinting:FROM:ImageProcessing");
+
 		BufferedImage originalImage = ImageIO.read(new File("images/input/" + fileName));
 		int type = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
 		BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
@@ -68,7 +69,6 @@ public class ImageProcessing {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		ImageIO.write(resizedImage, "png", new File("images/input/resizedwithhint/" + fileName));
-		Tools.println("END:resizeImageWithHinting" + System.lineSeparator());
 	}
 
 	public static void convertToPng(String filename) {
@@ -97,7 +97,7 @@ public class ImageProcessing {
 		int blockSizeY = height / DIVISOR_VALUE;
 
 		// Array for the average values of partitioned images
-		int[][][] partitionArrayRGB = new int[DIVISOR_VALUE][DIVISOR_VALUE][3];
+		int[][][] array = new int[DIVISOR_VALUE][DIVISOR_VALUE][3];
 
 		// Variables for iterating through the image array
 		int blockStartX = 0;
@@ -124,9 +124,9 @@ public class ImageProcessing {
 				// reaching here means we are done with a block
 
 				// now assigning the average to the partitionArrays
-				partitionArrayRGB[b][a][0] = partitionTotalValueRed / blockCardinality;
-				partitionArrayRGB[b][a][1] = partitionTotalValueGreen / blockCardinality;
-				partitionArrayRGB[b][a][2] = partitionTotalValueBlue / blockCardinality;
+				array[b][a][0] = partitionTotalValueRed / blockCardinality;
+				array[b][a][1] = partitionTotalValueGreen / blockCardinality;
+				array[b][a][2] = partitionTotalValueBlue / blockCardinality;
 
 				// reset partitionTotalValues
 				partitionTotalValueRed = 0;
@@ -145,7 +145,7 @@ public class ImageProcessing {
 		}
 
 		Tools.println("END:getImageRGBPartitionValues" + System.lineSeparator());
-		return partitionArrayRGB;
+		return array;
 	}
 
 	public static BufferedImage getPartitionedBufferedImage(int[][][] givenArray) {
@@ -374,13 +374,74 @@ public class ImageProcessing {
 		return bufferedImage;
 	}
 
-	public static byte[] extractBytes(BufferedImage bufferedImage) throws IOException {
+	/**
+	 * Check if the int values in oldArray and newArray are the same, returns an
+	 * array of boolean of the same size. If the index (X,Y) != (X',Y') then it
+	 * will return true, returns false otherwise
+	 * 
+	 * @param oldArray
+	 * @param newArray
+	 * @return Returns an double array of equality between old and new array
+	 */
+	public static boolean[][][] checkArrayDifference(int[][][] oldArray, int[][][] newArray) {
+
+		// check if the sizes of oldArray and newArray are identical
+		if ((oldArray.length != newArray.length) || (oldArray[0].length != newArray[0].length)
+				|| (oldArray[0][0].length != newArray[0][0].length)) {
+			throw new IllegalArgumentException("oldArray and newArray sizes are not the same.");
+		}
+		boolean[][][] changeBool = new boolean[oldArray.length][oldArray[0].length][oldArray[0][0].length];
+		for (int y = 0; y < oldArray.length; y++) { // Y-axis
+			for (int x = 0; x < oldArray[y].length; x++) { // X-axis
+				for (int z = 0; z < oldArray[y][x].length; z++) {
+					if (Math.abs(oldArray[y][x][z] - newArray[y][x][z]) > BUFFER_VALUE) {
+						changeBool[y][x][z] = true;
+					} else {
+						changeBool[y][x][z] = false;
+					}
+				}
+			}
+		}
+
+		return changeBool;
+	}
+
+	public static int[][][] getArrayFromBufferedImage(BufferedImage image) {
+
+		int[][][] array = new int[image.getHeight()][image.getWidth()][3];
+		for (int y = 0; y < image.getHeight(); y++) {
+			for (int x = 0; x < image.getWidth(); x++) {
+				Color colorAtXY = new Color(image.getRGB(x, y));
+				array[y][x][0] = colorAtXY.getRed();
+				array[y][x][1] = colorAtXY.getGreen();
+				array[y][x][2] = colorAtXY.getBlue();
+			}
+		}
+
+		return array;
+	}
+
+	/**
+	 * Convert a bufferedImage to bytes array
+	 * 
+	 * @param bufferedImage
+	 * @return
+	 */
+	public static byte[] extractBytes(BufferedImage bufferedImage) {
 		// get DataBufferBytes from Raster
 		WritableRaster raster = bufferedImage.getRaster();
 		DataBufferByte data = (DataBufferByte) raster.getDataBuffer();
 		return (data.getData());
 	}
 
+	/**
+	 * Convert an imagefile to bytes array
+	 * 
+	 * @param ImageName
+	 * @return
+	 * @throws IOException
+	 *             -- if the file cannot be specified
+	 */
 	public static byte[] extractBytes(String ImageName) throws IOException {
 		// open image
 		File imgPath = new File(ImageName);

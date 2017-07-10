@@ -8,7 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import app.util.ImageProcessing;
+import ImageProcessing.ImageProcessing;
 import app.util.Tools;
 
 public class FileManager {

@@ -6,13 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import ImageProcessing.ImageProcessing;
 import Managers.FileManager;
 import Managers.ScriptManager;
 
 public class Tools {
 
 	public final static String SAFE_STRING = "X1U8N2YTR87134678V349T9V3841CM89XY4398V";
-	public static boolean logging = true;
+	public static boolean logging = false;
 
 	public static void println(String text) {
 		if (logging) {
@@ -109,6 +110,19 @@ public class Tools {
 		}
 
 		Tools.println("END:getImageDbMinMax");
+	}
+
+	public static String convertTripleArrayToString(int[][][] array) {
+		String string = "";
+		for (int y = 0; y < array.length; y++) {
+			for (int x = 0; x < array[y].length; x++) {
+				for (int z = 0; z < array[y][x].length; z++) {
+					string += array[y][x][z] + " ";
+				}
+			}
+			string += System.lineSeparator();
+		}
+		return string;
 	}
 
 	public static String convertToQuerySafe(String givenString) {

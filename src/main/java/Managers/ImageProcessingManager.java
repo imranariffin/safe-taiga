@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import ImageProcessing.ImageProcessing;
 import app.structure.AnimePanel;
 import app.structure.IntegerPair;
-import app.util.ImageProcessing;
 import app.util.Tools;
 
 public class ImageProcessingManager {
@@ -36,8 +36,6 @@ public class ImageProcessingManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
 			e.printStackTrace();
 		}
 

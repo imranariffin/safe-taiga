@@ -15,6 +15,7 @@ import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 
 import Algorithms.ImageHashing;
+import ImageProcessing.ImageProcessing;
 
 import org.bytedeco.javacv.FrameGrabber.Exception;
 
@@ -24,18 +25,74 @@ import app.structure.AnimeObject;
 
 public class SettingUp {
 
-	public static boolean PARTITION = false;
-	public static boolean GLOBALDIFFERENCE = false;
-	public static boolean BASICHISTOGRAMHASH = true;
+	public static class CheckPanelDifference {
+		/**
+		 * Initiate triggers
+		 */
+		public static boolean activeBool = false;
+		public static boolean writeLogBool = false;
 
-	public static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("yuruyuri-season1", 12),
+		/**
+		 * Initiate required variables
+		 */
+		public static int[][][] oldArray;
+		public static int[][][] newArray;
+		public static boolean[][][] panelDifferenceArray;
+		public static int[][][] panelDifferenceCountArray;
+	}
+
+	public static class Partition {
+		/**
+		 * Initiate triggers
+		 */
+		public static boolean activeBool = true;
+		public static boolean writeLogBool = false;
+		public static boolean writeToDatabase = true;
+		public static boolean printBool = true;
+
+		/**
+		 * Initiate required variables
+		 */
+		public static int[][][] partitionRGBArray; // float array for RGB
+		public static String imageDir; // name of the output partitioned
+		// image
+		public static String textDir; // name of the output partitioned
+		// text dump
+	}
+
+	public static class GlobalDifference {
+		/**
+		 * Initiate triggers
+		 */
+		public static boolean activeBool = false;
+		public static boolean writeLogBool = false;
+
+		/**
+		 * Initiate required variables
+		 */
+		public static int[][][] globalDifferenceRGBArray; // float array for RGB
+		public static String imageDir; // name of the output global difference
+										// image
+		public static String textDir; // name of the output global difference
+										// text dump
+	}
+
+	public static class BasicHistogramHash {
+		/**
+		 * Initiate triggers
+		 */
+		public static boolean activeBool = false;
+		public static boolean writeLogBool = false;
+	}
+
+	public static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("yuruyuri-season1", 1),
 			new AnimeObject("yuruyuri-season2", 12), new AnimeObject("yuruyuri-season3", 12),
 			new AnimeObject("codegeass-season2", 25), new AnimeObject("codegeass-season1", 25) };
 
-	public static void InsertTextDumpToDatabase() {
+	public static void insertPartitionDumpToDatabase() {
 
 		String insertScript = "";
-		int[][][] partitionArrayRGB = null;
+		int[][][] tripleArray;
 
 		Tools.println("beginning to insert " + animeArray.length + " anime into the database");
 
@@ -55,20 +112,18 @@ public class SettingUp {
 			}
 			for (int episodeNumber = 1; episodeNumber <= animeArray[animeNumber]
 					.getNumberOfEpisodes(); episodeNumber++) {
-				Tools.println("episodeNumber:" + episodeNumber);
-				Tools.println("panelNumbers: " + animeArray[animeNumber].getPanels()[episodeNumber - 1]);
 				for (int panelNumber = 0; panelNumber < animeArray[animeNumber].getPanels()[episodeNumber
 						- 1]; panelNumber++) {
 					try (Connection connection = app.Application.getConnection()) {
 
 						Statement stmt = connection.createStatement();
 
-						partitionArrayRGB = FileManager.parseIntegerPartitionTextOutput("dev_output/text/"
+						tripleArray = FileManager.parseIntegerPartitionTextOutput("dev_output/text/"
 								+ animeArray[animeNumber].getName() + "/" + animeArray[animeNumber].getName() + "_"
 								+ episodeNumber + "_" + panelNumber + ".txt");
 
-						insertScript = ScriptManager.insertIntoImagedbAnimeRgb(animeArray[animeNumber].getName(),
-								episodeNumber, panelNumber, partitionArrayRGB);
+						insertScript = ScriptManager.insertIntoImagedbAnimeRgbInteger(animeArray[animeNumber].getName(),
+								episodeNumber, panelNumber, tripleArray);
 
 						Tools.println("Executing script:" + insertScript);
 						stmt.executeUpdate(insertScript);
@@ -106,30 +161,10 @@ public class SettingUp {
 					/**
 					 * GLOBAL VARIABLES
 					 */
-					int i = 0; // the frame iterator
-					int panel = 0; // the panel iterator
+					int frameIterator = 0; // the frame iterator
+					int panelIterator = 0; // the panel iterator
 					BufferedImage image; // the image
 					Frame frame;
-
-					/**
-					 * VARIABLES FOR IMAGE PARTITIONING
-					 */
-					int[][][] partitionRGBArray; // float array for RGB
-					String outputImageName; // name of the output partitioned
-											// image
-					String outputTextName; // name of the output partitioned
-											// text dump
-
-					/**
-					 * VARIABLES FOR IMAGE GLOBAL DIFFERENCE
-					 */
-					int[][][] globalDifferenceRGBArray; // float array for RGB
-					String globalDifferenceOutputImageName; // name of the
-															// output global
-															// difference image
-					String globalDifferenceOutputTextName; // name of the output
-															// global difference
-															// text dump
 
 					Tools.println("begin parsing video");
 
@@ -152,8 +187,7 @@ public class SettingUp {
 							"videos/" + animeName + "/" + animeName + "_" + episode + ".mkv");
 					g.start();
 					while ((frame = g.grabImage()) != null) {
-						if ((i % ImageProcessing.FRAME_SKIP) == 0) {
-
+						if ((frameIterator % ImageProcessing.FRAME_SKIP) == 0) {
 							// Get the BufferedImage from the frame
 							image = frameConverter.getBufferedImage(frame);
 
@@ -165,52 +199,81 @@ public class SettingUp {
 							 */
 							// Assign the location we want to save the image and
 							// the text file
-							if (PARTITION) {
-								outputImageName = "dev_output/images/output/partition/" + animeName + "/" + animeName
-										+ "_" + episode + "_" + panel + ".png";
-								outputTextName = "dev_output/text/partition/" + animeName + "/" + animeName + "_"
-										+ episode + "_" + panel + ".txt";
-
+							if (Partition.activeBool) {
 								// Get the partition RGB array of the image
-								partitionRGBArray = ImageProcessing.getPartitionArray(image);
+								Partition.partitionRGBArray = ImageProcessing.getPartitionArray(image);
 
 								// Write the image based on the partition RGB
 								// array
-								ImageIO.write(ImageProcessing.getPartitionedBufferedImage(partitionRGBArray), "png",
-										new File(outputImageName));
 
-								// Write the text file
-								// FileManager.writeTripleArrayToString(partitionRGBArray,
-								// outputTextName);
+								if (Partition.writeToDatabase) {
+
+									Tools.println("inserting:" + animeName + ":" + episode + ":" + panelIterator,
+											Partition.printBool);
+									try (Connection connection = app.Application.getConnection()) {
+										Statement statement = connection.createStatement();
+										statement.executeUpdate(ScriptManager.insertIntoImagedbAnimeRgbInteger(
+												animeName, episode, panelIterator, Partition.partitionRGBArray));
+									} catch (SQLException e) {
+										e.printStackTrace();
+									} catch (URISyntaxException e) {
+										e.printStackTrace();
+									}
+								}
+								if (Partition.writeLogBool) {
+
+									// Assign the location we want to save the
+									// image and the text file
+									Partition.imageDir = "dev_output/images/output/partition/" + animeName + "/"
+											+ animeName + "_" + episode + "_" + panelIterator + ".png";
+									Partition.textDir = "dev_output/text/partition/" + animeName + "/" + animeName + "_"
+											+ episode + "_" + panelIterator + ".txt";
+
+									ImageIO.write(
+											ImageProcessing.getPartitionedBufferedImage(Partition.partitionRGBArray),
+											"png", new File(Partition.imageDir));
+
+									// Write the text file
+									FileManager.writeTripleArrayToString(Partition.partitionRGBArray,
+											Partition.textDir);
+								}
 							}
+
 							/**
 							 * GLOBAL DIFFERENCE
 							 */
-							if (GLOBALDIFFERENCE) {
-								// Assign the location we want to save the image
-								// and
-								// the text file
-								globalDifferenceOutputImageName = "dev_output/images/output/globaldifference/"
-										+ animeName + "/" + animeName + "_" + episode + "_" + panel + ".png";
-								globalDifferenceOutputTextName = "dev_output/text/globaldifference/" + animeName + "/"
-										+ animeName + "_" + episode + "_" + panel + ".txt";
-
+							if (GlobalDifference.activeBool) {
 								// Get the partition RGB array of the image
-								globalDifferenceRGBArray = ImageProcessing.getGlobalDifferenceArray(image);
+								GlobalDifference.globalDifferenceRGBArray = ImageProcessing
+										.getGlobalDifferenceArray(image);
 
 								// Write the image based on the partition RGB
 								// array
-								ImageIO.write(ImageProcessing.getBufferedImageGivenArray(globalDifferenceRGBArray),
-										"png", new File(globalDifferenceOutputImageName));
 
-								// Write the text file
-								// FileManager.writeTripleArrayToString(globalDifferenceRGBArray,globalDifferenceOutputTextName);
+								if (GlobalDifference.writeLogBool) {
+
+									// Assign the location we want to save the
+									// image and the text file
+									GlobalDifference.imageDir = "dev_output/images/output/globaldifference/" + animeName
+											+ "/" + animeName + "_" + episode + "_" + panelIterator + ".png";
+									GlobalDifference.textDir = "dev_output/text/globaldifference/" + animeName + "/"
+											+ animeName + "_" + episode + "_" + panelIterator + ".txt";
+
+									ImageIO.write(
+											ImageProcessing.getBufferedImageGivenArray(
+													GlobalDifference.globalDifferenceRGBArray),
+											"png", new File(GlobalDifference.imageDir));
+
+									// Write the text file
+									FileManager.writeTripleArrayToString(GlobalDifference.globalDifferenceRGBArray,
+											GlobalDifference.textDir);
+								}
 							}
 
 							/**
 							 * BASIC HISTOGRAM HASHING
 							 */
-							if (BASICHISTOGRAMHASH) {
+							if (BasicHistogramHash.activeBool) {
 								try (Connection connection = app.Application.getConnection()) {
 									Statement statement = connection.createStatement();
 									// statement.executeUpdate(ScriptManager.insertBasicHistogramHash(animeName,
@@ -225,11 +288,36 @@ public class SettingUp {
 								}
 							}
 
-							panel++; // move to the next panel
+							if (CheckPanelDifference.activeBool) {
+
+								if (panelIterator == 0) { // If this is the
+															// first panel, then
+															// simply assign the
+															// array
+									CheckPanelDifference.oldArray = ImageProcessing.getArrayFromBufferedImage(image);
+									CheckPanelDifference.panelDifferenceCountArray = new int[CheckPanelDifference.oldArray.length][CheckPanelDifference.oldArray[0].length][3];
+								} else {
+									CheckPanelDifference.newArray = ImageProcessing.getArrayFromBufferedImage(image);
+									CheckPanelDifference.panelDifferenceArray = ImageProcessing.checkArrayDifference(
+											CheckPanelDifference.oldArray, CheckPanelDifference.newArray);
+									// Iterate through the boolean array
+									for (int y = 0; y < CheckPanelDifference.oldArray.length; y++) {
+										for (int x = 0; x < CheckPanelDifference.oldArray[y].length; x++) {
+											for (int z = 0; z < CheckPanelDifference.oldArray[y][x].length; z++) {
+												if (CheckPanelDifference.panelDifferenceArray[y][x][z]) {
+													CheckPanelDifference.panelDifferenceCountArray[y][x][z]++;
+												}
+											}
+										}
+									}
+								}
+							}
+
+							panelIterator++; // move to the next panel
 						}
-						i++;
+						frameIterator++; // move to the next frame
 					}
-					FileManager.log("" + panel, "dev_output/description/" + animeName + "_" + episode + ".txt");
+					FileManager.log("" + panelIterator, "dev_output/description/" + animeName + "_" + episode + ".txt");
 					g.stop();
 					Tools.println("end parsing video");
 				}
@@ -255,8 +343,8 @@ public class SettingUp {
 			// Tools.println("Execute script:" +
 			// ScriptCreator.DROP_IMAGEDB_ANIME_RGB);
 			// stmt.executeUpdate(ScriptCreator.DROP_IMAGEDB_ANIME_RGB);
-			Tools.println("Execute script:" + ScriptManager.CREATE_IMAGEDB_ANIME_RGB);
-			stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_ANIME_RGB);
+			Tools.println("Execute script:" + ScriptManager.CREATE_IMAGEDB_ANIME_RGB_INTEGER);
+			stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_ANIME_RGB_INTEGER);
 
 			Tools.println("Execute script:" + ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
 			stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);

@@ -26,8 +26,8 @@ import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.Part;
 
 import Algorithms.ImageHashing;
+import ImageProcessing.ImageProcessing;
 import Managers.ImageProcessingManager;
-import app.util.ImageProcessing;
 import app.util.Reference;
 import app.util.Tools;
 import app.util.ViewUtil;

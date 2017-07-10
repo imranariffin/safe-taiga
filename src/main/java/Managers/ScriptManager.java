@@ -8,19 +8,23 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.concurrent.ThreadLocalRandom;
 
-import app.util.ImageProcessing;
+import ImageProcessing.ImageProcessing;
 
 public class ScriptManager {
 
+	/**
+	 * CREATE TEXTBOARD DATABASE
+	 */
 	public final static String CREATE_BOARDS = "CREATE TABLE IF NOT EXISTS boards ( boardlink TEXT, boardname TEXT, boarddescription TEXT, PRIMARY KEY(boardlink));";
 	public final static String CREATE_THREADS = "CREATE TABLE IF NOT EXISTS threads (threadid SERIAL, boardlink TEXT, threadtext TEXT, PRIMARY KEY (threadid), FOREIGN KEY (boardlink) REFERENCES boards(boardlink));";
 	public final static String CREATE_POSTS = "CREATE TABLE IF NOT EXISTS posts (postid SERIAL, threadid INTEGER, posttext TEXT, PRIMARY KEY (postid), FOREIGN KEY (threadid) REFERENCES threads(threadid));";
 
-	public final static String CREATE_IMAGEDB_ANIME_RGB = "CREATE TABLE IF NOT EXISTS imagedb_anime_rgb_integer (name TEXT, episode INT, panel INT, pixel_rgb real["
+	/**
+	 * CREATE IMAGE DATABASE
+	 */
+	public final static String CREATE_IMAGEDB_ANIME_RGB_INTEGER = "CREATE TABLE IF NOT EXISTS imagedb_anime_rgb_integer (name TEXT, episode INT, panel INT, pixel_rgb INT["
 			+ ImageProcessing.DIVISOR_VALUE + "][" + ImageProcessing.DIVISOR_VALUE
 			+ "][3], PRIMARY KEY(name, episode, panel));";
-
-	public final static String CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH = "CREATE TABLE IF NOT EXISTS imagedb_anime_basic_histogram_hash (name TEXT, episode INT, panel INT, hash TEXT, PRIMARY KEY(name, episode, panel));";
 
 	public final static String CREATE_IMAGEDB_ANIME_RGB_FLOAT = "CREATE TABLE IF NOT EXISTS imagedb_anime_rgb_float (name TEXT, episode INT, panel INT, pixel_rgb real["
 			+ ImageProcessing.DIVISOR_VALUE + "][" + ImageProcessing.DIVISOR_VALUE
@@ -28,14 +32,23 @@ public class ScriptManager {
 
 	public final static String CREATE_IMAGEDB_USER_IMAGE_REQUEST = "CREATE TABLE IF NOT EXISTS imagedb_user_image_request (image_id SERIAL, request_ip TEXT, pixel_rgb real["
 			+ ImageProcessing.DIVISOR_VALUE + "][" + ImageProcessing.DIVISOR_VALUE + "][3], PRIMARY KEY(image_id));";
+
 	public final static String CREATE_IMAGEDB_USER_IMAGE_REQUEST_FLOAT = "CREATE TABLE IF NOT EXISTS imagedb_user_image_request_float (image_id SERIAL, request_ip TEXT, pixel_rgb real["
 			+ ImageProcessing.DIVISOR_VALUE + "][" + ImageProcessing.DIVISOR_VALUE + "][3], PRIMARY KEY(image_id));";
-	public final static String CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE = "CREATE TABLE IF NOT EXISTS imagedb_user_image_request_byte (image_id SERIAL, request_ip TEXT, imagefile bytea);";
 
+	public final static String CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE = "CREATE TABLE IF NOT EXISTS imagedb_user_image_request_byte (image_id SERIAL, request_ip TEXT, imagefile bytea);";
+	public final static String CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH = "CREATE TABLE IF NOT EXISTS imagedb_anime_basic_histogram_hash (name TEXT, episode INT, panel INT, hash TEXT, PRIMARY KEY(name, episode, panel));";
+
+	/**
+	 * DROP TEXTBOARD DATABASE
+	 */
 	public final static String DROP_BOARDS = "DROP TABLE IF EXISTS boards;";
 	public final static String DROP_THREADS = "DROP TABLE IF EXISTS threads;";
 	public final static String DROP_POSTS = "DROP TABLE IF EXISTS posts;";
 
+	/**
+	 * DROP IMAGE DATABASE
+	 */
 	public final static String DROP_IMAGEDB_ANIME_RGB_INTEGER = "DROP TABLE IF EXISTS imagedb_anime_rgb_integer;";
 	public final static String DROP_IMAGEDB_ANIME_RGB_FLOAT = "DROP TABLE IF EXISTS imagedb_anime_rgb_float;";
 	public final static String DROP_IMAGEDB_USER_IMAGE_REQUEST_INTEGER = "DROP TABLE IF EXISTS imagedb_user_image_request_integer;";
@@ -76,11 +89,11 @@ public class ScriptManager {
 		return script;
 	}
 
-	public static String insertIntoImagedbAnimeRgb(String name, int episode, int panel,
-			int[][][] partitioningRGBArray) {
-		String script = "INSERT INTO imagedb_anime_rgb (name, episode, panel, pixel_rgb) VALUES ('" + name + "','"
-				+ Integer.toString(episode) + "', '" + Integer.toString(panel) + "', ";
-		String RGBArray = convertTripleArrayToQueryString(partitioningRGBArray);
+	public static String insertIntoImagedbAnimeRgbInteger(String name, int episode, int panel,
+			int[][][] tripleArray) {
+		String script = "INSERT INTO imagedb_anime_rgb_integer (name, episode, panel, pixel_rgb) VALUES ('" + name
+				+ "','" + Integer.toString(episode) + "', '" + Integer.toString(panel) + "', ";
+		String RGBArray = convertTripleArrayToQueryString(tripleArray);
 		script += RGBArray + ");";
 		return script;
 	}
@@ -130,17 +143,13 @@ public class ScriptManager {
 		return script;
 	}
 
-	public static String insertIntoImageDbUserImageRequest(String ipAddress, int[][][] partitioningRGBArray) {
+	public static String insertIntoImageDbUserImageRequest(String ipAddress, int[][][] tripleArray) {
 		String script = "INSERT INTO imagedb_user_image_request (request_ip, pixel_rgb) VALUES ('" + ipAddress + "', "
-				+ convertTripleArrayToQueryString(partitioningRGBArray) + ");";
+				+ convertTripleArrayToQueryString(tripleArray) + ");";
 		return script;
 	}
 
-	public static String findMatchingImageDataBruteForce(int[][][] partitioningRGBArray) {
-		// sample
-		// SELECT pixel_rgb[1][1][1] FROM imagedb_user_image_request WHERE
-		// pixel_rgb[1][1][1] BETWEEN (100-25) AND (100+25) ORDER BY
-		// pixel_rgb[1][1][1];
+	public static String findMatchingImageDataBruteForce(int[][][] tripleArray) {
 
 		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb WHERE ";
 
@@ -148,8 +157,8 @@ public class ScriptManager {
 			for (int b = 1; b <= ImageProcessing.DIVISOR_VALUE; b++) {
 				for (int c = 1; c <= 3; c++) {
 					script += "(pixel_rgb[" + a + "][" + b + "][" + c + "] BETWEEN " + "("
-							+ partitioningRGBArray[a - 1][b - 1][c - 1] + " - " + ImageProcessing.BUFFER_VALUE
-							+ ") AND (" + partitioningRGBArray[a - 1][b - 1][c - 1] + " + "
+							+ tripleArray[a - 1][b - 1][c - 1] + " - " + ImageProcessing.BUFFER_VALUE
+							+ ") AND (" + tripleArray[a - 1][b - 1][c - 1] + " + "
 							+ ImageProcessing.BUFFER_VALUE + "))";
 					if (a == ImageProcessing.DIVISOR_VALUE && b == ImageProcessing.DIVISOR_VALUE && c == 3) {
 						script += "";
@@ -164,7 +173,7 @@ public class ScriptManager {
 		return script;
 	}
 
-	public static String findMatchingImageDataRandomized(int[][][] partitioningRGBArray) {
+	public static String findMatchingImageDataRandomized(int[][][] tripleArray) {
 
 		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb WHERE ";
 
@@ -175,8 +184,8 @@ public class ScriptManager {
 
 			for (int c = 0; c < 3; c++) {
 				script += "(pixel_rgb[" + (x + 1) + "][" + (y + 1) + "][" + (c + 1) + "] BETWEEN " + "("
-						+ partitioningRGBArray[x][y][c] + " - " + ImageProcessing.BUFFER_VALUE + ") AND ("
-						+ partitioningRGBArray[x][y][c] + " + " + ImageProcessing.BUFFER_VALUE + "))";
+						+ tripleArray[x][y][c] + " - " + ImageProcessing.BUFFER_VALUE + ") AND ("
+						+ tripleArray[x][y][c] + " + " + ImageProcessing.BUFFER_VALUE + "))";
 				if (a == ImageProcessing.TRIAL_VALUE && c == 2) {
 					script += "";
 				} else {
@@ -190,7 +199,7 @@ public class ScriptManager {
 		return script;
 	}
 
-	public static String findMatchingImageDataRandomizedV2(int[][][] partitioningRGBArray) {
+	public static String findMatchingImageDataRandomizedV2(int[][][] tripleArray) {
 
 		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb WHERE ";
 
@@ -201,8 +210,8 @@ public class ScriptManager {
 			for (int b = 0; b < ImageProcessing.TRIAL_VALUE; b++) {
 				for (int c = 0; c < 3; c++) {
 					script += "(pixel_rgb[" + (x + a + 1) + "][" + (y + b + 1) + "][" + (c + 1) + "] BETWEEN " + "("
-							+ partitioningRGBArray[x + a][y + b][c] + " - " + ImageProcessing.BUFFER_VALUE + ") AND ("
-							+ partitioningRGBArray[x + a][y + b][c] + " + " + ImageProcessing.BUFFER_VALUE + "))";
+							+ tripleArray[x + a][y + b][c] + " - " + ImageProcessing.BUFFER_VALUE + ") AND ("
+							+ tripleArray[x + a][y + b][c] + " + " + ImageProcessing.BUFFER_VALUE + "))";
 					if (a == (ImageProcessing.TRIAL_VALUE - 1) && b == (ImageProcessing.TRIAL_VALUE - 1) && c == 2) {
 						script += "";
 					} else {
