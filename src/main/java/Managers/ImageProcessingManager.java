@@ -23,8 +23,6 @@ public class ImageProcessingManager {
 	private static boolean BOOL_MATCHING_NAME = false;
 
 	public static void insertImageDataToDatabase(String ipAddress, BufferedImage image) {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessingManager:START:insertImageDataToDatabase");
-
 		String script = "INSERT INTO imagedb_user_image_request_byte (request_ip, imagefile) VALUES (?,?)";
 		try (Connection connection = app.Application.getConnection()) {
 
@@ -38,13 +36,9 @@ public class ImageProcessingManager {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-
-		Tools.println("END:insertImageDataToDatabase" + System.lineSeparator());
 	}
 
 	public static void findMatchingImageDataRandomized(Map<String, Object> model, int[][][] array) {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessingManager:START:findMatchingImageDataRandomized");
-
 		try (Connection connection = app.Application.getConnection()) {
 
 			Statement stmt = connection.createStatement();
@@ -117,12 +111,9 @@ public class ImageProcessingManager {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		Tools.println("END:findMatchingImageDataRandomized" + System.lineSeparator());
 	}
 
 	public static void findMatchingImageDataRandomizedV2(Map<String, Object> model, int[][][] array) {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessingManager:START:findMatchingImageDataRandomizedV2");
-
 		try (Connection connection = app.Application.getConnection()) {
 			Statement stmt = connection.createStatement();
 			/**
@@ -190,12 +181,9 @@ public class ImageProcessingManager {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		Tools.println("END:findMatchingImageDataRandomizedV2" + System.lineSeparator());
 	}
 
 	public static void findMatchingImageDataIncremental(Map<String, Object> model, int[][][] array) {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessingManager:START:findMatchingImageDataIncremental");
-
 		try (Connection connection = app.Application.getConnection()) {
 			Statement stmt = connection.createStatement();
 
@@ -274,12 +262,9 @@ public class ImageProcessingManager {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		Tools.println("END:findMatchingImageDataIncremental" + System.lineSeparator());
 	}
 
 	public static void findMatchingImageDataIncrementalRGB(Map<String, Object> model, int[][][] array) {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessingManager:START:findMatchingImageDataIncrementalRGB");
-
 		try (Connection connection = app.Application.getConnection()) {
 			Statement stmt = connection.createStatement();
 			boolean test4Found = false;
@@ -354,6 +339,5 @@ public class ImageProcessingManager {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		Tools.println("END:findMatchingImageDataIncrementalRGB" + System.lineSeparator());
 	}
 }

@@ -27,7 +27,6 @@ public class TextboardController {
 	 * SERVE TEXTBOARD
 	 */
 	public static Route serveTextboard_HOME = (Request request, Response response) -> {
-		Tools.println("\nFROM:TextboardsController:START:serveTextboard_HOME");
 		Map<String, Object> model = new HashMap<>();
 
 		@SuppressWarnings("rawtypes")
@@ -74,7 +73,6 @@ public class TextboardController {
 		model.put(Reference.VTL.INPUT_BOARDNAME, Reference.VTL.INPUT_BOARDNAME);
 		model.put(Reference.VTL.INPUT_BOARDDESCRIPTION, Reference.VTL.INPUT_BOARDDESCRIPTION);
 
-		Tools.println("END:serveTextboard_HOME\n");
 		return ViewUtil.render(request, model, Reference.Templates.TEXTBOARD, Reference.Web.TEXTBOARD,
 				"OK: default return");
 	};
@@ -141,7 +139,6 @@ public class TextboardController {
 		// Populate html-forms
 		model.put(Reference.VTL.INPUT_THREADTEXT, Reference.VTL.INPUT_THREADTEXT);
 
-		Tools.println("END:serveTextboard_BOARD\n");
 		return ViewUtil.render(request, model, Reference.Templates.TEXTBOARD_BOARD, Reference.Web.TEXTBOARD_BOARD,
 				"OK: default return");
 	};
@@ -150,7 +147,6 @@ public class TextboardController {
 	 * SERVE TEXTBOARD_BOARD_THREAD
 	 */
 	public static Route serveTextboard_THREAD = (Request request, Response response) -> {
-		Tools.println("\nFROM:TextboardController:START:serveTextboard_THREAD");
 		Map<String, Object> model = new HashMap<>();
 
 		// Obtain the request parameters
@@ -182,9 +178,9 @@ public class TextboardController {
 			Tools.println("Executing script:" + ScriptManager.selectThreadFromThreadsGivenThreadid(threadid));
 			ResultSet rs = stmt.executeQuery(ScriptManager.selectThreadFromThreadsGivenThreadid(threadid));
 			rs.next();
-			
+
 			threadtext = rs.getString(Reference.CommonStrings.THREADTEXT);
-			
+
 			model.put(Reference.CommonStrings.THREADID, threadid);
 			model.put(Reference.CommonStrings.THREADTEXT, threadtext);
 
@@ -222,7 +218,6 @@ public class TextboardController {
 		// Populate html-form
 		model.put(Reference.VTL.INPUT_POSTTEXT, Reference.VTL.INPUT_POSTTEXT);
 
-		Tools.println("END:serveTextboard_THREAD\n");
 		return ViewUtil.render(request, model, Reference.Templates.TEXTBOARD_BOARD_THREAD,
 				Reference.Web.TEXTBOARD_BOARD_THREAD, "OK: default return");
 	};
@@ -235,7 +230,6 @@ public class TextboardController {
 	 * HANDLES CREATE BOARD POST METHOD
 	 */
 	public static Route handleCreateBoard = (Request request, Response response) -> {
-		Tools.println("\nFROM:TextboardController:START:handleCreateBoard");
 		// Map<String, Object> model = new HashMap<>();
 
 		String requestedBoardLink = request.queryParams(Reference.VTL.INPUT_BOARDLINK);
@@ -269,7 +263,6 @@ public class TextboardController {
 			Tools.println("The requested boardlink:" + requestedBoardLink + " is NOT available!");
 		}
 
-		Tools.println("END:handleCreateBoard\n");
 		return serveTextboard_HOME.handle(request, response);
 	};
 
@@ -277,7 +270,6 @@ public class TextboardController {
 	 * HANDLES CREATE BOARD THREAD
 	 */
 	public static Route handleCreateThread = (Request request, Response response) -> {
-		Tools.println("\nFROM:TextboardController:START:handleCreateBoard");
 		// Map<String, Object> model = new HashMap<>();
 
 		String requestedThreadText = request.queryParams(Reference.VTL.INPUT_THREADTEXT);
@@ -312,7 +304,6 @@ public class TextboardController {
 			Tools.println("The requested thread with post:" + requestedThreadText + " is NOT acceptable!");
 		}
 
-		Tools.println("END:handleCreateThread\n");
 		return serveTextboard_BOARD.handle(request, response);
 	};
 
@@ -320,7 +311,6 @@ public class TextboardController {
 	 * HANDLES CREATE BOARD THREAD POST
 	 */
 	public static Route handleCreatePost = (Request request, Response response) -> {
-		Tools.println("\nFROM:TextboardController:handleCreateBoardPost");
 		// Map<String, Object> model = new HashMap<>();
 
 		String requestedPostText = request.queryParams(Reference.VTL.INPUT_POSTTEXT);
@@ -356,7 +346,6 @@ public class TextboardController {
 			Tools.println("The requested thread with post:" + requestedPostText + " is NOT acceptable!");
 		}
 
-		Tools.println("END:handleCreatePost\n");
 		return serveTextboard_THREAD.handle(request, response);
 	};
 }

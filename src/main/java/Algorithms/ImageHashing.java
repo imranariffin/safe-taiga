@@ -8,7 +8,6 @@ import app.util.Tools;
 public class ImageHashing {
 
 	public static IntegerPair[][] getRGBHistogram(BufferedImage bufferedImage) {
-		Tools.println(System.lineSeparator() + "FROM:ImageHashing:START:getRGBHistogram");
 		IntegerPair[][] histogram = new IntegerPair[256][3];
 
 		for (int y = 0; y < bufferedImage.getHeight(); y++) {
@@ -34,12 +33,10 @@ public class ImageHashing {
 			}
 		}
 
-		Tools.println("END:getRGBHistogram");
 		return histogram;
 	}
 
 	public static String basicHistogramHash(IntegerPair[][] histogram) {
-		Tools.println(System.lineSeparator() + "FROM:ImageHashing:START:basicHistogramHash");
 		/**
 		 * MOST BASIC CONVERSION, IMAGES WITH THE SAME PIXEL, EXCEPT MOVED
 		 * AROUND WILL COLLIDE
@@ -61,7 +58,7 @@ public class ImageHashing {
 		}
 		Tools.println("hash sum:" + sum);
 		String hashString = toSixtyTwoRadix(sum);
-		Tools.println("END:basicHistogramHash" + System.lineSeparator());
+
 		return hashString;
 	}
 
@@ -85,8 +82,10 @@ public class ImageHashing {
 		if (rem < 10) {
 			char letter = Character.forDigit(rem, 10);
 			if (quot == 0) {
+
 				return "" + letter;
 			} else {
+
 				return toSixtyTwoRadix(quot) + letter;
 			}
 		} else if (rem < 36) {
@@ -94,6 +93,7 @@ public class ImageHashing {
 			if (quot == 0) {
 				return "" + letter;
 			} else {
+
 				return toSixtyTwoRadix(quot) + letter;
 			}
 		} else {
@@ -101,8 +101,10 @@ public class ImageHashing {
 			// if x > (26 + 10) i.e. is a capital letter
 			char letter = (char) ((int) 'A' + (rem - 10 - 26));
 			if (quot == 0) {
+
 				return "" + letter;
 			} else {
+
 				return toSixtyTwoRadix(quot) + letter;
 			}
 		}

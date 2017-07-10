@@ -128,7 +128,6 @@ public class FileManager {
 	}
 
 	public static void writeTripleArrayToString(int[][][] tripleArray, String pathFile) {
-		Tools.println("\nFROM:WriteFile:START:writeTripleArrayToString");
 		Tools.println("writing to:" + pathFile);
 		BufferedWriter writer = null;
 		try {
@@ -154,12 +153,9 @@ public class FileManager {
 				e.printStackTrace();
 			}
 		}
-
-		Tools.println("END:writeTripleArrayToString\n");
 	}
 
 	public static void writeTripleArrayToString(float[][][] partitionArrayRGB, String pathFile) {
-		Tools.println("\nFROM:WriteFile:START:writeTripleArrayToString");
 		Tools.println("writing to:" + pathFile);
 		BufferedWriter writer = null;
 		try {
@@ -185,7 +181,5 @@ public class FileManager {
 				e.printStackTrace();
 			}
 		}
-
-		Tools.println("END:writeTripleArrayToString\n");
 	}
 }

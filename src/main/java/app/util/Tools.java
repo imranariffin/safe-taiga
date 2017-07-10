@@ -48,11 +48,8 @@ public class Tools {
 	}
 
 	public static void getImageDbAverageRGB() {
-		Tools.println(System.lineSeparator() + "FROM:Tools:START:getImageDbAverageRGB");
-
 		try (Connection connection = app.Application.getConnection()) {
 			Statement stmt = connection.createStatement();
-			Tools.println(ScriptManager.selectAverageOfImageDb());
 			ResultSet rs = stmt.executeQuery(ScriptManager.selectAverageOfImageDb());
 
 			rs.next();
@@ -66,7 +63,6 @@ public class Tools {
 						Tools.print(result);
 					}
 					averageOfRGB += System.lineSeparator();
-					Tools.println("");
 				}
 			}
 			FileManager.log(averageOfRGB, "dev_output/averageOfRGB.txt");
@@ -75,16 +71,11 @@ public class Tools {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-
-		Tools.println("END:getImageDbAverageRGB");
 	}
 
 	public static void getImageDbMinMax() {
-		Tools.println(System.lineSeparator() + "FROM:Tools:START:getImageDbMinMax");
-
 		try (Connection connection = app.Application.getConnection()) {
 			Statement stmt = connection.createStatement();
-			Tools.println(ScriptManager.getMinMaxOfImageDb());
 			ResultSet rs = stmt.executeQuery(ScriptManager.getMinMaxOfImageDb());
 
 			rs.next();
@@ -99,7 +90,6 @@ public class Tools {
 						Tools.print(result);
 					}
 					minMaxOfRGB += System.lineSeparator();
-					Tools.println("");
 				}
 			}
 			FileManager.log(minMaxOfRGB, "dev_output/minMaxOfRGB.txt");
@@ -108,8 +98,6 @@ public class Tools {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-
-		Tools.println("END:getImageDbMinMax");
 	}
 
 	public static String convertTripleArrayToString(int[][][] array) {
@@ -126,8 +114,6 @@ public class Tools {
 	}
 
 	public static String convertToQuerySafe(String givenString) {
-		Tools.println(System.lineSeparator() + "FROM:Tools:START:convertToQuerySafe");
-
 		String safeString = "";
 		for (int a = 0; a < givenString.length(); a++) {
 			if (givenString.charAt(a) == '\'') {
@@ -136,14 +122,10 @@ public class Tools {
 				safeString += givenString.charAt(a);
 			}
 		}
-
-		Tools.println("END:convertToQuerySafe");
 		return safeString;
 	}
 
 	public static String revertQuerySafeString(String safeString) {
-		Tools.println("FROM:Tools:START:revertQuerySafeString");
-		Tools.println("END:revertQuerySafeString");
 		return safeString.replaceAll(SAFE_STRING, "'");
 	}
 }

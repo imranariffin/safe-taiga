@@ -55,7 +55,7 @@ public class ViewUtil {
 	// The request is needed to know where the user is
 	public static String renderErrorMessage(Request request, String errorMessage, String returnLink,
 			String returnName) {
-		Tools.println("\nAn error has occured\n");
+		Tools.println("\nAn error rendering page has occured\n");
 
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(Reference.CommonStrings.ERROR, errorMessage);

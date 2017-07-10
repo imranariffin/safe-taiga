@@ -9,8 +9,6 @@ import app.util.Tools;
 public class TextboardLogic {
 
 	public static boolean checkIfBoardIsAvailable(String boardlink) {
-		Tools.println("FROM:TextboardLogic:START:checkIfBoardIsAvailable");
-
 		final String SCRIPT_SELECT_GIVEN_BOARDLINK = "SELECT * FROM boards WHERE boardlink = '" + boardlink + "';";
 		Tools.println("SCRIPT_SELECT_GIVEN_BOARDLINK:" + SCRIPT_SELECT_GIVEN_BOARDLINK);
 
@@ -34,7 +32,6 @@ public class TextboardLogic {
 		}
 
 		// connection to database likely experienced an error
-		Tools.println("END:checkIfBoardIsAvailable:2");
 		return false;
 	}
 

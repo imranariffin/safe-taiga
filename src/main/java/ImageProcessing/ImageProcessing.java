@@ -41,7 +41,7 @@ public class ImageProcessing {
 	public static final int TRIAL_VALUE = 1; // Determine the width and length
 												// of the nearby box to check
 	public static final int FRAME_SKIP = 1; // Determine the frames to skip
-												// when parsing video
+											// when parsing video
 
 	public static BufferedImage resizeImage(BufferedImage originalImage) throws IOException {
 
@@ -88,8 +88,6 @@ public class ImageProcessing {
 	}
 
 	public static int[][][] getPartitionArray(BufferedImage givenImage) {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getImageRGBPartitionValues");
-
 		int width = givenImage.getWidth();
 		int height = givenImage.getHeight();
 
@@ -143,14 +141,10 @@ public class ImageProcessing {
 			// reset blockStartX
 			blockStartX = 0;
 		}
-
-		Tools.println("END:getImageRGBPartitionValues" + System.lineSeparator());
 		return array;
 	}
 
 	public static BufferedImage getPartitionedBufferedImage(int[][][] givenArray) {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getPartitionedBufferedImage");
-
 		BufferedImage bufferedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, BufferedImage.TYPE_INT_RGB);
 
 		// Parse required information about the image
@@ -189,14 +183,10 @@ public class ImageProcessing {
 			// reset blockStartX
 			blockStartX = 0;
 		}
-
-		Tools.println("END:getPartitionedBufferedImage" + System.lineSeparator());
 		return bufferedImage;
 	}
 
 	public static int[][][] getGlobalDifferenceArray(BufferedImage givenImage) {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getGlobalDifferenceArray");
-
 		int width = givenImage.getWidth(); // X-axis
 		int height = givenImage.getHeight(); // Y-axis
 
@@ -290,14 +280,10 @@ public class ImageProcessing {
 				}
 			}
 		}
-
-		Tools.println("END:getGlobalDifferenceBinaryArray" + System.lineSeparator());
 		return RGBArray;
 	}
 
 	public static int[][][] getGlobalDifferenceBinaryRGBArray(BufferedImage givenImage) {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getGlobalDifferenceBinaryArray");
-
 		int width = givenImage.getWidth(); // Y-axis
 		int height = givenImage.getHeight(); // X-axis
 
@@ -345,15 +331,11 @@ public class ImageProcessing {
 				}
 			}
 		}
-
-		Tools.println("END:getGlobalDifferenceBinaryArray" + System.lineSeparator());
 		return RGBArray;
 
 	}
 
 	public static BufferedImage getBufferedImageGivenArray(int[][][] givenArray) {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getBufferedImageGivenArray");
-
 		BufferedImage bufferedImage = new BufferedImage(givenArray[0].length, givenArray.length,
 				BufferedImage.TYPE_INT_RGB);
 
@@ -369,8 +351,6 @@ public class ImageProcessing {
 				bufferedImage.setRGB(x, y, newColor.getRGB());
 			}
 		}
-
-		Tools.println("END:getBufferedImageGivenArray" + System.lineSeparator());
 		return bufferedImage;
 	}
 

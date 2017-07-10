@@ -33,36 +33,44 @@ public class Application {
 		if (System.getenv("IS_HEROKU") == null) {
 			enableDebugScreen();
 			Tools.println("Debug screen enabled");
+			// SettingUp.createDatabases();
+			SettingUp.createImageInfo();
+			// SettingUp.InsertTextDumpToDatabase();
+
+			Tools.println("No .env file specified, defaulting to port:5000");
+			port(5000);
 		} else {
 			Tools.println("Debug screen disabled");
+			port(Integer.valueOf(System.getenv("PORT")));
 		}
-
-		int portNumber;
-		try {
-
-			portNumber = Integer.valueOf(System.getenv("PORT"));
-		} catch (Exception e) {
-			Tools.println("No .env file specified, defaulting to port:5000");
-			portNumber = 5000;
-		}
-		Tools.println("PORT:" + portNumber);
-		port(portNumber);
 
 		/**
-		 * Required directories
+		 * Required Directory
 		 */
 		IMAGES_OTHER_DIR = new File("public/images/other");
 		IMAGES_INPUT_DIR = new File("public/images/input");
 		IMAGES_OUTPUT_RESIZED_DIR = new File("public/images/output/resized");
 
+		/**
+		 * Partition Directory
+		 */
 		IMAGES_OUTPUT_PARTITION_DIR = new File("public/images/output/partition");
 		TEXT_OUTPUT_PARTITION_DIR = new File("public/texts/output/partition");
 
+		/**
+		 * Global Difference Directory
+		 */
 		IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR = new File("public/images/output/globaldifference");
 		TEXT_OUTPUT_GLOBALDIFFERENCE_DIR = new File("public/texts/output/globaldifference");
 
+		/**
+		 * Global Difference Binary Directory
+		 */
 		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR = new File("public/images/output/globaldifferencebinary");
 
+		/**
+		 * Global Difference Binary RGB Directory
+		 */
 		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR = new File("public/images/output/globaldifferencebinaryRGB");
 
 		IMAGES_OTHER_DIR.mkdirs();
@@ -98,10 +106,6 @@ public class Application {
 		 * NOT FOUND
 		 */
 		get("*", ViewUtil.notFound);
-
-		// SettingUp.createDatabases();
-		SettingUp.createImageInfo();
-		// SettingUp.InsertTextDumpToDatabase();
 
 		long tEnd = System.currentTimeMillis();
 		long tDelta = tEnd - tStart;
