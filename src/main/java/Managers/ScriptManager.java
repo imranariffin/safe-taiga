@@ -89,8 +89,7 @@ public class ScriptManager {
 		return script;
 	}
 
-	public static String insertIntoImagedbAnimeRgbInteger(String name, int episode, int panel,
-			int[][][] tripleArray) {
+	public static String insertIntoImagedbAnimeRgbInteger(String name, int episode, int panel, int[][][] tripleArray) {
 		String script = "INSERT INTO imagedb_anime_rgb_integer (name, episode, panel, pixel_rgb) VALUES ('" + name
 				+ "','" + Integer.toString(episode) + "', '" + Integer.toString(panel) + "', ";
 		String RGBArray = convertTripleArrayToQueryString(tripleArray);
@@ -115,7 +114,7 @@ public class ScriptManager {
 			}
 		}
 
-		selectString += " FROM imagedb_anime_rgb;";
+		selectString += " FROM imagedb_anime_rgb_integer;";
 
 		return selectString;
 	}
@@ -139,7 +138,7 @@ public class ScriptManager {
 			}
 		}
 
-		script += " FROM imagedb_anime_rgb;";
+		script += " FROM imagedb_anime_rgb_integer;";
 		return script;
 	}
 
@@ -151,16 +150,16 @@ public class ScriptManager {
 
 	public static String findMatchingImageDataBruteForce(int[][][] tripleArray) {
 
-		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb WHERE ";
+		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb_integer WHERE ";
 
-		for (int a = 1; a <= ImageProcessing.DIVISOR_VALUE; a++) {
-			for (int b = 1; b <= ImageProcessing.DIVISOR_VALUE; b++) {
+		for (int a = 2; a <= (ImageProcessing.DIVISOR_VALUE - 1); a++) { // Y-axis
+			for (int b = 2; b <= (ImageProcessing.DIVISOR_VALUE - 1); b++) { // X-axis
 				for (int c = 1; c <= 3; c++) {
 					script += "(pixel_rgb[" + a + "][" + b + "][" + c + "] BETWEEN " + "("
-							+ tripleArray[a - 1][b - 1][c - 1] + " - " + ImageProcessing.BUFFER_VALUE
-							+ ") AND (" + tripleArray[a - 1][b - 1][c - 1] + " + "
-							+ ImageProcessing.BUFFER_VALUE + "))";
-					if (a == ImageProcessing.DIVISOR_VALUE && b == ImageProcessing.DIVISOR_VALUE && c == 3) {
+							+ tripleArray[a - 1][b - 1][c - 1] + " - " + ImageProcessing.BUFFER_VALUE + ") AND ("
+							+ tripleArray[a - 1][b - 1][c - 1] + " + " + ImageProcessing.BUFFER_VALUE + "))";
+					if (a == (ImageProcessing.DIVISOR_VALUE - 1) && b == (ImageProcessing.DIVISOR_VALUE - 1)
+							&& c == 3) {
 						script += "";
 					} else {
 						script += "AND ";
@@ -175,7 +174,7 @@ public class ScriptManager {
 
 	public static String findMatchingImageDataRandomized(int[][][] tripleArray) {
 
-		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb WHERE ";
+		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb_integer WHERE ";
 
 		for (int a = 1; a <= ImageProcessing.TRIAL_VALUE; a++) {
 
@@ -184,8 +183,8 @@ public class ScriptManager {
 
 			for (int c = 0; c < 3; c++) {
 				script += "(pixel_rgb[" + (x + 1) + "][" + (y + 1) + "][" + (c + 1) + "] BETWEEN " + "("
-						+ tripleArray[x][y][c] + " - " + ImageProcessing.BUFFER_VALUE + ") AND ("
-						+ tripleArray[x][y][c] + " + " + ImageProcessing.BUFFER_VALUE + "))";
+						+ tripleArray[x][y][c] + " - " + ImageProcessing.BUFFER_VALUE + ") AND (" + tripleArray[x][y][c]
+						+ " + " + ImageProcessing.BUFFER_VALUE + "))";
 				if (a == ImageProcessing.TRIAL_VALUE && c == 2) {
 					script += "";
 				} else {
@@ -201,7 +200,7 @@ public class ScriptManager {
 
 	public static String findMatchingImageDataRandomizedV2(int[][][] tripleArray) {
 
-		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb WHERE ";
+		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb_integer WHERE ";
 
 		int x = ThreadLocalRandom.current().nextInt(0, (ImageProcessing.DIVISOR_VALUE - ImageProcessing.TRIAL_VALUE));
 		int y = ThreadLocalRandom.current().nextInt(0, (ImageProcessing.DIVISOR_VALUE - ImageProcessing.TRIAL_VALUE));
@@ -228,7 +227,7 @@ public class ScriptManager {
 
 	public static String findMatchingImageDataIncremental(int x, int y, int z, int value) {
 
-		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb WHERE ";
+		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb_integer WHERE ";
 
 		script += "(pixel_rgb[" + (x + 1) + "][" + (y + 1) + "][" + (z + 1) + "] BETWEEN " + "(" + value + " - "
 				+ ImageProcessing.BUFFER_VALUE + ") AND (" + value + " + " + ImageProcessing.BUFFER_VALUE + "))";
@@ -239,7 +238,7 @@ public class ScriptManager {
 
 	public static String findMatchingImageDataIncrementalRGB(int x, int y, int[] array) {
 
-		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb WHERE ";
+		String script = "SELECT name, episode, panel FROM imagedb_anime_rgb_integer WHERE ";
 
 		for (int a = 0; a < 3; a++) {
 			script += "(pixel_rgb[" + (x + 1) + "][" + (y + 1) + "][" + (a + 1) + "] BETWEEN " + "(" + array[a] + " - "

@@ -13,7 +13,7 @@ import Managers.ScriptManager;
 public class Tools {
 
 	public final static String SAFE_STRING = "X1U8N2YTR87134678V349T9V3841CM89XY4398V";
-	public static boolean logging = false;
+	public static boolean logging = true;
 
 	public static void println(String text) {
 		if (logging) {

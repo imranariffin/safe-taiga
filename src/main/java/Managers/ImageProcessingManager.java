@@ -20,7 +20,7 @@ import app.util.Tools;
 public class ImageProcessingManager {
 
 	private static boolean BOOL_SCRIPT = false;
-	private static boolean BOOL_MATCHING_NAME = false;
+	private static boolean BOOL_MATCHING_NAME = true;
 
 	public static void insertImageDataToDatabase(String ipAddress, BufferedImage image) {
 		String script = "INSERT INTO imagedb_user_image_request_byte (request_ip, imagefile) VALUES (?,?)";
@@ -44,7 +44,7 @@ public class ImageProcessingManager {
 			Statement stmt = connection.createStatement();
 
 			/**
-			 * Initialize variable for image search
+			 * Initialize variables
 			 * 
 			 * IntegerPair is defined as <index, weight>
 			 */
@@ -62,15 +62,12 @@ public class ImageProcessingManager {
 
 			while (rs.next()) {
 				Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
-						+ rs.getString("panel"), BOOL_MATCHING_NAME);
+						+ rs.getString("panel") + "@" + ((Integer.valueOf(rs.getString("panel")) / (24 * 60)) + ":"
+								+ (Integer.valueOf(rs.getString("panel")) % (24))),
+						BOOL_MATCHING_NAME);
 
 				String key = rs.getString("name") + ":" + rs.getString("episode");
-				if (matchResultMap.containsKey(key)) { // the fact that this is
-														// true
-														// means that there are
-														// at
-														// least 1 relation that
-														// exist in the map
+				if (matchResultMap.containsKey(key)) {
 					matchResultMap.get(key).b++;
 
 					// check if this is larger than the weight that we currently
@@ -95,16 +92,9 @@ public class ImageProcessingManager {
 				Tools.println("Test 1: Found");
 				model.put("test_1_boolean", true);
 				model.put("test_1_weight", matchResultMap.get(values.get(maxIndex).getKey(2)).b);
-				model.put("test_1_result", values.get(maxIndex)); // Return
-																	// a
-																	// list
-																	// of
-				// result,
-				// since this is randomized
-				// search specialized in
-				// cropped
-				// pictures, duplicates are
-				// expected
+				model.put("test_1_result", values.get(maxIndex));
+				model.put("test_1_time", "" + (values.get(maxIndex).getPanel() / (24 * 60)) + ":"
+						+ (values.get(maxIndex).getPanel() % (24)));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -132,7 +122,9 @@ public class ImageProcessingManager {
 
 			while (rs.next()) {
 				Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
-						+ rs.getString("panel"), BOOL_MATCHING_NAME);
+						+ rs.getString("panel") + "@" + ((Integer.valueOf(rs.getString("panel")) / (24 * 60)) + ":"
+								+ (Integer.valueOf(rs.getString("panel")) % (24))),
+						BOOL_MATCHING_NAME);
 
 				String key = rs.getString("name") + ":" + rs.getString("episode");
 				if (matchResultMap.containsKey(key)) { // the fact that this is
@@ -165,16 +157,9 @@ public class ImageProcessingManager {
 				Tools.println("Test 2: Found");
 				model.put("test_2_boolean", true);
 				model.put("test_2_weight", matchResultMap.get(values.get(maxIndex).getKey(2)).b);
-				model.put("test_2_result", values.get(maxIndex)); // Return
-																	// a
-																	// list
-																	// of
-				// result,
-				// since this is randomized
-				// search specialized in
-				// cropped
-				// pictures, duplicates are
-				// expected
+				model.put("test_2_result", values.get(maxIndex));
+				model.put("test_5_time", "" + (values.get(maxIndex).getPanel() / (24 * 60)) + ":"
+						+ (values.get(maxIndex).getPanel() % (24)));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -204,8 +189,6 @@ public class ImageProcessingManager {
 						rs = stmt.executeQuery(findMatchingImageDataIncremental);
 
 						while (rs.next()) {
-							Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
-									+ rs.getString("panel"), BOOL_MATCHING_NAME);
 							AnimePanel panelData = new AnimePanel(rs.getString("name"), rs.getInt(2), rs.getInt(3));
 							if (!(matchResultMap.containsKey(panelData.getKey()))) {
 								matchResultMap.put(panelData.getKey(), panelData);
@@ -253,6 +236,9 @@ public class ImageProcessingManager {
 					model.put("test_3_weight", maxValue);
 					model.put("test_3_result", new AnimePanel(values[maxIndex].getKey().split(":")[0],
 							values[maxIndex].getKey().split(":")[1], values[maxIndex].getKey().split(":")[2]));
+
+					model.put("test_5_time", "" + (Integer.valueOf(values[maxIndex].getKey().split(":")[2]) / (24 * 60))
+							+ ":" + (Integer.valueOf(values[maxIndex].getKey().split(":")[2]) % (24)));
 				} else {
 					Tools.println("maxIndex is -1");
 				}
@@ -277,13 +263,12 @@ public class ImageProcessingManager {
 				for (int b = 0; b < ImageProcessing.DIVISOR_VALUE; b++) {
 					findMatchingImageDataIncrementalRGB = ScriptManager.findMatchingImageDataIncrementalRGB(a, b,
 							array[a][b]);
-					Tools.println("Execute Query:" + findMatchingImageDataIncrementalRGB, BOOL_SCRIPT);
 
 					rs = stmt.executeQuery(findMatchingImageDataIncrementalRGB);
 
 					while (rs.next()) {
 						Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
-								+ rs.getString("panel"), BOOL_MATCHING_NAME);
+								+ rs.getString("panel"), false);
 						String key = "" + rs.getString("name") + ":" + rs.getInt(2) + ":" + rs.getInt(3);
 						if (!(matchResult.containsKey(key))) {
 							matchResult.put(key, new AnimePanel("" + rs.getString("name"), rs.getInt(2), rs.getInt(3)));
@@ -330,6 +315,9 @@ public class ImageProcessingManager {
 					model.put("test_4_weight", maxValue);
 					model.put("test_4_result", new AnimePanel(values[maxIndex].getKey().split(":")[0],
 							values[maxIndex].getKey().split(":")[1], values[maxIndex].getKey().split(":")[2]));
+
+					model.put("test_5_time", "" + (Integer.valueOf(values[maxIndex].getKey().split(":")[2]) / (24 * 60))
+							+ ":" + (Integer.valueOf(values[maxIndex].getKey().split(":")[2]) % (24)));
 				} else {
 					Tools.println("maxIndex is -1");
 				}
@@ -340,4 +328,42 @@ public class ImageProcessingManager {
 			e.printStackTrace();
 		}
 	}
+
+	public static void findMatchingImageDataBruteForce(Map<String, Object> model, int[][][] array) {
+		try (Connection connection = app.Application.getConnection()) {
+			Statement stmt = connection.createStatement();
+
+			/**
+			 * Initialize variables
+			 */
+			Map<String, IntegerPair> matchResultMap = new HashMap<String, IntegerPair>();
+			AnimePanel result;
+
+			String findMatchingImageDataBruteForce = ScriptManager.findMatchingImageDataBruteForce(array);
+			Tools.println(findMatchingImageDataBruteForce, BOOL_SCRIPT);
+
+			ResultSet rs = stmt.executeQuery(findMatchingImageDataBruteForce);
+
+			if (rs.next()) {
+				Tools.println("Test 5: Found");
+
+				Tools.println("matching name:" + rs.getString("name") + " " + rs.getString("episode") + " "
+						+ rs.getString("panel") + "@" + ((Integer.valueOf(rs.getString("panel")) / (24 * 60)) + ":"
+								+ (Integer.valueOf(rs.getString("panel")) % (24))),
+						BOOL_MATCHING_NAME);
+
+				result = new AnimePanel(rs.getString("name"), rs.getInt(2), rs.getInt(3));
+				model.put("test_5_boolean", true);
+				model.put("test_5_result", result);
+				model.put("test_5_time", "" + (result.getPanel() / (24 * 60)) + ":" + (result.getPanel() % (24)));
+			} else {
+				Tools.println("TEST 5: No match found");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

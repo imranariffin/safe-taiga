@@ -16,8 +16,6 @@ import java.io.OutputStream;
 
 import org.apache.commons.io.FileUtils;
 
-import app.util.Tools;
-
 import javax.imageio.ImageIO;
 
 public class ImageProcessing {
@@ -36,7 +34,7 @@ public class ImageProcessing {
 												// of any image uploaded
 	public static final int DIVISOR_VALUE = 5; // Determine the number of box
 												// (width and length)
-	public static final int BUFFER_VALUE = 10; // Determine the range to check
+	public static final int BUFFER_VALUE = 5; // Determine the range to check
 												// for RGB values
 	public static final int TRIAL_VALUE = 1; // Determine the width and length
 												// of the nearby box to check
@@ -154,13 +152,6 @@ public class ImageProcessing {
 		int blockSizeX = width / DIVISOR_VALUE;
 		int blockSizeY = height / DIVISOR_VALUE;
 
-		/**
-		 * Verify information of the image
-		 */
-		Tools.println("DIVISOR VALUE:" + DIVISOR_VALUE + System.lineSeparator() + "width:" + width
-				+ System.lineSeparator() + "height:" + height + System.lineSeparator() + "blockSizeX:" + blockSizeX
-				+ System.lineSeparator() + "blockSizeY:" + blockSizeY);
-
 		// Variables for iterating through the image array
 		int blockStartX = 0;
 		int blockStartY = 0;
@@ -189,11 +180,6 @@ public class ImageProcessing {
 	public static int[][][] getGlobalDifferenceArray(BufferedImage givenImage) {
 		int width = givenImage.getWidth(); // X-axis
 		int height = givenImage.getHeight(); // Y-axis
-
-		/**
-		 * Verify the information of the image
-		 */
-		Tools.println("width:" + width + System.lineSeparator() + "height:" + height);
 
 		int[][][] RGBArray = new int[height][width][3];
 		float globalSumRed = 0, globalSumGreen = 0, globalSumBlue = 0;
@@ -235,20 +221,13 @@ public class ImageProcessing {
 			}
 		}
 
-		Tools.println("END:getGlobalDifference" + System.lineSeparator());
 		return RGBArray;
 	}
 
 	public static int[][][] getGlobalDifferenceBinaryArray(BufferedImage givenImage) {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getGlobalDifferenceBinaryArray");
 
 		int width = givenImage.getWidth(); // Y-axis
 		int height = givenImage.getHeight(); // X-axis
-
-		/**
-		 * Verify the information of the image
-		 */
-		Tools.println("width:" + width + System.lineSeparator() + "height:" + height);
 
 		int[][][] RGBArray = new int[height][width][3];
 		int globalSum = 0;
@@ -286,11 +265,6 @@ public class ImageProcessing {
 	public static int[][][] getGlobalDifferenceBinaryRGBArray(BufferedImage givenImage) {
 		int width = givenImage.getWidth(); // Y-axis
 		int height = givenImage.getHeight(); // X-axis
-
-		/**
-		 * Verify the information of the image
-		 */
-		Tools.println("width:" + width + System.lineSeparator() + "height:" + height);
 
 		int[][][] RGBArray = new int[height][width][3];
 		int[] RGBglobalSum = new int[] { 0, 0, 0 };
@@ -338,11 +312,6 @@ public class ImageProcessing {
 	public static BufferedImage getBufferedImageGivenArray(int[][][] givenArray) {
 		BufferedImage bufferedImage = new BufferedImage(givenArray[0].length, givenArray.length,
 				BufferedImage.TYPE_INT_RGB);
-
-		/**
-		 * Verify information of the image
-		 */
-		Tools.println("width:" + givenArray[0].length + System.lineSeparator() + "height:" + givenArray.length);
 
 		// Assign RGB color to the new image
 		for (int y = 0; y < givenArray.length; y++) { // Y-axis

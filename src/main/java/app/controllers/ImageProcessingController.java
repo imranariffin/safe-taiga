@@ -41,19 +41,16 @@ public class ImageProcessingController {
 	public static boolean BOOL_MATCHING_NAME = false;
 
 	public static Route serveImageUpload = (Request request, Response response) -> {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessingController:START:serveImageUpload");
 		Map<String, Object> model = new HashMap<String, Object>();
 
 		model.put("imagefile", "/images/other/image_placeholder.jpg");
 		model.put("imagemessage", "your uploaded image will replace the empty image below:");
 		model.put("partitionArrayRGB", new int[ImageProcessing.DIVISOR_VALUE][ImageProcessing.DIVISOR_VALUE][3]);
 
-		Tools.println("END:serveImageUpload" + System.lineSeparator());
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_PROCESSING, "Image Upload", "OK");
 	};
 
 	public static Route handleImageUpload = (Request request, Response response) -> {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessingController:START:handleImageUpload");
 		Map<String, Object> model = new HashMap<String, Object>();
 
 		/**
@@ -98,14 +95,6 @@ public class ImageProcessingController {
 		String outputGlobalDifferenceBinaryRGBImage = IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR.toPath() + "/"
 				+ filename + ".png";
 
-		// Logging
-		Tools.print("Uploaded file '" +
-
-				getFileName(request.raw().getPart("uploaded_file")) + "' saved as '" + tempFile.toAbsolutePath() + "'"
-				+ "\nbase filename:" + filename + "\ntemporary image is saved at:" + outputOriginalImage
-				+ "\nresized image saved at:" + outputResizedImage + "\ntext created from partitioning saved at:"
-				+ outputPartitionedtText + "\npartitioned image created at:" + outputPartitionedImage);
-
 		originalImage = ImageIO.read(new File(outputOriginalImage));
 
 		// Resize the image
@@ -113,6 +102,10 @@ public class ImageProcessingController {
 
 		// Save resized image for future inquiries
 		ImageIO.write(resizedImage, "png", new File(outputResizedImage));
+
+		//////////////////////
+		// IMAGE PROCESSING //
+		//////////////////////
 
 		/**
 		 * PARTITION IMAGE
@@ -172,10 +165,14 @@ public class ImageProcessingController {
 		// Save the image for future reference
 		ImageIO.write(globalDifferenceBinaryRGBImage, "png", new File(outputGlobalDifferenceBinaryRGBImage));
 
-		/**
-		 * Insert into database the image data sent by user
-		 */
+		//////////////////////////
+		// INSERT INTO DATABASE //
+		//////////////////////////
 		ImageProcessingManager.insertImageDataToDatabase(request.ip(), resizedImage);
+
+		//////////////////
+		// IMAGE SEARCH //
+		//////////////////
 		/**
 		 * RANDOMIZED SEARCH
 		 * 
@@ -183,8 +180,8 @@ public class ImageProcessingController {
 		 * 
 		 * This is good for cropped pictures
 		 */
-		Tools.println("TEST 1");
-		ImageProcessingManager.findMatchingImageDataRandomized(model, partitioningArray);
+		// ImageProcessingManager.findMatchingImageDataRandomized(model,
+		// partitioningArray);
 
 		/**
 		 * RANDOMIZED SEARCH VERSION 2
@@ -194,8 +191,8 @@ public class ImageProcessingController {
 		 * 
 		 * This is also specially good for cropped pictures
 		 */
-		Tools.println("TEST 2");
-		ImageProcessingManager.findMatchingImageDataRandomizedV2(model, partitioningArray);
+		// ImageProcessingManager.findMatchingImageDataRandomizedV2(model,
+		// partitioningArray);
 
 		/**
 		 * INCREMENTAL SEARCH NON-RGB
@@ -203,17 +200,31 @@ public class ImageProcessingController {
 		 * Incremental search using non-RGB i.e. we search each RGB as 3
 		 * separate 1-tuple
 		 */
-		Tools.println("TEST 3");
-		ImageProcessingManager.findMatchingImageDataIncremental(model, partitioningArray);
+		// ImageProcessingManager.findMatchingImageDataIncremental(model,
+		// partitioningArray);
 
 		/**
 		 * INCREMENTAL SEARCH RGB
 		 * 
 		 * Incremental search using RGB i.e. we search matching RGB as 3-tuple
 		 */
-		Tools.println("TEST 4");
-		ImageProcessingManager.findMatchingImageDataIncrementalRGB(model, partitioningArray);
+		// ImageProcessingManager.findMatchingImageDataIncrementalRGB(model,
+		// partitioningArray);
 
+		/**
+		 * Brute Force Search
+		 * 
+		 * Search by checking if all the boxes match
+		 */
+		ImageProcessingManager.findMatchingImageDataBruteForce(model, partitioningArray);
+
+		//////////////////////////////////
+		// PUT CREATED IMAGE TO WEBPAGE //
+		//////////////////////////////////
+
+		/**
+		 * Original image
+		 */
 		model.put("ORIGINAL_IMAGE_MESSAGE", "The original image, resized:");
 		// 7 to remove the substring 'public/'
 		Tools.println("Original image directory:" + outputOriginalImage);
@@ -261,20 +272,7 @@ public class ImageProcessingController {
 		Tools.println("Hash string:" + hashString);
 		model.put("BASIC_HASH_STRING", hashString);
 
-		Tools.println("END:handleImageUpload" + System.lineSeparator());
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD,
 				Reference.CommonStrings.NAME_IMAGEPROCESSING, "OK");
 	};
-
-	private static String getFileName(Part part) {
-		Tools.println(System.lineSeparator() + "FROM:ImageProcessing:START:getFileName");
-		for (String cd : part.getHeader("content-disposition").split(";")) {
-			if (cd.trim().startsWith("filename")) {
-				Tools.println("END:getFileName" + System.lineSeparator());
-				return cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
-			}
-		}
-		Tools.println("END:getFileName" + System.lineSeparator());
-		return null;
-	}
 }

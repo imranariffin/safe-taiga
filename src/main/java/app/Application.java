@@ -34,7 +34,7 @@ public class Application {
 			enableDebugScreen();
 			Tools.println("Debug screen enabled");
 			// SettingUp.createDatabases();
-			SettingUp.createImageInfo();
+			// SettingUp.createImageInfo();
 			// SettingUp.InsertTextDumpToDatabase();
 
 			Tools.println("No .env file specified, defaulting to port:5000");

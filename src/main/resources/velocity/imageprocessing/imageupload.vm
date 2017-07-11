@@ -57,54 +57,13 @@
 		<p>Image Basic Histogram Hash</p>
 		<p>$BASIC_HASH_STRING</p>
 		
-		<div>
-		#**
-		#foreach( $y in $partitionArrayRGB )
-			<p><small>#foreach( $x in $y){#foreach( $z in $x)[$z]#end}#end</small></p>
-		#end
-		</div>
-		*#
-		<h1>TEST 1</h1>
-		#if($test_1_boolean)
-			
-			#**
-			#foreach ($panelData in $test_1_result)
-				<p>Name: $panelData.getName() Episode: $panelData.getEpisode()</p>
-			#end
-			*#
-			
-			<p>Name: $test_1_result.getName() Episode: $test_1_result.getEpisode() with weight: $test_1_weight</p>
+		
+		
+		<h1>TEST 5 Brute Force</h1>
+		#if($test_5_boolean)
+			<p>Name: $test_5_result.getName() Episode: $test_5_result.getEpisode() @ $test_5_time</p>
 		#else
 			<p>None found</p>
 		#end
-		
-		<h1>TEST 2</h1>
-		#if($test_2_boolean)
-		
-			#**
-			#foreach ($panelData in $test_2_result)
-				<p>Name: $panelData.getName() Episode: $panelData.getEpisode()</p>
-			#end
-			*#
-			
-			<p>Name: $test_2_result.getName() Episode: $test_2_result.getEpisode() with weight: $test_2_weight</p>
-		#else
-			<p>None found</p>
-		#end
-		
-		<h1>TEST 3</h1>
-		#if($test_3_boolean)
-			<p>Name: $test_3_result.getName() Episode: $test_3_result.getEpisode() with weight: $test_3_weight</p>
-		#else
-			<p>None found</p>
-		#end
-		
-		<h1>TEST 4</h1>
-		#if($test_4_boolean)
-			<p>Name: $test_4_result.getName() Episode: $test_4_result.getEpisode() with weight: $test_4_weight</p>
-		#else
-			<p>None found</p>
-		#end
-		
 	</body>
 </html>
