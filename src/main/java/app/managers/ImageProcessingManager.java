@@ -1,4 +1,4 @@
-package Managers;
+package app.managers;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import ImageProcessing.ImageProcessing;
+import app.imageprocessing.ImageProcessing;
 import app.structure.AnimePanel;
 import app.structure.IntegerPair;
 import app.util.Tools;

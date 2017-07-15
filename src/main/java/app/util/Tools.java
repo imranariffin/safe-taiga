@@ -6,14 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import ImageProcessing.ImageProcessing;
-import Managers.FileManager;
-import Managers.ScriptManager;
+import app.imageprocessing.ImageProcessing;
+import app.managers.FileManager;
+import app.managers.ScriptManager;
 
 public class Tools {
 
 	public final static String SAFE_STRING = "X1U8N2YTR87134678V349T9V3841CM89XY4398V";
-	public static boolean logging = true;
+	public static boolean logging = false;
 
 	public static void println(String text) {
 		if (logging) {
@@ -98,6 +98,21 @@ public class Tools {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static float[][][] getNewAverage(float[][][] averageArray, int[][][] newArray, int currentCount) {
+
+		float[][][] resultAverage = new float[averageArray.length][averageArray[0].length][averageArray[0][0].length];
+		for (int y = 0; y < averageArray.length; y++) {
+			for (int x = 0; x < averageArray[y].length; x++) {
+				for (int z = 0; z < averageArray[y][x].length; z++) {
+					resultAverage[y][x][z] = ((averageArray[y][x][z] * currentCount) + newArray[y][x][z])
+							/ (currentCount + 1);
+				}
+			}
+		}
+
+		return resultAverage;
 	}
 
 	public static String convertTripleArrayToString(int[][][] array) {

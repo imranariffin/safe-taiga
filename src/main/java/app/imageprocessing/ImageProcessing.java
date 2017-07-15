@@ -1,4 +1,4 @@
-package ImageProcessing;
+package app.imageprocessing;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -23,12 +23,12 @@ public class ImageProcessing {
 	/**
 	 * TODO: USE DATABASE TO ASSIGN THESE VALUES
 	 */
-	public static final int IMG_WIDTH = 320; // Determine the width of the
+	public static final int IMG_WIDTH = 500; // Determine the width of the
 												// parsed image, will also
 												// determine the resized width
 												// of
 												// any image uploaded
-	public static final int IMG_HEIGHT = 180; // Determine the height of the
+	public static final int IMG_HEIGHT = 500; // Determine the height of the
 												// parsed image,will also
 												// determine the resized height
 												// of any image uploaded

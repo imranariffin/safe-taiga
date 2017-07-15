@@ -1,4 +1,4 @@
-package Managers;
+package app.managers;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -8,7 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import ImageProcessing.ImageProcessing;
+import app.imageprocessing.ImageProcessing;
 import app.util.Tools;
 
 public class FileManager {

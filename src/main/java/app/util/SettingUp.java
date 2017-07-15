@@ -1,5 +1,6 @@
 package app.util;
 
+import java.awt.TextField;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -15,12 +16,12 @@ import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 
 import Algorithms.ImageHashing;
-import ImageProcessing.ImageProcessing;
 
 import org.bytedeco.javacv.FrameGrabber.Exception;
 
-import Managers.FileManager;
-import Managers.ScriptManager;
+import app.imageprocessing.ImageProcessing;
+import app.managers.FileManager;
+import app.managers.ScriptManager;
 import app.structure.AnimeObject;
 
 public class SettingUp {
@@ -47,13 +48,13 @@ public class SettingUp {
 		 */
 		public static boolean activeBool = true;
 		public static boolean writeLogBool = false;
-		public static boolean writeToDatabase = true;
-		public static boolean printBool = true;
+		public static boolean writeToDatabase = false;
+		public static boolean printBool = false;
 
 		/**
 		 * Initiate required variables
 		 */
-		public static int[][][] partitionRGBArray; // float array for RGB
+		public static int[][][] tripleArray; // float array for RGB
 		public static String imageDir; // name of the output partitioned
 		// image
 		public static String textDir; // name of the output partitioned
@@ -70,7 +71,7 @@ public class SettingUp {
 		/**
 		 * Initiate required variables
 		 */
-		public static int[][][] globalDifferenceRGBArray; // float array for RGB
+		public static int[][][] tripleArray; // float array for RGB
 		public static String imageDir; // name of the output global difference
 										// image
 		public static String textDir; // name of the output global difference
@@ -83,6 +84,14 @@ public class SettingUp {
 		 */
 		public static boolean activeBool = false;
 		public static boolean writeLogBool = false;
+	}
+
+	public static class globalAverageRGB {
+		/**
+		 * Initiate triggers
+		 */
+
+		public static float[][][] average = new float[ImageProcessing.DIVISOR_VALUE][ImageProcessing.DIVISOR_VALUE][3];
 	}
 
 	public static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("yuruyuri-season1", 1),
@@ -144,7 +153,7 @@ public class SettingUp {
 		}
 	}
 
-	public static void createImageInfo() {
+	public static void createImageInfo(TextField[][] textField) {
 		try {
 			/**
 			 * Create required folders
@@ -153,6 +162,7 @@ public class SettingUp {
 			DEV_OUTPUT_IMAGES_OUTPUT_PARTITION.mkdirs();
 
 			String animeName = "";
+			int globalPanelCount = 1;
 			for (int animeNumber = 0; animeNumber < animeArray.length; animeNumber++) {
 				animeName = animeArray[animeNumber].getName();
 				for (int episode = 1; episode <= animeArray[animeNumber].getNumberOfEpisodes(); episode++) {
@@ -201,11 +211,23 @@ public class SettingUp {
 							// the text file
 							if (Partition.activeBool) {
 								// Get the partition RGB array of the image
-								Partition.partitionRGBArray = ImageProcessing.getPartitionArray(image);
+								Partition.tripleArray = ImageProcessing.getPartitionArray(image);
 
-								// Write the image based on the partition RGB
-								// array
+								// Calculate the average and display it to the
+								// GUI
 
+								globalAverageRGB.average = Tools.getNewAverage(globalAverageRGB.average,
+										Partition.tripleArray, globalPanelCount);
+
+								for (int y = 0; y < globalAverageRGB.average.length; y++) {
+									for (int x = 0; x < globalAverageRGB.average[y].length; x++) {
+										String textString = "";
+										for (int z = 0; z < 3; z++) {
+											textString += Float.toString(globalAverageRGB.average[y][x][z]) + " ";
+										}
+										textField[y][x].setText(textString);
+									}
+								}
 								if (Partition.writeToDatabase) {
 
 									Tools.println("inserting:" + animeName + ":" + episode + ":" + panelIterator,
@@ -213,13 +235,14 @@ public class SettingUp {
 									try (Connection connection = app.Application.getConnection()) {
 										Statement statement = connection.createStatement();
 										statement.executeUpdate(ScriptManager.insertIntoImagedbAnimeRgbInteger(
-												animeName, episode, panelIterator, Partition.partitionRGBArray));
+												animeName, episode, panelIterator, Partition.tripleArray));
 									} catch (SQLException e) {
 										e.printStackTrace();
 									} catch (URISyntaxException e) {
 										e.printStackTrace();
 									}
 								}
+
 								if (Partition.writeLogBool) {
 
 									// Assign the location we want to save the
@@ -229,13 +252,11 @@ public class SettingUp {
 									Partition.textDir = "dev_output/text/partition/" + animeName + "/" + animeName + "_"
 											+ episode + "_" + panelIterator + ".txt";
 
-									ImageIO.write(
-											ImageProcessing.getPartitionedBufferedImage(Partition.partitionRGBArray),
+									ImageIO.write(ImageProcessing.getPartitionedBufferedImage(Partition.tripleArray),
 											"png", new File(Partition.imageDir));
 
 									// Write the text file
-									FileManager.writeTripleArrayToString(Partition.partitionRGBArray,
-											Partition.textDir);
+									FileManager.writeTripleArrayToString(Partition.tripleArray, Partition.textDir);
 								}
 							}
 
@@ -244,7 +265,7 @@ public class SettingUp {
 							 */
 							if (GlobalDifference.activeBool) {
 								// Get the partition RGB array of the image
-								GlobalDifference.globalDifferenceRGBArray = ImageProcessing
+								GlobalDifference.tripleArray = ImageProcessing
 										.getGlobalDifferenceArray(image);
 
 								// Write the image based on the partition RGB
@@ -261,11 +282,11 @@ public class SettingUp {
 
 									ImageIO.write(
 											ImageProcessing.getBufferedImageGivenArray(
-													GlobalDifference.globalDifferenceRGBArray),
+													GlobalDifference.tripleArray),
 											"png", new File(GlobalDifference.imageDir));
 
 									// Write the text file
-									FileManager.writeTripleArrayToString(GlobalDifference.globalDifferenceRGBArray,
+									FileManager.writeTripleArrayToString(GlobalDifference.tripleArray,
 											GlobalDifference.textDir);
 								}
 							}
@@ -313,6 +334,7 @@ public class SettingUp {
 								}
 							}
 
+							globalPanelCount++;
 							panelIterator++; // move to the next panel
 						}
 						frameIterator++; // move to the next frame

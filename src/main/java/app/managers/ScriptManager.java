@@ -1,4 +1,4 @@
-package Managers;
+package app.managers;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.concurrent.ThreadLocalRandom;
 
-import ImageProcessing.ImageProcessing;
+import app.imageprocessing.ImageProcessing;
 
 public class ScriptManager {
 

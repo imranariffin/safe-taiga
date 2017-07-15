@@ -1,6 +1,7 @@
 package app.controllers;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import Managers.ScriptManager;
+import app.managers.ScriptManager;
 import app.util.Reference;
 import app.util.ViewUtil;
 import app.util.Tools;
@@ -286,13 +287,12 @@ public class TextboardController {
 			Tools.println("The requested thread with post:" + requestedThreadText + " is acceptable!");
 
 			try (Connection connection = app.Application.getConnection()) {
-				Statement stmt = connection.createStatement();
-
 				// Create a new thread instance in the threads table
-				final String SCRIPT_INSERT_THREAD = "INSERT INTO threads (boardlink, threadtext) VALUES ('"
-						+ currentBoard + "', '" + requestedThreadText + "');";
-				Tools.println("Executing script:" + SCRIPT_INSERT_THREAD);
-				stmt.executeUpdate(SCRIPT_INSERT_THREAD);
+				final String script = "INSERT INTO threads (boardlink, threadtext) VALUES ( ?, ?);";
+				PreparedStatement pstmt = connection.prepareStatement(script);
+				pstmt.setString(1, currentBoard);
+				pstmt.setString(2, requestedThreadText);
+				pstmt.executeUpdate();
 
 			} catch (Exception e) {
 				e.printStackTrace();
