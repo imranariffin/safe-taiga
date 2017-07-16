@@ -4,7 +4,7 @@ import static spark.Spark.get;
 import static spark.Spark.port;
 import static spark.Spark.post;
 import static spark.Spark.staticFiles;
-import static spark.debug.DebugScreen.enableDebugScreen;
+//import static spark.debug.DebugScreen.enableDebugScreen;
 
 import java.io.File;
 import java.net.URI;
@@ -31,7 +31,7 @@ public class Application {
 		long tStart = System.currentTimeMillis();
 
 		if (System.getenv("IS_HEROKU") == null) {
-			enableDebugScreen();
+			// enableDebugScreen();
 			Tools.println("Debug screen enabled");
 			// SettingUp.createDatabases();
 			// SettingUp.createImageInfo();
@@ -120,8 +120,7 @@ public class Application {
 		if (System.getenv("HEROKU_POSTGRESQL_BLUE_URL") != null) {
 
 			/**
-			 * If .env file is not provided, try to use a local psql database
-			 * instead
+			 * If .env file is not provided, try to use a local psql database instead
 			 */
 			URI dbUri = new URI(System.getenv("HEROKU_POSTGRESQL_BLUE_URL"));
 			username = dbUri.getUserInfo().split(":")[0];
