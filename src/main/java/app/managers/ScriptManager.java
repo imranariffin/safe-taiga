@@ -5,10 +5,18 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import app.imageprocessing.ImageProcessing;
+import app.util.Reference;
+import app.util.Tools;
+import app.util.ViewUtil;
 
 public class ScriptManager {
 
@@ -281,5 +289,71 @@ public class ScriptManager {
 		}
 		script += "}'";
 		return script;
+	}
+
+	public static void createThread(String currentBoard, String requestedThreadText)
+			throws SQLException, URISyntaxException {
+		Connection connection = app.Application.getConnection();
+
+		String script = "INSERT INTO threads (boardlink, threadtext) VALUES ( ?, ?);";
+		PreparedStatement pstmt = connection.prepareStatement(script);
+
+		pstmt.setString(1, currentBoard);
+		pstmt.setString(2, requestedThreadText);
+
+		pstmt.executeUpdate();
+
+		pstmt.close();
+	}
+
+	public static void createBoard(String boardlink, String boardname, String boarddescription)
+			throws SQLException, URISyntaxException {
+		Connection connection = app.Application.getConnection();
+
+		String script = "INSERT INTO boards (boardlink, boardname, boarddescription) VALUES (?,?,?);";
+		PreparedStatement pstmt = connection.prepareStatement(script);
+
+		pstmt.setString(1, boardlink);
+		pstmt.setString(2, boardname);
+		pstmt.setString(3, boarddescription);
+
+		pstmt.executeUpdate();
+
+		pstmt.close();
+	}
+
+	public static void serveTextboardThread(String threadid, Map<String, Object> model)
+			throws SQLException, URISyntaxException {
+		Connection connection = app.Application.getConnection();
+
+		String script = "SELECT threadtext FROM threads WHERE threadid = ? LIMIT 1;";
+		PreparedStatement pstmt = connection.prepareStatement(script);
+
+		pstmt.setString(1, threadid);
+
+		ResultSet rs = pstmt.executeQuery();
+
+		rs.next();
+
+		String threadtext = rs.getString(Reference.CommonStrings.THREADTEXT);
+
+		model.put(Reference.CommonStrings.THREADID, threadid);
+		model.put(Reference.CommonStrings.THREADTEXT, threadtext);
+
+		rs = pstmt.executeQuery();
+
+		// Prepare arraylist for output from database
+		@SuppressWarnings("rawtypes")
+		ArrayList<Map> arrayOfPostsFromDatabase = new ArrayList<Map>();
+
+		while (rs.next()) {
+			Map<String, String> post = new HashMap<String, String>();
+
+			// populate board with the appropriate description of a board
+			post.put(Reference.CommonStrings.POSTID, rs.getString(Reference.CommonStrings.POSTID));
+			post.put(Reference.CommonStrings.POSTTEXT, rs.getString(Reference.CommonStrings.POSTTEXT));
+
+			arrayOfPostsFromDatabase.add(post);
+		}
 	}
 }

@@ -90,8 +90,8 @@ public class Application {
 		 * GET ROUTES
 		 */
 		get(Reference.Web.ROOT, RootController.serveRootPage);
-		get(Reference.Web.TEXTBOARD, TextboardController.serveTextboard_HOME);
-		get(Reference.Web.TEXTBOARD_BOARD, TextboardController.serveTextboard_BOARD);
+		get(Reference.Web.TEXTBOARD, TextboardController.serveTextboardHome);
+		get(Reference.Web.TEXTBOARD_BOARD, TextboardController.serveTextboardBoard);
 		get(Reference.Web.TEXTBOARD_BOARD_THREAD, TextboardController.serveTextboard_THREAD);
 		get(Reference.Web.IMAGEPROCESSING, ImageProcessingController.serveImageUpload);
 

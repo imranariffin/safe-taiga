@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.SQLException;
+import java.net.URISyntaxException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +29,7 @@ public class TextboardController {
 	/**
 	 * SERVE TEXTBOARD
 	 */
-	public static Route serveTextboard_HOME = (Request request, Response response) -> {
+	public static Route serveTextboardHome = (Request request, Response response) -> {
 		Map<String, Object> model = new HashMap<>();
 
 		@SuppressWarnings("rawtypes")
@@ -81,7 +83,7 @@ public class TextboardController {
 	/**
 	 * SERVE TEXTBOARD_BOARD
 	 */
-	public static Route serveTextboard_BOARD = (Request request, Response response) -> {
+	public static Route serveTextboardBoard = (Request request, Response response) -> {
 		Tools.println("FROM:TextboardController:START:serveTextboard_BOARD");
 		Map<String, Object> model = new HashMap<>();
 
@@ -158,57 +160,16 @@ public class TextboardController {
 		model.put(Reference.CommonStrings.BOARDLINK, boardlink);
 		model.put(Reference.CommonStrings.THREADID, threadid);
 
-		// Verify result
-		Tools.println(Reference.CommonStrings.BOARDLINK + ":" + boardlink);
-		Tools.println(Reference.CommonStrings.THREADID + ":" + threadid);
-
 		/**
 		 * Get objects from database
 		 */
 		// Prepare arraylist for output from database
 		@SuppressWarnings("rawtypes")
 		ArrayList<Map> arrayOfPostsFromDatabase = new ArrayList<Map>();
-		String threadtext = "NULL_THREADTEXT_DOES_NOT_EXIST";
 
-		try (Connection connection = app.Application.getConnection()) {
-			Statement stmt = connection.createStatement();
-
-			/**
-			 * Get threadtext from the table
-			 */
-			Tools.println("Executing script:" + ScriptManager.selectThreadFromThreadsGivenThreadid(threadid));
-			ResultSet rs = stmt.executeQuery(ScriptManager.selectThreadFromThreadsGivenThreadid(threadid));
-			rs.next();
-
-			threadtext = rs.getString(Reference.CommonStrings.THREADTEXT);
-
-			model.put(Reference.CommonStrings.THREADID, threadid);
-			model.put(Reference.CommonStrings.THREADTEXT, threadtext);
-
-			// Select all thread based on the given boardlink
-			Tools.println("Executing script:" + ScriptManager.selectAllPostFromPostsGivenThreadId(threadid));
-			rs = stmt.executeQuery(ScriptManager.selectAllPostFromPostsGivenThreadId(threadid));
-
-			while (rs.next()) {
-				Map<String, String> post = new HashMap<String, String>();
-
-				// populate board with the appropriate description of a board
-				post.put(Reference.CommonStrings.POSTID, rs.getString(Reference.CommonStrings.POSTID));
-				post.put(Reference.CommonStrings.POSTTEXT, rs.getString(Reference.CommonStrings.POSTTEXT));
-
-				arrayOfPostsFromDatabase.add(post);
-			}
-
-			Tools.println("START:printing content of arrayOfPostsFromDatabase:");
-			for (int a = 0; a < arrayOfPostsFromDatabase.size(); a++) {
-				Tools.println(Reference.CommonStrings.POSTID + ":"
-						+ arrayOfPostsFromDatabase.get(a).get(Reference.CommonStrings.POSTID) + " "
-						+ Reference.CommonStrings.POSTTEXT + ":"
-						+ arrayOfPostsFromDatabase.get(a).get(Reference.CommonStrings.POSTTEXT));
-			}
-			Tools.println("END:printing content of arrayOfPostsFromDatabase");
-
-		} catch (Exception e) {
+		try {
+			ScriptManager.serveTextboardThread(threadid, model);
+		} catch (SQLException | URISyntaxException e) {
 			return ViewUtil.renderErrorMessage(request, e.getMessage(),
 					Reference.CommonStrings.getPREVIOUSBOARDLINK(boardlink), Reference.Web.TEXTBOARD + "/" + boardlink);
 		}
@@ -237,34 +198,17 @@ public class TextboardController {
 		String requestedBoardName = request.queryParams(Reference.VTL.INPUT_BOARDNAME);
 		String requestedBoardDescription = request.queryParams(Reference.VTL.INPUT_BOARDDESCRIPTION);
 
-		// Validate requested names
-		requestedBoardLink = Tools.convertToQuerySafe(requestedBoardLink);
-		requestedBoardName = Tools.convertToQuerySafe(requestedBoardName);
-		requestedBoardDescription = Tools.convertToQuerySafe(requestedBoardDescription);
-
 		if (TextboardLogic.checkIfBoardIsAvailable(requestedBoardLink)) {
-			Tools.println("The requested boardlink:" + requestedBoardLink + " is available!");
-
-			try (Connection connection = app.Application.getConnection()) {
-				Statement stmt = connection.createStatement();
-
-				/**
-				 * Insert value into the table
-				 */
-				final String SCRIPT_INSERT_BOARD = "INSERT INTO boards (boardlink, boardname, boarddescription) VALUES ('"
-						+ requestedBoardLink + "', '" + requestedBoardName + "', '" + requestedBoardDescription + "');";
-				Tools.println("SCRIPT_INSERT_BOARD:" + SCRIPT_INSERT_BOARD);
-				stmt.executeUpdate(SCRIPT_INSERT_BOARD);
-			} catch (Exception e) {
+			try {
+				ScriptManager.createBoard(requestedBoardLink, requestedBoardName, requestedBoardDescription);
+			} catch (SQLException | URISyntaxException e) {
 				e.printStackTrace();
 				return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.LINK_TEXTBOARD,
 						Reference.CommonStrings.NAME_TEXTBOARD);
 			}
-		} else {
-			Tools.println("The requested boardlink:" + requestedBoardLink + " is NOT available!");
 		}
 
-		return serveTextboard_HOME.handle(request, response);
+		return serveTextboardHome.handle(request, response);
 	};
 
 	/**
@@ -273,38 +217,21 @@ public class TextboardController {
 	public static Route handleCreateThread = (Request request, Response response) -> {
 		// Map<String, Object> model = new HashMap<>();
 
-		String requestedThreadText = request.queryParams(Reference.VTL.INPUT_THREADTEXT);
+		// Retrieve data from the form
 		String currentBoard = request.params(Reference.CommonStrings.BOARDLINK);
-
-		// Validate requested names
-		requestedThreadText = Tools.convertToQuerySafe(requestedThreadText);
-
-		// Verify retrieved data
-		Tools.println(Reference.VTL.INPUT_THREADTEXT + ":" + requestedThreadText);
-		Tools.println(Reference.CommonStrings.BOARDLINK + ":" + currentBoard);
+		String requestedThreadText = request.queryParams(Reference.VTL.INPUT_THREADTEXT);
 
 		if (TextboardLogic.checkIfTextIsAcceptable(requestedThreadText)) {
-			Tools.println("The requested thread with post:" + requestedThreadText + " is acceptable!");
-
-			try (Connection connection = app.Application.getConnection()) {
-				// Create a new thread instance in the threads table
-				final String script = "INSERT INTO threads (boardlink, threadtext) VALUES ( ?, ?);";
-				PreparedStatement pstmt = connection.prepareStatement(script);
-				pstmt.setString(1, currentBoard);
-				pstmt.setString(2, requestedThreadText);
-				pstmt.executeUpdate();
-
-			} catch (Exception e) {
+			try {
+				ScriptManager.createThread(currentBoard, requestedThreadText);
+			} catch (SQLException | URISyntaxException e) {
 				e.printStackTrace();
-				return ViewUtil.renderErrorMessage(request, e.getMessage(),
-						Reference.CommonStrings.getPREVIOUSBOARDLINK(currentBoard),
-						Reference.CommonStrings.NAME_TEXTBOARD + "/" + currentBoard);
+				return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.LINK_TEXTBOARD,
+						Reference.CommonStrings.NAME_TEXTBOARD);
 			}
-		} else {
-			Tools.println("The requested thread with post:" + requestedThreadText + " is NOT acceptable!");
 		}
 
-		return serveTextboard_BOARD.handle(request, response);
+		return serveTextboardBoard.handle(request, response);
 	};
 
 	/**
