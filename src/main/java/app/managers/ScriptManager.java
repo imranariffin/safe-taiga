@@ -416,8 +416,8 @@ public class ScriptManager {
 		stmt.close();
 	}
 
-	public static String selectAllThreadFromThreadsGivenBoardLink(String boardlink) {
-		return "SELECT * FROM threads AS thread WHERE thread.boardlink = '" + boardlink + "';";
+	public static String selectAllThreadFromThreadsGivenBoardLink(String boardLink) {
+		return "SELECT * FROM threads AS thread WHERE thread.boardlink = '" + boardLink + "';";
 	}
 
 	public static void getThreadsGivenBoardLink(String boardLink, Map<String, Object> model)
@@ -432,6 +432,7 @@ public class ScriptManager {
 		String script = "SELECT * FROM threads AS thread WHERE thread.boardlink = ?;";
 		PreparedStatement pstmt = connection.prepareStatement(script);
 
+		pstmt.setString(1, boardLink);
 		ResultSet rs = pstmt.executeQuery();
 		// this is how you get a column given the colum name in string
 		while (rs.next()) {
