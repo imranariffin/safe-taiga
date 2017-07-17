@@ -92,7 +92,7 @@ public class Application {
 		get(Reference.Web.ROOT, RootController.serveRootPage);
 		get(Reference.Web.TEXTBOARD, TextboardController.serveTextboardHome);
 		get(Reference.Web.TEXTBOARD_BOARD, TextboardController.serveTextboardBoard);
-		get(Reference.Web.TEXTBOARD_BOARD_THREAD, TextboardController.serveTextboard_THREAD);
+		get(Reference.Web.TEXTBOARD_BOARD_THREAD, TextboardController.serveTextboardThread);
 		get(Reference.Web.IMAGEPROCESSING, ImageProcessingController.serveImageUpload);
 
 		/**

@@ -17,79 +17,66 @@ import app.imageprocessing.ImageProcessing;
 import app.util.Reference;
 import app.util.Tools;
 import app.util.ViewUtil;
+import spark.Request;
+import spark.Response;
+import spark.Route;
 
 public class ScriptManager {
 
 	/**
 	 * CREATE TEXTBOARD DATABASE
 	 */
-	public final static String CREATE_BOARDS = "CREATE TABLE IF NOT EXISTS boards ( boardlink TEXT, boardname TEXT, boarddescription TEXT, PRIMARY KEY(boardlink));";
-	public final static String CREATE_THREADS = "CREATE TABLE IF NOT EXISTS threads (threadid SERIAL, boardlink TEXT, threadtext TEXT, PRIMARY KEY (threadid), FOREIGN KEY (boardlink) REFERENCES boards(boardlink));";
-	public final static String CREATE_POSTS = "CREATE TABLE IF NOT EXISTS posts (postid SERIAL, threadid INTEGER, posttext TEXT, PRIMARY KEY (postid), FOREIGN KEY (threadid) REFERENCES threads(threadid));";
+	private final static String CREATE_BOARDS = "CREATE TABLE IF NOT EXISTS boards ( boardlink TEXT, boardname TEXT, boarddescription TEXT, PRIMARY KEY(boardlink));";
+	private final static String CREATE_THREADS = "CREATE TABLE IF NOT EXISTS threads (threadid SERIAL, boardlink TEXT, threadtext TEXT, PRIMARY KEY (threadid), FOREIGN KEY (boardlink) REFERENCES boards(boardlink));";
+	private final static String CREATE_POSTS = "CREATE TABLE IF NOT EXISTS posts (postid SERIAL, threadid INTEGER, posttext TEXT, PRIMARY KEY (postid), FOREIGN KEY (threadid) REFERENCES threads(threadid));";
 
 	/**
 	 * CREATE IMAGE DATABASE
 	 */
-	public final static String CREATE_IMAGEDB_ANIME_RGB_INTEGER = "CREATE TABLE IF NOT EXISTS imagedb_anime_rgb_integer (name TEXT, episode INT, panel INT, pixel_rgb INT["
+	private final static String CREATE_IMAGEDB_ANIME_RGB_INTEGER = "CREATE TABLE IF NOT EXISTS imagedb_anime_rgb_integer (name TEXT, episode INT, panel INT, pixel_rgb INT["
 			+ ImageProcessing.DIVISOR_VALUE + "][" + ImageProcessing.DIVISOR_VALUE
 			+ "][3], PRIMARY KEY(name, episode, panel));";
 
-	public final static String CREATE_IMAGEDB_ANIME_RGB_FLOAT = "CREATE TABLE IF NOT EXISTS imagedb_anime_rgb_float (name TEXT, episode INT, panel INT, pixel_rgb real["
+	private final static String CREATE_IMAGEDB_ANIME_RGB_FLOAT = "CREATE TABLE IF NOT EXISTS imagedb_anime_rgb_float (name TEXT, episode INT, panel INT, pixel_rgb real["
 			+ ImageProcessing.DIVISOR_VALUE + "][" + ImageProcessing.DIVISOR_VALUE
 			+ "][3], PRIMARY KEY(name, episode, panel));";
 
-	public final static String CREATE_IMAGEDB_USER_IMAGE_REQUEST = "CREATE TABLE IF NOT EXISTS imagedb_user_image_request (image_id SERIAL, request_ip TEXT, pixel_rgb real["
+	private final static String CREATE_IMAGEDB_USER_IMAGE_REQUEST = "CREATE TABLE IF NOT EXISTS imagedb_user_image_request (image_id SERIAL, request_ip TEXT, pixel_rgb real["
 			+ ImageProcessing.DIVISOR_VALUE + "][" + ImageProcessing.DIVISOR_VALUE + "][3], PRIMARY KEY(image_id));";
 
-	public final static String CREATE_IMAGEDB_USER_IMAGE_REQUEST_FLOAT = "CREATE TABLE IF NOT EXISTS imagedb_user_image_request_float (image_id SERIAL, request_ip TEXT, pixel_rgb real["
+	private final static String CREATE_IMAGEDB_USER_IMAGE_REQUEST_FLOAT = "CREATE TABLE IF NOT EXISTS imagedb_user_image_request_float (image_id SERIAL, request_ip TEXT, pixel_rgb real["
 			+ ImageProcessing.DIVISOR_VALUE + "][" + ImageProcessing.DIVISOR_VALUE + "][3], PRIMARY KEY(image_id));";
 
-	public final static String CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE = "CREATE TABLE IF NOT EXISTS imagedb_user_image_request_byte (image_id SERIAL, request_ip TEXT, imagefile bytea);";
-	public final static String CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH = "CREATE TABLE IF NOT EXISTS imagedb_anime_basic_histogram_hash (name TEXT, episode INT, panel INT, hash TEXT, PRIMARY KEY(name, episode, panel));";
+	private final static String CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE = "CREATE TABLE IF NOT EXISTS imagedb_user_image_request_byte (image_id SERIAL, request_ip TEXT, imagefile bytea);";
+	private final static String CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH = "CREATE TABLE IF NOT EXISTS imagedb_anime_basic_histogram_hash (name TEXT, episode INT, panel INT, hash TEXT, PRIMARY KEY(name, episode, panel));";
 
 	/**
 	 * DROP TEXTBOARD DATABASE
 	 */
-	public final static String DROP_BOARDS = "DROP TABLE IF EXISTS boards;";
-	public final static String DROP_THREADS = "DROP TABLE IF EXISTS threads;";
-	public final static String DROP_POSTS = "DROP TABLE IF EXISTS posts;";
+	private final static String DROP_BOARDS = "DROP TABLE IF EXISTS boards;";
+	private final static String DROP_THREADS = "DROP TABLE IF EXISTS threads;";
+	private final static String DROP_POSTS = "DROP TABLE IF EXISTS posts;";
 
 	/**
 	 * DROP IMAGE DATABASE
 	 */
-	public final static String DROP_IMAGEDB_ANIME_RGB_INTEGER = "DROP TABLE IF EXISTS imagedb_anime_rgb_integer;";
-	public final static String DROP_IMAGEDB_ANIME_RGB_FLOAT = "DROP TABLE IF EXISTS imagedb_anime_rgb_float;";
-	public final static String DROP_IMAGEDB_USER_IMAGE_REQUEST_INTEGER = "DROP TABLE IF EXISTS imagedb_user_image_request_integer;";
-	public final static String DROP_IMAGEDB_USER_IMAGE_REQUEST_FLOAT = "DROP TABLE IF EXISTS imagedb_user_image_request_float;";
-	public final static String DROP_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH = "DROP TABLE IF EXISTS imagedb_anime_basic_histogram_hash;";
+	private final static String DROP_IMAGEDB_ANIME_RGB_INTEGER = "DROP TABLE IF EXISTS imagedb_anime_rgb_integer;";
+	private final static String DROP_IMAGEDB_ANIME_RGB_FLOAT = "DROP TABLE IF EXISTS imagedb_anime_rgb_float;";
+	private final static String DROP_IMAGEDB_USER_IMAGE_REQUEST_INTEGER = "DROP TABLE IF EXISTS imagedb_user_image_request_integer;";
+	private final static String DROP_IMAGEDB_USER_IMAGE_REQUEST_FLOAT = "DROP TABLE IF EXISTS imagedb_user_image_request_float;";
+	private final static String DROP_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH = "DROP TABLE IF EXISTS imagedb_anime_basic_histogram_hash;";
 
-	public final static String SELECT_ALL_FROM_BOARDS = "SELECT * FROM boards;";
-	public final static String SELECT_ALL_FROM_THREADS = "SELECT * FROM threads;";
-	public final static String SELCT_ALL_FROM_POSTS = "SELECT * FROM posts;";
+	private final static String SELECT_ALL_FROM_BOARDS = "SELECT * FROM boards;";
+	private final static String SELECT_ALL_FROM_THREADS = "SELECT * FROM threads;";
+	private final static String SELCT_ALL_FROM_POSTS = "SELECT * FROM posts;";
 
-	public final static String SELECT_ALL_FROM_IMAGEDB_INTEGER = "SELECT * FROM imagedb_anime_rgb_integer;";
-	public final static String SELECT_ALL_FROM_IMAGEDB_USER_IMAGE_REQUEST_INTEGER = "SELECT * FROM imagedb_user_image_request_integer;";
+	private final static String SELECT_ALL_FROM_IMAGEDB_INTEGER = "SELECT * FROM imagedb_anime_rgb_integer;";
+	private final static String SELECT_ALL_FROM_IMAGEDB_USER_IMAGE_REQUEST_INTEGER = "SELECT * FROM imagedb_user_image_request_integer;";
 
-	public final static String SELECT_ALL_FROM_IMAGEDB_FLOAT = "SELECT * FROM imagedb_anime_rgb_float;";
-	public final static String SELECT_ALL_FROM_IMAGEDB_USER_IMAGE_REQUEST_FLOAT = "SELECT * FROM imagedb_user_image_request_float;";
+	private final static String SELECT_ALL_FROM_IMAGEDB_FLOAT = "SELECT * FROM imagedb_anime_rgb_float;";
+	private final static String SELECT_ALL_FROM_IMAGEDB_USER_IMAGE_REQUEST_FLOAT = "SELECT * FROM imagedb_user_image_request_float;";
 
-	public final static String CLEAR_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH = "DELETE FROM imagedb_anime_basic_histogram_hash";
-
-	public static String selectThreadFromThreadsGivenThreadid(String threadid) {
-		return "SELECT * FROM threads WHERE threadid = '" + threadid + "' LIMIT 1;";
-	}
-
-	public static String selectAllPostFromPostsGivenThreadId(int threadid) {
-		return "SELECT * FROM posts AS post WHERE post.threadid ='" + threadid + "';";
-	}
-
-	public static String selectAllPostFromPostsGivenThreadId(String threadid) {
-		return selectAllPostFromPostsGivenThreadId(Integer.valueOf(threadid));
-	}
-
-	public static String selectAllThreadFromThreadsGivenBoardLink(String boardlink) {
-		return "SELECT * FROM threads AS thread WHERE thread.boardlink = '" + boardlink + "';";
-	}
+	private final static String CLEAR_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH = "DELETE FROM imagedb_anime_basic_histogram_hash";
 
 	public static String insertBasicHistogramHash(String name, int episode, int panel, String hash) {
 		String script = "INSERT INTO imagedb_anime_basic_histogram_hash (name, episode, panel, hash) VALUES ('" + name
@@ -322,7 +309,11 @@ public class ScriptManager {
 		pstmt.close();
 	}
 
-	public static void serveTextboardThread(String threadid, Map<String, Object> model)
+	public static String selectThreadFromThreadsGivenThreadid(String threadid) {
+		return "SELECT * FROM threads WHERE threadid = '" + threadid + "' LIMIT 1;";
+	}
+
+	public static void getPostsGivenThreadId(String threadid, Map<String, Object> model)
 			throws SQLException, URISyntaxException {
 		Connection connection = app.Application.getConnection();
 
@@ -355,5 +346,123 @@ public class ScriptManager {
 
 			arrayOfPostsFromDatabase.add(post);
 		}
+
+		pstmt.close();
+	}
+
+	public static void selectAllPostFromPostsGivenThreadId(int threadid, Map<String, Object> model)
+			throws SQLException, URISyntaxException {
+		selectAllPostFromPostsGivenThreadId(Integer.toString(threadid), model);
+	}
+
+	public static void selectAllPostFromPostsGivenThreadId(String threadid, Map<String, Object> model)
+			throws SQLException, URISyntaxException {
+		Connection connection = app.Application.getConnection();
+
+		String script = "SELECT * FROM posts AS post WHERE post.threadid =?;";
+		PreparedStatement pstmt = connection.prepareStatement(script);
+
+		pstmt.setString(1, threadid);
+
+		ResultSet rs = pstmt.executeQuery();
+
+		rs.next();
+
+		String threadtext = rs.getString(Reference.CommonStrings.THREADTEXT);
+
+		model.put(Reference.CommonStrings.THREADID, threadid);
+		model.put(Reference.CommonStrings.THREADTEXT, threadtext);
+
+		rs = pstmt.executeQuery();
+
+		// Prepare arraylist for output from database
+		@SuppressWarnings("rawtypes")
+		ArrayList<Map> arrayOfPostsFromDatabase = new ArrayList<Map>();
+
+		while (rs.next()) {
+			Map<String, String> post = new HashMap<String, String>();
+
+			// populate board with the appropriate description of a board
+			post.put(Reference.CommonStrings.POSTID, rs.getString(Reference.CommonStrings.POSTID));
+			post.put(Reference.CommonStrings.POSTTEXT, rs.getString(Reference.CommonStrings.POSTTEXT));
+
+			arrayOfPostsFromDatabase.add(post);
+		}
+	}
+
+	public static void getAllBoards(Map<String, Object> model) throws SQLException, URISyntaxException {
+		Connection connection = app.Application.getConnection();
+
+		@SuppressWarnings("rawtypes")
+		ArrayList<Map> arrayOfBoardsFromDatabase = new ArrayList<Map>();
+
+		Statement stmt = connection.createStatement();
+		ResultSet rs = stmt.executeQuery(ScriptManager.SELECT_ALL_FROM_BOARDS);
+
+		while (rs.next()) {
+			Map<String, String> board = new HashMap<String, String>();
+
+			// populate board with the appropriate description of a board
+			board.put(Reference.CommonStrings.BOARDNAME, rs.getString(Reference.CommonStrings.BOARDNAME));
+			board.put(Reference.CommonStrings.BOARDLINK, rs.getString(Reference.CommonStrings.BOARDLINK));
+			board.put(Reference.CommonStrings.BOARDDESCRIPTION, rs.getString(Reference.CommonStrings.BOARDDESCRIPTION));
+
+			arrayOfBoardsFromDatabase.add(board);
+		}
+
+		// Populate with list of boards
+		model.put(Reference.VTL.BOARDLIST, arrayOfBoardsFromDatabase);
+
+		stmt.close();
+	}
+
+	public static String selectAllThreadFromThreadsGivenBoardLink(String boardlink) {
+		return "SELECT * FROM threads AS thread WHERE thread.boardlink = '" + boardlink + "';";
+	}
+
+	public static void getThreadsGivenBoardLink(String boardLink, Map<String, Object> model)
+			throws SQLException, URISyntaxException {
+		Connection connection = app.Application.getConnection();
+
+		// Prepare arraylist for output from database
+		@SuppressWarnings("rawtypes")
+		ArrayList<Map> arrayOfThreadsFromDatabase = new ArrayList<Map>();
+
+		// Select all thread based on the given boardlink
+		String script = "SELECT * FROM threads AS thread WHERE thread.boardlink = ?;";
+		PreparedStatement pstmt = connection.prepareStatement(script);
+
+		ResultSet rs = pstmt.executeQuery();
+		// this is how you get a column given the colum name in string
+		while (rs.next()) {
+			// Prepare the map for threadid
+			Map<String, String> thread = new HashMap<String, String>();
+
+			// populate board with the appropriate description of a board
+			thread.put(Reference.CommonStrings.THREADID, rs.getString(Reference.CommonStrings.THREADID));
+			thread.put(Reference.CommonStrings.THREADTEXT, rs.getString(Reference.CommonStrings.THREADTEXT));
+			// put board into the arrayOfThreadsFromDatabase
+			arrayOfThreadsFromDatabase.add(thread);
+		}
+
+		// Populate with list of threads
+		model.put(Reference.VTL.THREADLIST, arrayOfThreadsFromDatabase);
+
+		pstmt.close();
+	}
+
+	public static void createPost(String threadId, String postText) throws SQLException, URISyntaxException {
+		Connection connection = app.Application.getConnection();
+
+		// Create a new thread instance in the threads table
+		String script = "INSERT INTO posts (threadid, posttext) VALUES (?, ?);";
+		PreparedStatement pstmt = connection.prepareStatement(script);
+
+		pstmt.setString(1, threadId);
+		pstmt.setString(2, postText);
+
+		pstmt.executeUpdate();
+
+		pstmt.close();
 	}
 }

@@ -265,8 +265,7 @@ public class SettingUp {
 							 */
 							if (GlobalDifference.activeBool) {
 								// Get the partition RGB array of the image
-								GlobalDifference.tripleArray = ImageProcessing
-										.getGlobalDifferenceArray(image);
+								GlobalDifference.tripleArray = ImageProcessing.getGlobalDifferenceArray(image);
 
 								// Write the image based on the partition RGB
 								// array
@@ -281,8 +280,7 @@ public class SettingUp {
 											+ animeName + "_" + episode + "_" + panelIterator + ".txt";
 
 									ImageIO.write(
-											ImageProcessing.getBufferedImageGivenArray(
-													GlobalDifference.tripleArray),
+											ImageProcessing.getBufferedImageGivenArray(GlobalDifference.tripleArray),
 											"png", new File(GlobalDifference.imageDir));
 
 									// Write the text file
@@ -365,17 +363,21 @@ public class SettingUp {
 			// Tools.println("Execute script:" +
 			// ScriptCreator.DROP_IMAGEDB_ANIME_RGB);
 			// stmt.executeUpdate(ScriptCreator.DROP_IMAGEDB_ANIME_RGB);
-			Tools.println("Execute script:" + ScriptManager.CREATE_IMAGEDB_ANIME_RGB_INTEGER);
-			stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_ANIME_RGB_INTEGER);
+			// Tools.println("Execute script:" +
+			// ScriptManager.CREATE_IMAGEDB_ANIME_RGB_INTEGER);
+			// stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_ANIME_RGB_INTEGER);
 
-			Tools.println("Execute script:" + ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
-			stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
+			// Tools.println("Execute script:" +
+			// ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
+			// stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
 
-			Tools.println("Execute script:" + ScriptManager.CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
-			stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
+			// Tools.println("Execute script:" +
+			// ScriptManager.CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
+			// stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
 
-			Tools.println("Execute script:" + ScriptManager.CLEAR_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
-			stmt.executeUpdate(ScriptManager.CLEAR_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
+			// Tools.println("Execute script:" +
+			// ScriptManager.CLEAR_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
+			// stmt.executeUpdate(ScriptManager.CLEAR_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
 
 			// Create imagedb_anime_rgb table if not exist
 			// Tools.println("Execute script:" +
@@ -389,30 +391,30 @@ public class SettingUp {
 			 * DROP TABLES FOR TEXTBOARD
 			 */
 			// Drop table if exist
-			Tools.println("Execute script:" + ScriptManager.DROP_POSTS);
-			stmt.executeUpdate(ScriptManager.DROP_POSTS);
+			// Tools.println("Execute script:" + ScriptManager.DROP_POSTS);
+			// stmt.executeUpdate(ScriptManager.DROP_POSTS);
 
 			// Drop table if exist
-			Tools.println("Execute script:" + ScriptManager.DROP_THREADS);
-			stmt.executeUpdate(ScriptManager.DROP_THREADS);
+			// Tools.println("Execute script:" + ScriptManager.DROP_THREADS);
+			// stmt.executeUpdate(ScriptManager.DROP_THREADS);
 
 			// Drop table if exist
-			Tools.println("Execute script:" + ScriptManager.DROP_BOARDS);
-			stmt.executeUpdate(ScriptManager.DROP_BOARDS);
+			// Tools.println("Execute script:" + ScriptManager.DROP_BOARDS);
+			// stmt.executeUpdate(ScriptManager.DROP_BOARDS);
 			/**
 			 * CREATE TABLES FOR TEXTBOARD
 			 */
 			// Create imagedb_anime_rgb table if not exist
-			Tools.println("Execute script:" + ScriptManager.CREATE_BOARDS);
-			stmt.executeUpdate(ScriptManager.CREATE_BOARDS);
+			// Tools.println("Execute script:" + ScriptManager.CREATE_BOARDS);
+			// stmt.executeUpdate(ScriptManager.CREATE_BOARDS);
 
 			// Create imagedb_anime_rgb table if not exist
-			Tools.println("Execute script:" + ScriptManager.CREATE_THREADS);
-			stmt.executeUpdate(ScriptManager.CREATE_THREADS);
+			// Tools.println("Execute script:" + ScriptManager.CREATE_THREADS);
+			// stmt.executeUpdate(ScriptManager.CREATE_THREADS);
 
 			// Create imagedb_anime_rgb table if not exist
-			Tools.println("Execute script:" + ScriptManager.CREATE_POSTS);
-			stmt.executeUpdate(ScriptManager.CREATE_POSTS);
+			// Tools.println("Execute script:" + ScriptManager.CREATE_POSTS);
+			// stmt.executeUpdate(ScriptManager.CREATE_POSTS);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
