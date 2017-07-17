@@ -350,19 +350,19 @@ public class ScriptManager {
 		pstmt.close();
 	}
 
-	public static void selectAllPostFromPostsGivenThreadId(int threadid, Map<String, Object> model)
+	public static void selectAllPostFromPostsGivenThreadId(int threadId, Map<String, Object> model)
 			throws SQLException, URISyntaxException {
-		selectAllPostFromPostsGivenThreadId(Integer.toString(threadid), model);
+		selectAllPostFromPostsGivenThreadId(Integer.toString(threadId), model);
 	}
 
-	public static void selectAllPostFromPostsGivenThreadId(String threadid, Map<String, Object> model)
+	public static void selectAllPostFromPostsGivenThreadId(String threadId, Map<String, Object> model)
 			throws SQLException, URISyntaxException {
 		Connection connection = app.Application.getConnection();
 
 		String script = "SELECT * FROM posts AS post WHERE post.threadid =?;";
 		PreparedStatement pstmt = connection.prepareStatement(script);
 
-		pstmt.setString(1, threadid);
+		pstmt.setInt(1, Integer.valueOf(threadId));
 
 		ResultSet rs = pstmt.executeQuery();
 
@@ -370,7 +370,7 @@ public class ScriptManager {
 
 		String threadtext = rs.getString(Reference.CommonStrings.THREADTEXT);
 
-		model.put(Reference.CommonStrings.THREADID, threadid);
+		model.put(Reference.CommonStrings.THREADID, threadId);
 		model.put(Reference.CommonStrings.THREADTEXT, threadtext);
 
 		rs = pstmt.executeQuery();
