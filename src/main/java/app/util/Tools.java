@@ -1,5 +1,6 @@
 package app.util;
 
+import java.io.File;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -8,12 +9,12 @@ import java.sql.Statement;
 
 import app.imageprocessing.ImageProcessing;
 import app.managers.FileManager;
-import app.managers.ScriptManager;
+import app.managers.DatabaseManager;
 
 public class Tools {
 
 	public final static String SAFE_STRING = "X1U8N2YTR87134678V349T9V3841CM89XY4398V";
-	public static boolean logging = false;
+	public static boolean logging = true;
 
 	public static void println(String text) {
 		if (logging) {
@@ -45,59 +46,6 @@ public class Tools {
 
 	public static void println(int nextInt) {
 		println(Integer.toString(nextInt));
-	}
-
-	public static void getImageDbAverageRGB() {
-		try (Connection connection = app.Application.getConnection()) {
-			Statement stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery(ScriptManager.selectAverageOfImageDb());
-
-			rs.next();
-			String averageOfRGB = "";
-			String result = "";
-			for (int a = 1; a <= ImageProcessing.DIVISOR_VALUE; a++) {
-				for (int b = 1; b <= ImageProcessing.DIVISOR_VALUE; b++) {
-					for (int c = 1; c <= 3; c++) {
-						result = "{" + rs.getString("" + a + ":" + b + ":" + c) + "}";
-						averageOfRGB += result;
-						Tools.print(result);
-					}
-					averageOfRGB += System.lineSeparator();
-				}
-			}
-			FileManager.log(averageOfRGB, "dev_output/averageOfRGB.txt");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void getImageDbMinMax() {
-		try (Connection connection = app.Application.getConnection()) {
-			Statement stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery(ScriptManager.getMinMaxOfImageDb());
-
-			rs.next();
-			String minMaxOfRGB = "";
-			String result = "";
-			for (int a = 1; a <= ImageProcessing.DIVISOR_VALUE; a++) {
-				for (int b = 1; b <= ImageProcessing.DIVISOR_VALUE; b++) {
-					for (int c = 1; c <= 3; c++) {
-						result = "{" + rs.getString("MIN:" + a + ":" + b + ":" + c) + ","
-								+ rs.getString("MAX:" + a + ":" + b + ":" + c) + "}";
-						minMaxOfRGB += result;
-						Tools.print(result);
-					}
-					minMaxOfRGB += System.lineSeparator();
-				}
-			}
-			FileManager.log(minMaxOfRGB, "dev_output/minMaxOfRGB.txt");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public static float[][][] getNewAverage(float[][][] averageArray, int[][][] newArray, int currentCount) {
@@ -142,5 +90,46 @@ public class Tools {
 
 	public static String revertQuerySafeString(String safeString) {
 		return safeString.replaceAll(SAFE_STRING, "'");
+	}
+
+	public static File IMAGES_INPUT_DIR, IMAGES_OTHER_DIR, IMAGES_OUTPUT_PARTITION_DIR, TEXT_OUTPUT_PARTITION_DIR,
+			IMAGES_OUTPUT_RESIZED_DIR, IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR, TEXT_OUTPUT_GLOBALDIFFERENCE_DIR,
+			IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR, IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR;
+
+	public static void createFolders() {
+
+		/**
+		 * Required Directory
+		 */
+		IMAGES_OTHER_DIR = new File("public/images/other");
+		IMAGES_INPUT_DIR = new File("public/images/input");
+		IMAGES_OUTPUT_RESIZED_DIR = new File("public/images/output/resized");
+
+		/**
+		 * Partition Directory
+		 */
+		IMAGES_OUTPUT_PARTITION_DIR = new File("public/images/output/partition");
+		/**
+		 * Global Difference Directory
+		 */
+		IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR = new File("public/images/output/globaldifference");
+
+		/**
+		 * Global Difference Binary Directory
+		 */
+		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR = new File("public/images/output/globaldifferencebinary");
+
+		/**
+		 * Global Difference Binary RGB Directory
+		 */
+		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR = new File("public/images/output/globaldifferencebinaryRGB");
+
+		IMAGES_OTHER_DIR.mkdirs();
+		IMAGES_OUTPUT_PARTITION_DIR.mkdirs();
+		IMAGES_OUTPUT_RESIZED_DIR.mkdirs();
+		IMAGES_INPUT_DIR.mkdirs();
+		IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR.mkdirs();
+		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR.mkdirs();
+		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR.mkdirs();
 	}
 }

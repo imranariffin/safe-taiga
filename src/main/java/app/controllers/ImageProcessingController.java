@@ -1,13 +1,11 @@
 package app.controllers;
 
-import static app.Application.IMAGES_INPUT_DIR;
-import static app.Application.IMAGES_OUTPUT_PARTITION_DIR;
-import static app.Application.IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR;
-import static app.Application.IMAGES_OUTPUT_RESIZED_DIR;
-import static app.Application.TEXT_OUTPUT_PARTITION_DIR;
-import static app.Application.TEXT_OUTPUT_GLOBALDIFFERENCE_DIR;
-import static app.Application.IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR;
-import static app.Application.IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR;
+import static app.util.Tools.IMAGES_INPUT_DIR;
+import static app.util.Tools.IMAGES_OUTPUT_PARTITION_DIR;
+import static app.util.Tools.IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR;
+import static app.util.Tools.IMAGES_OUTPUT_RESIZED_DIR;
+import static app.util.Tools.IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR;
+import static app.util.Tools.IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR;
 
 import java.awt.image.BufferedImage;
 
@@ -82,12 +80,8 @@ public class ImageProcessingController {
 		// Files directory
 		String outputOriginalImage = IMAGES_INPUT_DIR.toPath() + "/" + filename + ".png";
 		String outputResizedImage = IMAGES_OUTPUT_RESIZED_DIR.toPath() + "/" + filename + ".png";
-
 		String outputPartitionedImage = IMAGES_OUTPUT_PARTITION_DIR.toPath() + "/" + filename + ".png";
-		String outputPartitionedtText = TEXT_OUTPUT_PARTITION_DIR.toPath() + "/" + filename + ".txt";
-
 		String outputGlobalDifferenceImage = IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR.toPath() + "/" + filename + ".png";
-		String outputGlobalDifferenceText = TEXT_OUTPUT_GLOBALDIFFERENCE_DIR.toPath() + "/" + filename + ".txt";
 
 		String outputGlobalDifferenceBinaryImage = IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR.toPath() + "/" + filename
 				+ ".png";
@@ -110,8 +104,8 @@ public class ImageProcessingController {
 		/**
 		 * PARTITION IMAGE
 		 * 
-		 * Divide the image into several equally sized boxes and find the
-		 * average RGB values for each box then assign them to the box
+		 * Divide the image into several equally sized boxes and find the average RGB
+		 * values for each box then assign them to the box
 		 */
 		// Get resized image partitioning RGB array
 		partitioningArray = ImageProcessing.getPartitionArray(resizedImage);
@@ -125,8 +119,8 @@ public class ImageProcessingController {
 		/**
 		 * GLOBAL DIFFERENCE
 		 * 
-		 * Find the global average RGB values of the image and take the
-		 * difference of all individual RGB with the global average
+		 * Find the global average RGB values of the image and take the difference of
+		 * all individual RGB with the global average
 		 */
 		// Get resized image global difference RGB array
 		globalDifferenceArray = ImageProcessing.getGlobalDifferenceArray(resizedImage);
@@ -186,8 +180,8 @@ public class ImageProcessingController {
 		/**
 		 * RANDOMIZED SEARCH VERSION 2
 		 * 
-		 * Find a matching BOX given a randomized BOX, so we will start from a
-		 * pixel, then iterate x -- > x + a and y --> y + a
+		 * Find a matching BOX given a randomized BOX, so we will start from a pixel,
+		 * then iterate x -- > x + a and y --> y + a
 		 * 
 		 * This is also specially good for cropped pictures
 		 */
@@ -197,8 +191,8 @@ public class ImageProcessingController {
 		/**
 		 * INCREMENTAL SEARCH NON-RGB
 		 * 
-		 * Incremental search using non-RGB i.e. we search each RGB as 3
-		 * separate 1-tuple
+		 * Incremental search using non-RGB i.e. we search each RGB as 3 separate
+		 * 1-tuple
 		 */
 		// ImageProcessingManager.findMatchingImageDataIncremental(model,
 		// partitioningArray);

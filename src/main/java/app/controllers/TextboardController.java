@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import app.managers.ScriptManager;
+import app.managers.DatabaseManager;
 import app.util.Reference;
 import app.util.ViewUtil;
 import app.util.Tools;
@@ -33,7 +33,7 @@ public class TextboardController {
 		Map<String, Object> model = new HashMap<>();
 
 		try {
-			ScriptManager.getAllBoards(model);
+			DatabaseManager.getAllBoards(model);
 		} catch (SQLException | URISyntaxException e) {
 			e.printStackTrace();
 			return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.LINK_ROOT,
@@ -64,7 +64,7 @@ public class TextboardController {
 
 		// Retrieve the list of threads of a given board from the database
 		try {
-			ScriptManager.getThreadsGivenBoardLink(boardLink, model);
+			DatabaseManager.getThreadsGivenBoardLink(boardLink, model);
 		} catch (SQLException | URISyntaxException e) {
 			e.printStackTrace();
 			return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.LINK_TEXTBOARD,
@@ -100,7 +100,7 @@ public class TextboardController {
 		ArrayList<Map> arrayOfPostsFromDatabase = new ArrayList<Map>();
 
 		try {
-			ScriptManager.getPostsGivenThreadId(threadId, model);
+			DatabaseManager.getPostsGivenThreadId(threadId, model);
 		} catch (SQLException | URISyntaxException e) {
 			return ViewUtil.renderErrorMessage(request, e.getMessage(),
 					Reference.CommonStrings.getPREVIOUSBOARDLINK(boardLink), Reference.Web.TEXTBOARD + "/" + boardLink);
@@ -131,7 +131,7 @@ public class TextboardController {
 
 		if (TextboardLogic.checkIfBoardIsAvailable(requestedBoardLink)) {
 			try {
-				ScriptManager.createBoard(requestedBoardLink, requestedBoardName, requestedBoardDescription);
+				DatabaseManager.createBoard(requestedBoardLink, requestedBoardName, requestedBoardDescription);
 			} catch (SQLException | URISyntaxException e) {
 				e.printStackTrace();
 				return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.LINK_TEXTBOARD,
@@ -153,7 +153,7 @@ public class TextboardController {
 
 		if (TextboardLogic.checkIfTextIsAcceptable(requestedThreadText)) {
 			try {
-				ScriptManager.createThread(currentBoard, requestedThreadText);
+				DatabaseManager.createThread(currentBoard, requestedThreadText);
 			} catch (SQLException | URISyntaxException e) {
 				e.printStackTrace();
 				return ViewUtil.renderErrorMessage(request, e.getMessage(), Reference.CommonStrings.LINK_TEXTBOARD,
@@ -177,7 +177,7 @@ public class TextboardController {
 			Tools.println("The requested thread with post:" + requestedPostText + " is acceptable!");
 
 			try {
-				ScriptManager.createPost(currentThread, requestedPostText);
+				DatabaseManager.createPost(currentThread, requestedPostText);
 
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -15,6 +15,7 @@ import java.util.Map;
 import app.imageprocessing.ImageProcessing;
 import app.structure.AnimePanel;
 import app.structure.IntegerPair;
+import app.util.ScriptCreator;
 import app.util.Tools;
 
 public class ImageProcessingManager {
@@ -55,7 +56,7 @@ public class ImageProcessingManager {
 									// found
 									// any
 
-			String findMatchingImageDataRandomized = ScriptManager.findMatchingImageDataRandomized(array);
+			String findMatchingImageDataRandomized = ScriptCreator.findMatchingImageDataRandomized(array);
 			Tools.println(findMatchingImageDataRandomized, BOOL_SCRIPT);
 
 			ResultSet rs = stmt.executeQuery(findMatchingImageDataRandomized);
@@ -116,7 +117,7 @@ public class ImageProcessingManager {
 									// found
 									// any
 
-			String findMatchingImageDataRandomizedV2 = ScriptManager.findMatchingImageDataRandomizedV2(array);
+			String findMatchingImageDataRandomizedV2 = ScriptCreator.findMatchingImageDataRandomizedV2(array);
 			Tools.println(findMatchingImageDataRandomizedV2, BOOL_SCRIPT);
 			ResultSet rs = stmt.executeQuery(findMatchingImageDataRandomizedV2);
 
@@ -182,7 +183,7 @@ public class ImageProcessingManager {
 			for (int a = 0; a < ImageProcessing.DIVISOR_VALUE; a++) {
 				for (int b = 0; b < ImageProcessing.DIVISOR_VALUE; b++) {
 					for (int c = 0; c < 3; c++) {
-						findMatchingImageDataIncremental = ScriptManager.findMatchingImageDataIncremental(a, b, c,
+						findMatchingImageDataIncremental = ScriptCreator.findMatchingImageDataIncremental(a, b, c,
 								array[a][b][c]);
 						Tools.println("Execute Query:" + findMatchingImageDataIncremental, BOOL_SCRIPT);
 
@@ -220,8 +221,8 @@ public class ImageProcessingManager {
 				}
 
 				/**
-				 * Find the image with the highest weight <-- can be further
-				 * optimized by merging this process with above conversion
+				 * Find the image with the highest weight <-- can be further optimized by
+				 * merging this process with above conversion
 				 */
 				int maxIndex = -1;
 				int maxValue = -1;
@@ -261,7 +262,7 @@ public class ImageProcessingManager {
 
 			for (int a = 0; a < ImageProcessing.DIVISOR_VALUE; a++) {
 				for (int b = 0; b < ImageProcessing.DIVISOR_VALUE; b++) {
-					findMatchingImageDataIncrementalRGB = ScriptManager.findMatchingImageDataIncrementalRGB(a, b,
+					findMatchingImageDataIncrementalRGB = ScriptCreator.findMatchingImageDataIncrementalRGB(a, b,
 							array[a][b]);
 
 					rs = stmt.executeQuery(findMatchingImageDataIncrementalRGB);
@@ -299,8 +300,8 @@ public class ImageProcessingManager {
 				}
 
 				/**
-				 * Find the image with the highest weight <-- can be further
-				 * optimized by merging this process with above conversion
+				 * Find the image with the highest weight <-- can be further optimized by
+				 * merging this process with above conversion
 				 */
 				int maxIndex = -1;
 				int maxValue = -1;
@@ -339,7 +340,7 @@ public class ImageProcessingManager {
 			Map<String, IntegerPair> matchResultMap = new HashMap<String, IntegerPair>();
 			AnimePanel result;
 
-			String findMatchingImageDataBruteForce = ScriptManager.findMatchingImageDataBruteForce(array);
+			String findMatchingImageDataBruteForce = ScriptCreator.findMatchingImageDataBruteForce(array);
 			Tools.println(findMatchingImageDataBruteForce, BOOL_SCRIPT);
 
 			ResultSet rs = stmt.executeQuery(findMatchingImageDataBruteForce);

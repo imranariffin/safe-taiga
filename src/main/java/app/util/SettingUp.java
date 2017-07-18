@@ -21,7 +21,7 @@ import org.bytedeco.javacv.FrameGrabber.Exception;
 
 import app.imageprocessing.ImageProcessing;
 import app.managers.FileManager;
-import app.managers.ScriptManager;
+import app.managers.DatabaseManager;
 import app.structure.AnimeObject;
 
 public class SettingUp {
@@ -131,7 +131,7 @@ public class SettingUp {
 								+ animeArray[animeNumber].getName() + "/" + animeArray[animeNumber].getName() + "_"
 								+ episodeNumber + "_" + panelNumber + ".txt");
 
-						insertScript = ScriptManager.insertIntoImagedbAnimeRgbInteger(animeArray[animeNumber].getName(),
+						insertScript = ScriptCreator.insertIntoImagedbAnimeRgbInteger(animeArray[animeNumber].getName(),
 								episodeNumber, panelNumber, tripleArray);
 
 						Tools.println("Executing script:" + insertScript);
@@ -234,7 +234,7 @@ public class SettingUp {
 											Partition.printBool);
 									try (Connection connection = app.Application.getConnection()) {
 										Statement statement = connection.createStatement();
-										statement.executeUpdate(ScriptManager.insertIntoImagedbAnimeRgbInteger(
+										statement.executeUpdate(ScriptCreator.insertIntoImagedbAnimeRgbInteger(
 												animeName, episode, panelIterator, Partition.tripleArray));
 									} catch (SQLException e) {
 										e.printStackTrace();
@@ -350,78 +350,73 @@ public class SettingUp {
 
 	}
 
-	public static void createDatabases() {
-		Tools.println(System.lineSeparator() + "FROM:SettingUp:START:createDatabases");
-		try (Connection connection = app.Application.getConnection()) {
+	public static void prepareDatabase() {
+		/**
+		 * CREATE TABLES FOR IMAGEPROCESSING
+		 */
+		// Create imagedb_anime_rgb table if not exist
+		// Tools.println("Execute script:" +
+		// ScriptCreator.DROP_IMAGEDB_ANIME_RGB);
+		// stmt.executeUpdate(ScriptCreator.DROP_IMAGEDB_ANIME_RGB);
+		// Tools.println("Execute script:" +
+		// ScriptManager.CREATE_IMAGEDB_ANIME_RGB_INTEGER);
+		// stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_ANIME_RGB_INTEGER);
 
-			Statement stmt = connection.createStatement();
+		// Tools.println("Execute script:" +
+		// ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
+		// stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
 
-			/**
-			 * CREATE TABLES FOR IMAGEPROCESSING
-			 */
-			// Create imagedb_anime_rgb table if not exist
-			// Tools.println("Execute script:" +
-			// ScriptCreator.DROP_IMAGEDB_ANIME_RGB);
-			// stmt.executeUpdate(ScriptCreator.DROP_IMAGEDB_ANIME_RGB);
-			// Tools.println("Execute script:" +
-			// ScriptManager.CREATE_IMAGEDB_ANIME_RGB_INTEGER);
-			// stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_ANIME_RGB_INTEGER);
+		// Tools.println("Execute script:" +
+		// ScriptManager.CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
+		// stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
 
-			// Tools.println("Execute script:" +
-			// ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
-			// stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
+		// Tools.println("Execute script:" +
+		// ScriptManager.CLEAR_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
+		// stmt.executeUpdate(ScriptManager.CLEAR_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
 
-			// Tools.println("Execute script:" +
-			// ScriptManager.CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
-			// stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
+		// Create imagedb_anime_rgb table if not exist
+		// Tools.println("Execute script:" +
+		// ScriptCreator.DROP_IMAGEDB_USER_IMAGE_REQUEST);
+		// stmt.executeUpdate(ScriptCreator.DROP_IMAGEDB_USER_IMAGE_REQUEST);
+		// Tools.println("Execute script:" +
+		// ScriptCreator.CREATE_IMAGEDB_USER_IMAGE_REQUEST);
+		// stmt.executeUpdate(ScriptCreator.CREATE_IMAGEDB_USER_IMAGE_REQUEST);
 
-			// Tools.println("Execute script:" +
-			// ScriptManager.CLEAR_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
-			// stmt.executeUpdate(ScriptManager.CLEAR_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
+		/**
+		 * DROP TABLES FOR TEXTBOARD
+		 */
+		// Drop table if exist
+		// Tools.println("Execute script:" + ScriptManager.DROP_POSTS);
+		// stmt.executeUpdate(ScriptManager.DROP_POSTS);
 
-			// Create imagedb_anime_rgb table if not exist
-			// Tools.println("Execute script:" +
-			// ScriptCreator.DROP_IMAGEDB_USER_IMAGE_REQUEST);
-			// stmt.executeUpdate(ScriptCreator.DROP_IMAGEDB_USER_IMAGE_REQUEST);
-			// Tools.println("Execute script:" +
-			// ScriptCreator.CREATE_IMAGEDB_USER_IMAGE_REQUEST);
-			// stmt.executeUpdate(ScriptCreator.CREATE_IMAGEDB_USER_IMAGE_REQUEST);
+		// Drop table if exist
+		// Tools.println("Execute script:" + ScriptManager.DROP_THREADS);
+		// stmt.executeUpdate(ScriptManager.DROP_THREADS);
 
-			/**
-			 * DROP TABLES FOR TEXTBOARD
-			 */
-			// Drop table if exist
-			// Tools.println("Execute script:" + ScriptManager.DROP_POSTS);
-			// stmt.executeUpdate(ScriptManager.DROP_POSTS);
+		// Drop table if exist
+		// Tools.println("Execute script:" + ScriptManager.DROP_BOARDS);
+		// stmt.executeUpdate(ScriptManager.DROP_BOARDS);
+		/**
+		 * CREATE TABLES FOR TEXTBOARD
+		 */
+		// Create imagedb_anime_rgb table if not exist
+		// Tools.println("Execute script:" + ScriptManager.CREATE_BOARDS);
+		// stmt.executeUpdate(ScriptManager.CREATE_BOARDS);
 
-			// Drop table if exist
-			// Tools.println("Execute script:" + ScriptManager.DROP_THREADS);
-			// stmt.executeUpdate(ScriptManager.DROP_THREADS);
+		// Create imagedb_anime_rgb table if not exist
+		// Tools.println("Execute script:" + ScriptManager.CREATE_THREADS);
+		// stmt.executeUpdate(ScriptManager.CREATE_THREADS);
 
-			// Drop table if exist
-			// Tools.println("Execute script:" + ScriptManager.DROP_BOARDS);
-			// stmt.executeUpdate(ScriptManager.DROP_BOARDS);
-			/**
-			 * CREATE TABLES FOR TEXTBOARD
-			 */
-			// Create imagedb_anime_rgb table if not exist
-			// Tools.println("Execute script:" + ScriptManager.CREATE_BOARDS);
-			// stmt.executeUpdate(ScriptManager.CREATE_BOARDS);
+		// Create imagedb_anime_rgb table if not exist
+		// Tools.println("Execute script:" + ScriptManager.CREATE_POSTS);
+		// stmt.executeUpdate(ScriptManager.CREATE_POSTS);
 
-			// Create imagedb_anime_rgb table if not exist
-			// Tools.println("Execute script:" + ScriptManager.CREATE_THREADS);
-			// stmt.executeUpdate(ScriptManager.CREATE_THREADS);
-
-			// Create imagedb_anime_rgb table if not exist
-			// Tools.println("Execute script:" + ScriptManager.CREATE_POSTS);
-			// stmt.executeUpdate(ScriptManager.CREATE_POSTS);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
+		try {
+			DatabaseManager.createTableBoards();
+			DatabaseManager.createTableThreads();
+			DatabaseManager.createTablePosts();
+		} catch (SQLException | URISyntaxException e) {
 			e.printStackTrace();
 		}
-
-		Tools.println("END:createDatabases" + System.lineSeparator());
 	}
 }

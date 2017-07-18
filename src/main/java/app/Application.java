@@ -23,10 +23,6 @@ import app.util.ViewUtil;
 
 public class Application {
 
-	public static File IMAGES_INPUT_DIR, IMAGES_OTHER_DIR, IMAGES_OUTPUT_PARTITION_DIR, TEXT_OUTPUT_PARTITION_DIR,
-			IMAGES_OUTPUT_RESIZED_DIR, IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR, TEXT_OUTPUT_GLOBALDIFFERENCE_DIR,
-			IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR, IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR;
-
 	public static void main(String[] args) {
 		long tStart = System.currentTimeMillis();
 
@@ -44,44 +40,8 @@ public class Application {
 			port(Integer.valueOf(System.getenv("PORT")));
 		}
 
-		/**
-		 * Required Directory
-		 */
-		IMAGES_OTHER_DIR = new File("public/images/other");
-		IMAGES_INPUT_DIR = new File("public/images/input");
-		IMAGES_OUTPUT_RESIZED_DIR = new File("public/images/output/resized");
-
-		/**
-		 * Partition Directory
-		 */
-		IMAGES_OUTPUT_PARTITION_DIR = new File("public/images/output/partition");
-		TEXT_OUTPUT_PARTITION_DIR = new File("public/texts/output/partition");
-
-		/**
-		 * Global Difference Directory
-		 */
-		IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR = new File("public/images/output/globaldifference");
-		TEXT_OUTPUT_GLOBALDIFFERENCE_DIR = new File("public/texts/output/globaldifference");
-
-		/**
-		 * Global Difference Binary Directory
-		 */
-		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR = new File("public/images/output/globaldifferencebinary");
-
-		/**
-		 * Global Difference Binary RGB Directory
-		 */
-		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR = new File("public/images/output/globaldifferencebinaryRGB");
-
-		IMAGES_OTHER_DIR.mkdirs();
-		IMAGES_OUTPUT_PARTITION_DIR.mkdirs();
-		IMAGES_OUTPUT_RESIZED_DIR.mkdirs();
-		TEXT_OUTPUT_PARTITION_DIR.mkdirs();
-		IMAGES_INPUT_DIR.mkdirs();
-		IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR.mkdirs();
-		TEXT_OUTPUT_GLOBALDIFFERENCE_DIR.mkdirs();
-		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR.mkdirs();
-		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR.mkdirs();
+		// Create all the required folders
+		Tools.createFolders();
 
 		staticFiles.externalLocation("public");
 		staticFiles.expireTime(600L);
@@ -111,6 +71,7 @@ public class Application {
 		long tDelta = tEnd - tStart;
 		double elapsedSeconds = tDelta / 1000.0;
 
+		SettingUp.prepareDatabase();
 		Tools.println("SERVER READY, it took " + elapsedSeconds + " seconds");
 	}
 
