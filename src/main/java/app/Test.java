@@ -5,7 +5,7 @@ import java.awt.TextField;
 import javax.swing.SwingUtilities;
 
 import app.util.SettingUp;
-import app.imageprocessing.ImageProcessing;
+import processing.ImageProcessing;
 
 public class Test {
 

@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import app.imageprocessing.ImageProcessing;
 import app.util.Reference;
 import app.util.Tools;
+import processing.ImageProcessing;
 import app.util.ScriptCreator;
 
 public class DatabaseManager {

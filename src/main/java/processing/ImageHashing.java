@@ -1,4 +1,4 @@
-package Algorithms;
+package processing;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;

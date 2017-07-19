@@ -8,8 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import app.imageprocessing.ImageProcessing;
 import app.util.Tools;
+import processing.ImageProcessing;
 
 public class FileManager {
 

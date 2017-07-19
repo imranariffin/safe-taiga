@@ -14,13 +14,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import app.imageprocessing.ImageProcessing;
-
 import app.structure.AnimePanel;
 import app.structure.IntegerPair;
 
 import app.util.ScriptCreator;
 import app.util.Tools;
+import processing.ImageProcessing;
 
 public class ImageProcessingManager {
 
@@ -370,4 +369,7 @@ public class ImageProcessingManager {
 		}
 	}
 
+	public static void minimizedImage(Map<String, Object> model, int[][] array) {
+
+	}
 }

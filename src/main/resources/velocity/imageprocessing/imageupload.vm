@@ -54,6 +54,12 @@
 		<img src='$GLOBALDIFFERENCEBINARYRGB_IMAGE_FILE'>
 		</div>
 		
+		<div>
+		<h1>$MINIMIZEDGLOBALDIFFERENCEBINARYRGB_IMAGE_MESSAGE</h1>
+		<br>
+		<img src='$MINIMIZEDGLOBALDIFFERENCEBINARYRGB_IMAGE_FILE'>
+		</div>
+		
 		<p>Image Basic Histogram Hash</p>
 		<p>$BASIC_HASH_STRING</p>
 		

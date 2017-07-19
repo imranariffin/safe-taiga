@@ -4,7 +4,6 @@ import java.io.File;
 
 public class Tools {
 
-	public final static String SAFE_STRING = "X1U8N2YTR87134678V349T9V3841CM89XY4398V";
 	public static boolean logging = true;
 
 	public static void println(String text) {
@@ -67,25 +66,10 @@ public class Tools {
 		return string;
 	}
 
-	public static String convertToQuerySafe(String givenString) {
-		String safeString = "";
-		for (int a = 0; a < givenString.length(); a++) {
-			if (givenString.charAt(a) == '\'') {
-				safeString += SAFE_STRING;
-			} else {
-				safeString += givenString.charAt(a);
-			}
-		}
-		return safeString;
-	}
-
-	public static String revertQuerySafeString(String safeString) {
-		return safeString.replaceAll(SAFE_STRING, "'");
-	}
-
 	public static File IMAGES_INPUT_DIR, IMAGES_OTHER_DIR, IMAGES_OUTPUT_PARTITION_DIR, TEXT_OUTPUT_PARTITION_DIR,
 			IMAGES_OUTPUT_RESIZED_DIR, IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR, TEXT_OUTPUT_GLOBALDIFFERENCE_DIR,
-			IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR, IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR;
+			IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR, IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR,
+			IMAGES_OUTPUT_MINIMIZEDGLOBALDIFFERENCEBINARY_DIR;
 
 	public static void createFolders() {
 
@@ -115,6 +99,12 @@ public class Tools {
 		 */
 		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR = new File("public/images/output/globaldifferencebinaryRGB");
 
+		/**
+		 * Minimized Global Difference
+		 */
+
+		IMAGES_OUTPUT_MINIMIZEDGLOBALDIFFERENCEBINARY_DIR = new File("public/images/minimizedglobaldifferencebinary");
+
 		IMAGES_OTHER_DIR.mkdirs();
 		IMAGES_OUTPUT_PARTITION_DIR.mkdirs();
 		IMAGES_OUTPUT_RESIZED_DIR.mkdirs();
@@ -122,5 +112,6 @@ public class Tools {
 		IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR.mkdirs();
 		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR.mkdirs();
 		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR.mkdirs();
+		IMAGES_OUTPUT_MINIMIZEDGLOBALDIFFERENCEBINARY_DIR.mkdirs();
 	}
 }

@@ -1,4 +1,4 @@
-package app.imageprocessing;
+package processing;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -23,12 +23,12 @@ public class ImageProcessing {
 	/**
 	 * TODO: USE DATABASE TO ASSIGN THESE VALUES
 	 */
-	public static final int IMG_WIDTH = 500; // Determine the width of the
+	public static final int IMAGE_WIDTH = 500; // Determine the width of the
 												// parsed image, will also
 												// determine the resized width
 												// of
 												// any image uploaded
-	public static final int IMG_HEIGHT = 500; // Determine the height of the
+	public static final int IMAGE_HEIGHT = 500; // Determine the height of the
 												// parsed image,will also
 												// determine the resized height
 												// of any image uploaded
@@ -41,27 +41,32 @@ public class ImageProcessing {
 	public static final int FRAME_SKIP = 1; // Determine the frames to skip
 											// when parsing video
 
-	public static BufferedImage resizeImage(BufferedImage originalImage) throws IOException {
+	public static BufferedImage resizeImage(BufferedImage originalImage, int imageWidth, int imageHeight)
+			throws IOException {
 
 		int type = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_RGB : originalImage.getType();
-		BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
+		BufferedImage resizedImage = new BufferedImage(imageWidth, imageHeight, type);
 		Graphics2D g = resizedImage.createGraphics();
-		g.drawImage(originalImage, 0, 0, IMG_WIDTH, IMG_HEIGHT, null);
+		g.drawImage(originalImage, 0, 0, imageWidth, imageHeight, null);
 		g.dispose();
 
 		return resizedImage;
 	}
 
+	public static BufferedImage resizeImage(BufferedImage originalImage) throws IOException {
+		return resizeImage(originalImage, IMAGE_WIDTH, IMAGE_HEIGHT);
+	}
+
 	public static void resizeImageWithHint(String fileName) throws IOException {
 		BufferedImage originalImage = ImageIO.read(new File("images/input/" + fileName));
-		
+
 		int type = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
-		
-		BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
+
+		BufferedImage resizedImage = new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, type);
 
 		Graphics2D g = resizedImage.createGraphics();
-		
-		g.drawImage(originalImage, 0, 0, IMG_WIDTH, IMG_HEIGHT, null);
+
+		g.drawImage(originalImage, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT, null);
 		g.dispose();
 		g.setComposite(AlphaComposite.Src);
 
@@ -147,7 +152,7 @@ public class ImageProcessing {
 	}
 
 	public static BufferedImage getPartitionedBufferedImage(int[][][] givenArray) {
-		BufferedImage bufferedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, BufferedImage.TYPE_INT_RGB);
+		BufferedImage bufferedImage = new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
 
 		// Parse required information about the image
 		int width = bufferedImage.getWidth();

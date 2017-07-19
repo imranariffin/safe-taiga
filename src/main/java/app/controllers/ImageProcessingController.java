@@ -6,7 +6,7 @@ import static app.util.Tools.IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR;
 import static app.util.Tools.IMAGES_OUTPUT_RESIZED_DIR;
 import static app.util.Tools.IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR;
 import static app.util.Tools.IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR;
-
+import static app.util.Tools.IMAGES_OUTPUT_MINIMIZEDGLOBALDIFFERENCEBINARY_DIR;
 import java.awt.image.BufferedImage;
 
 import java.io.File;
@@ -22,11 +22,11 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.servlet.MultipartConfigElement;
 
-import Algorithms.ImageHashing;
-import app.imageprocessing.ImageProcessing;
 import app.util.Reference;
 import app.util.Tools;
 import app.util.ViewUtil;
+import processing.ImageHashing;
+import processing.ImageProcessing;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -68,8 +68,9 @@ public class ImageProcessingController {
 		 * Prepare required variables
 		 */
 		BufferedImage originalImage, resizedImage, partitionedImage, globalDifferenceImage, globalDifferenceBinaryImage,
-				globalDifferenceBinaryRGBImage;
-		int[][][] partitioningArray, globalDifferenceArray, globalDifferenceBinaryArray, globalDifferenceBinaryRGBArray;
+				globalDifferenceBinaryRGBImage, minimizedGlobalDifferenceBinaryImage;
+		int[][][] partitioningArray, globalDifferenceArray, globalDifferenceBinaryArray, globalDifferenceBinaryRGBArray,
+				minimizedGlobalDifferenceBinaryArray;
 
 		// Remove any file type post fix
 		String filename = tempFile.getFileName().toString().substring(0,
@@ -80,6 +81,8 @@ public class ImageProcessingController {
 		String outputResizedImage = IMAGES_OUTPUT_RESIZED_DIR.toPath() + "/" + filename + ".png";
 		String outputPartitionedImage = IMAGES_OUTPUT_PARTITION_DIR.toPath() + "/" + filename + ".png";
 		String outputGlobalDifferenceImage = IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR.toPath() + "/" + filename + ".png";
+		String outputMinimizedGlobalDifferenceBinaryImage = IMAGES_OUTPUT_MINIMIZEDGLOBALDIFFERENCEBINARY_DIR.toPath()
+				+ "/" + filename + ".png";
 
 		String outputGlobalDifferenceBinaryImage = IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR.toPath() + "/" + filename
 				+ ".png";
@@ -156,6 +159,23 @@ public class ImageProcessingController {
 
 		// Save the image for future reference
 		ImageIO.write(globalDifferenceBinaryRGBImage, "png", new File(outputGlobalDifferenceBinaryRGBImage));
+
+		/**
+		 * MINIMIZED GLOBAL DIFFERENCE BINARY
+		 * 
+		 * Combined Global Difference and Resizing the image to a very small x,y pixels
+		 */
+		// Get the resized image global difference binary RGB array
+		minimizedGlobalDifferenceBinaryArray = ImageProcessing
+				.getGlobalDifferenceBinaryArray(ImageProcessing.resizeImage(resizedImage, 64, 64));
+
+		// Get the buffered image from the array
+		minimizedGlobalDifferenceBinaryImage = ImageProcessing
+				.getBufferedImageGivenArray(minimizedGlobalDifferenceBinaryArray);
+
+		// Save the image for future reference
+		ImageIO.write(minimizedGlobalDifferenceBinaryImage, "png",
+				new File(outputMinimizedGlobalDifferenceBinaryImage));
 
 		//////////////////////////
 		// INSERT INTO DATABASE //
@@ -258,6 +278,15 @@ public class ImageProcessingController {
 		model.put("GLOBALDIFFERENCEBINARYRGB_IMAGE_FILE",
 				outputGlobalDifferenceBinaryRGBImage.substring(7, outputGlobalDifferenceBinaryRGBImage.length()));
 
+		/**
+		 * Minimized Global Difference Binary
+		 */
+		model.put("MINIMIZEDGLOBALDIFFERENCEBINARYRGB_IMAGE_MESSAGE", "Minimized Global Difference Binary:");
+		// 7 to remove the substring 'public/'
+		Tools.println(
+				"Minimzed global difference binary RGB image directory:" + outputMinimizedGlobalDifferenceBinaryImage);
+		model.put("MINIMIZEDGLOBALDIFFERENCEBINARYRGB_IMAGE_FILE", outputMinimizedGlobalDifferenceBinaryImage
+				.substring(7, outputMinimizedGlobalDifferenceBinaryImage.length()));
 		/**
 		 * BASIC HISTOGRAM HASHING
 		 */

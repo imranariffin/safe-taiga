@@ -14,15 +14,13 @@ import javax.imageio.ImageIO;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
-
-import Algorithms.ImageHashing;
-
 import org.bytedeco.javacv.FrameGrabber.Exception;
 
-import app.imageprocessing.ImageProcessing;
 import app.managers.FileManager;
 import app.managers.DatabaseManager;
 import app.structure.AnimeObject;
+import processing.ImageHashing;
+import processing.ImageProcessing;
 
 public class SettingUp {
 

@@ -2,7 +2,7 @@ package app.util;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import app.imageprocessing.ImageProcessing;
+import processing.ImageProcessing;
 
 public class ScriptCreator {
 
