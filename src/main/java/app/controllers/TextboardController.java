@@ -53,7 +53,6 @@ public class TextboardController {
 	 * SERVE TEXTBOARD_BOARD
 	 */
 	public static Route serveTextboardBoard = (Request request, Response response) -> {
-		Tools.println("FROM:TextboardController:START:serveTextboard_BOARD");
 		Map<String, Object> model = new HashMap<>();
 
 		// Obtain the request parameters
@@ -92,22 +91,13 @@ public class TextboardController {
 		model.put(Reference.CommonStrings.BOARDLINK, boardLink);
 		model.put(Reference.CommonStrings.THREADID, threadId);
 
-		/**
-		 * Get objects from database
-		 */
-		// Prepare arraylist for output from database
-		@SuppressWarnings("rawtypes")
-		ArrayList<Map> arrayOfPostsFromDatabase = new ArrayList<Map>();
-
 		try {
 			DatabaseManager.getPostsGivenThreadId(threadId, model);
 		} catch (SQLException | URISyntaxException e) {
+			e.printStackTrace();
 			return ViewUtil.renderErrorMessage(request, e.getMessage(),
 					Reference.CommonStrings.getPREVIOUSBOARDLINK(boardLink), Reference.Web.TEXTBOARD + "/" + boardLink);
 		}
-
-		// Populate with list of posts
-		model.put(Reference.VTL.POSTLIST, arrayOfPostsFromDatabase);
 
 		// Populate html-form
 		model.put(Reference.VTL.INPUT_POSTTEXT, Reference.VTL.INPUT_POSTTEXT);
@@ -174,8 +164,6 @@ public class TextboardController {
 		String currentThread = request.params(Reference.CommonStrings.THREADID);
 
 		if (TextboardLogic.checkIfTextIsAcceptable(requestedPostText)) {
-			Tools.println("The requested thread with post:" + requestedPostText + " is acceptable!");
-
 			try {
 				DatabaseManager.createPost(currentThread, requestedPostText);
 
@@ -185,7 +173,7 @@ public class TextboardController {
 						Reference.CommonStrings.getPREVIOUSTHREAD(currentBoard, currentThread), currentThread);
 			}
 		} else {
-			Tools.println("The requested thread with post:" + requestedPostText + " is NOT acceptable!");
+			Tools.println("Rejected post with the text:" + requestedPostText);
 		}
 
 		return serveTextboardThread.handle(request, response);

@@ -162,7 +162,7 @@ public class ImageProcessingController {
 		//////////////////////////
 		// INSERT INTO DATABASE //
 		//////////////////////////
-		ImageProcessingManager.insertImageDataToDatabase(request.ip(), resizedImage);
+		// ImageProcessingManager.insertImageDataToDatabase(request.ip(), resizedImage);
 
 		//////////////////
 		// IMAGE SEARCH //
@@ -210,7 +210,8 @@ public class ImageProcessingController {
 		 * 
 		 * Search by checking if all the boxes match
 		 */
-		ImageProcessingManager.findMatchingImageDataBruteForce(model, partitioningArray);
+		// ImageProcessingManager.findMatchingImageDataBruteForce(model,
+		// partitioningArray);
 
 		//////////////////////////////////
 		// PUT CREATED IMAGE TO WEBPAGE //

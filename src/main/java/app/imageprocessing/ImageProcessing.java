@@ -53,11 +53,14 @@ public class ImageProcessing {
 	}
 
 	public static void resizeImageWithHint(String fileName) throws IOException {
-
 		BufferedImage originalImage = ImageIO.read(new File("images/input/" + fileName));
+		
 		int type = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
+		
 		BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
+
 		Graphics2D g = resizedImage.createGraphics();
+		
 		g.drawImage(originalImage, 0, 0, IMG_WIDTH, IMG_HEIGHT, null);
 		g.dispose();
 		g.setComposite(AlphaComposite.Src);
@@ -80,6 +83,7 @@ public class ImageProcessing {
 			OutputStream outputStream = new FileOutputStream(
 					"images/input/png/" + filename.substring(0, filename.length() - 3) + "png");
 			baos.writeTo(outputStream);
+
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -325,8 +329,8 @@ public class ImageProcessing {
 
 	/**
 	 * Check if the int values in oldArray and newArray are the same, returns an
-	 * array of boolean of the same size. If the index (X,Y) != (X',Y') then it
-	 * will return true, returns false otherwise
+	 * array of boolean of the same size. If the index (X,Y) != (X',Y') then it will
+	 * return true, returns false otherwise
 	 * 
 	 * @param oldArray
 	 * @param newArray

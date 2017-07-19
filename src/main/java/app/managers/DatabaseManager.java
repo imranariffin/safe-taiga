@@ -32,41 +32,45 @@ public class DatabaseManager {
 	/**
 	 * CREATE TEXTBOARD DATABASE
 	 */
-	private final static String CREATE_BOARDS = "CREATE TABLE IF NOT EXISTS boards ( boardlink TEXT, boardname TEXT, boarddescription TEXT, PRIMARY KEY(boardlink));";
-
 	public static void createTableBoards() throws SQLException, URISyntaxException {
+		Tools.println("FROM:DatabaseManager:START:createTableBoards");
 		Connection connection = app.Application.getConnection();
 
-		PreparedStatement pstmt = connection.prepareStatement(CREATE_BOARDS);
+		String script = "CREATE TABLE IF NOT EXISTS boards ( boardlink TEXT, boardname TEXT, boarddescription TEXT, PRIMARY KEY(boardlink));";
+		Statement stmt = connection.createStatement();
 
-		pstmt.executeUpdate();
-		pstmt.close();
+		stmt.executeUpdate(script);
+
+		stmt.close();
 	}
-
-	private final static String CREATE_THREADS = "CREATE TABLE IF NOT EXISTS threads (threadid SERIAL, boardlink TEXT, threadtext TEXT, PRIMARY KEY (threadid), FOREIGN KEY (boardlink) REFERENCES boards(boardlink));";
 
 	public static void createTableThreads() throws SQLException, URISyntaxException {
+		Tools.println("FROM:DatabaseManager:START:createTableThreads");
 		Connection connection = app.Application.getConnection();
 
-		PreparedStatement pstmt = connection.prepareStatement(CREATE_THREADS);
+		String script = "CREATE TABLE IF NOT EXISTS threads (threadid SERIAL, boardlink TEXT, threadtext TEXT, PRIMARY KEY (threadid), FOREIGN KEY (boardlink) REFERENCES boards(boardlink));";
+		Statement stmt = connection.createStatement();
 
-		pstmt.executeUpdate();
-		pstmt.close();
+		stmt.executeUpdate(script);
+
+		stmt.close();
 	}
 
-	private final static String CREATE_POSTS = "CREATE TABLE IF NOT EXISTS posts (postid SERIAL, threadid INTEGER, posttext TEXT, PRIMARY KEY (postid), FOREIGN KEY (threadid) REFERENCES threads(threadid));";
-
 	public static void createTablePosts() throws SQLException, URISyntaxException {
+		Tools.println("FROM:DatabaseManager:START:createTablePosts");
 		Connection connection = app.Application.getConnection();
 
-		PreparedStatement pstmt = connection.prepareStatement(CREATE_POSTS);
+		String script = "CREATE TABLE IF NOT EXISTS posts (postid SERIAL, threadid INTEGER, posttext TEXT, PRIMARY KEY (postid), FOREIGN KEY (threadid) REFERENCES threads(threadid));";
+		Statement stmt = connection.createStatement();
 
-		pstmt.executeUpdate();
-		pstmt.close();
+		stmt.executeUpdate(script);
+
+		stmt.close();
 	}
 
 	public static void createBoard(String boardLink, String boardName, String boardDescription)
 			throws SQLException, URISyntaxException {
+		Tools.println("FROM:DatabaseManager:START:createBoard");
 		Connection connection = app.Application.getConnection();
 
 		String script = "INSERT INTO boards (boardlink, boardname, boarddescription) VALUES (?,?,?);";
@@ -78,10 +82,12 @@ public class DatabaseManager {
 
 		pstmt.executeUpdate();
 
+		pstmt.close();
 	}
 
 	public static void createThread(String currentBoard, String requestedThreadText)
 			throws SQLException, URISyntaxException {
+		Tools.println("FROM:DatabaseManager:START:createThread");
 		Connection connection = app.Application.getConnection();
 
 		String script = "INSERT INTO threads (boardlink, threadtext) VALUES ( ?, ?);";
@@ -96,12 +102,13 @@ public class DatabaseManager {
 	}
 
 	public static void createPost(String threadId, String postText) throws SQLException, URISyntaxException {
+		Tools.println("FROM:DatabaseManager:START:createPost");
 		Connection connection = app.Application.getConnection();
 
 		String script = "INSERT INTO posts (threadid, posttext) VALUES (?, ?);";
 		PreparedStatement pstmt = connection.prepareStatement(script);
 
-		pstmt.setString(1, threadId);
+		pstmt.setInt(1, Integer.valueOf(threadId));
 		pstmt.setString(2, postText);
 
 		pstmt.executeUpdate();
@@ -129,48 +136,9 @@ public class DatabaseManager {
 
 		String scriptThreadPosts = "SELECT * FROM posts WHERE threadid = ?;";
 		pstmt = connection.prepareStatement(scriptThreadPosts);
-		rs = pstmt.executeQuery();
-
-		// Prepare arraylist for output from database
-		@SuppressWarnings("rawtypes")
-		ArrayList<Map> arrayOfPostsFromDatabase = new ArrayList<Map>();
-
-		while (rs.next()) {
-			Map<String, String> post = new HashMap<String, String>();
-
-			// populate board with the appropriate description of a board
-			post.put(Reference.CommonStrings.POSTID, rs.getString(Reference.CommonStrings.POSTID));
-			post.put(Reference.CommonStrings.POSTTEXT, rs.getString(Reference.CommonStrings.POSTTEXT));
-
-			arrayOfPostsFromDatabase.add(post);
-		}
-
-		pstmt.close();
-	}
-
-	public static void selectAllPostFromPostsGivenThreadId(int threadId, Map<String, Object> model)
-			throws SQLException, URISyntaxException {
-		selectAllPostFromPostsGivenThreadId(Integer.toString(threadId), model);
-	}
-
-	public static void selectAllPostFromPostsGivenThreadId(String threadId, Map<String, Object> model)
-			throws SQLException, URISyntaxException {
-		Connection connection = app.Application.getConnection();
-
-		String script = "SELECT * FROM posts AS post WHERE post.threadid = ?;";
-		PreparedStatement pstmt = connection.prepareStatement(script);
 
 		pstmt.setInt(1, Integer.valueOf(threadId));
 
-		ResultSet rs = pstmt.executeQuery();
-
-		rs.next();
-
-		String threadtext = rs.getString(Reference.CommonStrings.THREADTEXT);
-
-		model.put(Reference.CommonStrings.THREADID, threadId);
-		model.put(Reference.CommonStrings.THREADTEXT, threadtext);
-
 		rs = pstmt.executeQuery();
 
 		// Prepare arraylist for output from database
@@ -186,6 +154,11 @@ public class DatabaseManager {
 
 			arrayOfPostsFromDatabase.add(post);
 		}
+
+		// Populate with list of posts
+		model.put(Reference.VTL.POSTLIST, arrayOfPostsFromDatabase);
+
+		pstmt.close();
 	}
 
 	public static void getAllBoards(Map<String, Object> model) throws SQLException, URISyntaxException {
