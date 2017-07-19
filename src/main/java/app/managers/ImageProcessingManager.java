@@ -1,20 +1,24 @@
 package app.managers;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
+
 import java.net.URISyntaxException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import app.imageprocessing.ImageProcessing;
+
 import app.structure.AnimePanel;
 import app.structure.IntegerPair;
+
 import app.util.ScriptCreator;
 import app.util.Tools;
 
@@ -337,7 +341,6 @@ public class ImageProcessingManager {
 			/**
 			 * Initialize variables
 			 */
-			Map<String, IntegerPair> matchResultMap = new HashMap<String, IntegerPair>();
 			AnimePanel result;
 
 			String findMatchingImageDataBruteForce = ScriptCreator.findMatchingImageDataBruteForce(array);

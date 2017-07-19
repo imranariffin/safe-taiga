@@ -1,8 +1,6 @@
 package app;
 
-import java.applet.Applet;
 import java.awt.*; // Using AWT layouts
-import java.awt.event.*; // Using AWT event classes and listener interfaces
 import javax.swing.*; // Using Swing components and containers
 
 // A Swing GUI application inherits from top-level container javax.swing.JFrame

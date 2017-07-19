@@ -5,7 +5,6 @@ import java.util.Map;
 
 import app.util.Reference;
 import app.util.ViewUtil;
-import app.util.Tools;
 
 import spark.Request;
 import spark.Response;

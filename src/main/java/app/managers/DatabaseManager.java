@@ -1,9 +1,5 @@
 package app.managers;
 
-import java.awt.image.BufferedImage;
-
-import java.io.IOException;
-
 import java.net.URISyntaxException;
 
 import java.sql.Connection;
@@ -15,17 +11,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 import app.imageprocessing.ImageProcessing;
 import app.util.Reference;
 import app.util.Tools;
-import app.util.ViewUtil;
 import app.util.ScriptCreator;
-
-import spark.Request;
-import spark.Response;
-import spark.Route;
 
 public class DatabaseManager {
 

@@ -21,11 +21,9 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.servlet.MultipartConfigElement;
-import javax.servlet.http.Part;
 
 import Algorithms.ImageHashing;
 import app.imageprocessing.ImageProcessing;
-import app.managers.ImageProcessingManager;
 import app.util.Reference;
 import app.util.Tools;
 import app.util.ViewUtil;
