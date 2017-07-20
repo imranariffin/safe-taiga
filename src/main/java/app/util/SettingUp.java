@@ -9,8 +9,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.imageio.ImageIO;
-
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
@@ -174,26 +172,10 @@ public class SettingUp {
 					BufferedImage image; // the image
 					Frame frame;
 
-					Tools.println("begin parsing video");
-
-					/**
-					 * Create image and text folders
-					 */
-
-					File IMAGE_FOLDER = new File("dev_output/images/output/partition/" + animeName);
-					IMAGE_FOLDER.mkdirs();
-					File TEXT_FOLDER = new File("dev_output/text/partition/" + animeName);
-					TEXT_FOLDER.mkdirs();
-
-					File IMAGE_FOLDER_GLOBALDIFFERENCE = new File(
-							"dev_output/images/output/globaldifference/" + animeName);
-					IMAGE_FOLDER_GLOBALDIFFERENCE.mkdirs();
-					File TEXT_FOLDER_GLOBALDIFFERENCE = new File("dev_output/text/globaldifference/" + animeName);
-					TEXT_FOLDER_GLOBALDIFFERENCE.mkdirs();
-
 					FFmpegFrameGrabber g = new FFmpegFrameGrabber(
 							"videos/" + animeName + "/" + animeName + "_" + episode + ".mkv");
 					g.start();
+
 					while ((frame = g.grabImage()) != null) {
 						if ((frameIterator % ImageProcessing.FRAME_SKIP) == 0) {
 							// Get the BufferedImage from the frame
@@ -205,8 +187,6 @@ public class SettingUp {
 							/**
 							 * PARTITION IMAGE
 							 */
-							// Assign the location we want to save the image and
-							// the text file
 							if (Partition.activeBool) {
 								// Get the partition RGB array of the image
 								Partition.tripleArray = ImageProcessing.getPartitionArray(image);
@@ -250,11 +230,12 @@ public class SettingUp {
 									Partition.textDir = "dev_output/text/partition/" + animeName + "/" + animeName + "_"
 											+ episode + "_" + panelIterator + ".txt";
 
-									ImageIO.write(ImageProcessing.getPartitionedBufferedImage(Partition.tripleArray),
-											"png", new File(Partition.imageDir));
+									// ImageIO.write(ImageProcessing.getPartitionedBufferedImage(Partition.tripleArray),
+									// "png", new File(Partition.imageDir));
 
 									// Write the text file
-									FileManager.writeTripleArrayToString(Partition.tripleArray, Partition.textDir);
+									// FileManager.writeTripleArrayToString(Partition.tripleArray,
+									// Partition.textDir);
 								}
 							}
 
@@ -277,13 +258,12 @@ public class SettingUp {
 									GlobalDifference.textDir = "dev_output/text/globaldifference/" + animeName + "/"
 											+ animeName + "_" + episode + "_" + panelIterator + ".txt";
 
-									ImageIO.write(
-											ImageProcessing.getBufferedImageGivenArray(GlobalDifference.tripleArray),
-											"png", new File(GlobalDifference.imageDir));
+									// ImageIO.write(ImageProcessing.getBufferedImageGivenArray(GlobalDifference.tripleArray),
+									// "png", new File(GlobalDifference.imageDir));
 
 									// Write the text file
-									FileManager.writeTripleArrayToString(GlobalDifference.tripleArray,
-											GlobalDifference.textDir);
+									// FileManager.writeTripleArrayToString(GlobalDifference.tripleArray,
+									// GlobalDifference.textDir);
 								}
 							}
 
@@ -330,14 +310,13 @@ public class SettingUp {
 								}
 							}
 
-							globalPanelCount++;
-							panelIterator++; // move to the next panel
+							globalPanelCount++; // move to the next panel iterator
+							panelIterator++; // move to the next panel value
 						}
 						frameIterator++; // move to the next frame
 					}
 					FileManager.log("" + panelIterator, "dev_output/description/" + animeName + "_" + episode + ".txt");
 					g.stop();
-					Tools.println("end parsing video");
 				}
 			}
 		} catch (Exception e) {
@@ -349,66 +328,6 @@ public class SettingUp {
 	}
 
 	public static void prepareDatabase() {
-		/**
-		 * CREATE TABLES FOR IMAGEPROCESSING
-		 */
-		// Create imagedb_anime_rgb table if not exist
-		// Tools.println("Execute script:" +
-		// ScriptCreator.DROP_IMAGEDB_ANIME_RGB);
-		// stmt.executeUpdate(ScriptCreator.DROP_IMAGEDB_ANIME_RGB);
-		// Tools.println("Execute script:" +
-		// ScriptManager.CREATE_IMAGEDB_ANIME_RGB_INTEGER);
-		// stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_ANIME_RGB_INTEGER);
-
-		// Tools.println("Execute script:" +
-		// ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
-		// stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_USER_IMAGE_REQUEST_BYTE);
-
-		// Tools.println("Execute script:" +
-		// ScriptManager.CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
-		// stmt.executeUpdate(ScriptManager.CREATE_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
-
-		// Tools.println("Execute script:" +
-		// ScriptManager.CLEAR_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
-		// stmt.executeUpdate(ScriptManager.CLEAR_IMAGEDB_ANIME_BASIC_HISTOGRAM_HASH);
-
-		// Create imagedb_anime_rgb table if not exist
-		// Tools.println("Execute script:" +
-		// ScriptCreator.DROP_IMAGEDB_USER_IMAGE_REQUEST);
-		// stmt.executeUpdate(ScriptCreator.DROP_IMAGEDB_USER_IMAGE_REQUEST);
-		// Tools.println("Execute script:" +
-		// ScriptCreator.CREATE_IMAGEDB_USER_IMAGE_REQUEST);
-		// stmt.executeUpdate(ScriptCreator.CREATE_IMAGEDB_USER_IMAGE_REQUEST);
-
-		/**
-		 * DROP TABLES FOR TEXTBOARD
-		 */
-		// Drop table if exist
-		// Tools.println("Execute script:" + ScriptManager.DROP_POSTS);
-		// stmt.executeUpdate(ScriptManager.DROP_POSTS);
-
-		// Drop table if exist
-		// Tools.println("Execute script:" + ScriptManager.DROP_THREADS);
-		// stmt.executeUpdate(ScriptManager.DROP_THREADS);
-
-		// Drop table if exist
-		// Tools.println("Execute script:" + ScriptManager.DROP_BOARDS);
-		// stmt.executeUpdate(ScriptManager.DROP_BOARDS);
-		/**
-		 * CREATE TABLES FOR TEXTBOARD
-		 */
-		// Create imagedb_anime_rgb table if not exist
-		// Tools.println("Execute script:" + ScriptManager.CREATE_BOARDS);
-		// stmt.executeUpdate(ScriptManager.CREATE_BOARDS);
-
-		// Create imagedb_anime_rgb table if not exist
-		// Tools.println("Execute script:" + ScriptManager.CREATE_THREADS);
-		// stmt.executeUpdate(ScriptManager.CREATE_THREADS);
-
-		// Create imagedb_anime_rgb table if not exist
-		// Tools.println("Execute script:" + ScriptManager.CREATE_POSTS);
-		// stmt.executeUpdate(ScriptManager.CREATE_POSTS);
-
 		try {
 			DatabaseManager.createTableBoards();
 			DatabaseManager.createTableThreads();

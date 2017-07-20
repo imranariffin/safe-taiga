@@ -7,6 +7,8 @@ import static app.util.Tools.IMAGES_OUTPUT_RESIZED_DIR;
 import static app.util.Tools.IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR;
 import static app.util.Tools.IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR;
 import static app.util.Tools.IMAGES_OUTPUT_MINIMIZEDGLOBALDIFFERENCEBINARY_DIR;
+import static app.util.Tools.IMAGES_OUTPUT_HORIZONTALAVERAGERGB_DIR;
+
 import java.awt.image.BufferedImage;
 
 import java.io.File;
@@ -68,9 +70,9 @@ public class ImageProcessingController {
 		 * Prepare required variables
 		 */
 		BufferedImage originalImage, resizedImage, partitionedImage, globalDifferenceImage, globalDifferenceBinaryImage,
-				globalDifferenceBinaryRGBImage, minimizedGlobalDifferenceBinaryImage;
+				globalDifferenceBinaryRGBImage, minimizedGlobalDifferenceBinaryImage, horizontalAverageRGBImage;
 		int[][][] partitioningArray, globalDifferenceArray, globalDifferenceBinaryArray, globalDifferenceBinaryRGBArray,
-				minimizedGlobalDifferenceBinaryArray;
+				minimizedGlobalDifferenceBinaryArray, horizontalAverageRGBArray;
 
 		// Remove any file type post fix
 		String filename = tempFile.getFileName().toString().substring(0,
@@ -83,13 +85,12 @@ public class ImageProcessingController {
 		String outputGlobalDifferenceImage = IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR.toPath() + "/" + filename + ".png";
 		String outputMinimizedGlobalDifferenceBinaryImage = IMAGES_OUTPUT_MINIMIZEDGLOBALDIFFERENCEBINARY_DIR.toPath()
 				+ "/" + filename + ".png";
-
 		String outputGlobalDifferenceBinaryImage = IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR.toPath() + "/" + filename
 				+ ".png";
-
 		String outputGlobalDifferenceBinaryRGBImage = IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR.toPath() + "/"
 				+ filename + ".png";
-
+		String outputHorizontalAverageRGBImage = IMAGES_OUTPUT_HORIZONTALAVERAGERGB_DIR.toPath() + "/" + filename
+				+ ".png";
 		originalImage = ImageIO.read(new File(outputOriginalImage));
 
 		// Resize the image
@@ -135,7 +136,8 @@ public class ImageProcessingController {
 		/**
 		 * GLOBAL DIFFERENCE BINARY
 		 * 
-		 * The same as Global Difference but now strictly binary output 0 or 255
+		 * The same as Global Difference but now strictly binary output 0 or 255.
+		 * Considers RGB as a single value
 		 */
 		// Get the resized image global difference binary RGB array
 		globalDifferenceBinaryArray = ImageProcessing.getGlobalDifferenceBinaryArray(resizedImage);
@@ -149,7 +151,8 @@ public class ImageProcessingController {
 		/**
 		 * GLOBAL DIFFERENCE BINARY RGB
 		 * 
-		 * The same as Global Difference but now strictly binary output 0 or 255
+		 * The same as Global Difference but now strictly binary output 0 or 255.
+		 * Considers RGB as triplet
 		 */
 		// Get the resized image global difference binary RGB array
 		globalDifferenceBinaryRGBArray = ImageProcessing.getGlobalDifferenceBinaryRGBArray(resizedImage);
@@ -167,8 +170,7 @@ public class ImageProcessingController {
 		 */
 		// Get the resized image global difference binary RGB array
 		minimizedGlobalDifferenceBinaryArray = ImageProcessing
-				.getGlobalDifferenceBinaryArray(ImageProcessing.resizeImage(resizedImage, 64, 64));
-
+				.getGlobalDifferenceBinaryArray(ImageProcessing.resizeImage(resizedImage, 160, 90));
 		// Get the buffered image from the array
 		minimizedGlobalDifferenceBinaryImage = ImageProcessing
 				.getBufferedImageGivenArray(minimizedGlobalDifferenceBinaryArray);
@@ -176,6 +178,20 @@ public class ImageProcessingController {
 		// Save the image for future reference
 		ImageIO.write(minimizedGlobalDifferenceBinaryImage, "png",
 				new File(outputMinimizedGlobalDifferenceBinaryImage));
+
+		/**
+		 * HORIZONTAL AVERAGE RGB
+		 * 
+		 * Take the horizontal average (average of the x-axis) of a picture
+		 */
+		// Get the resized image global difference binary RGB array
+		horizontalAverageRGBArray = ImageProcessing.getHorizontalAverage(resizedImage);
+
+		// Get the buffered image from the array
+		horizontalAverageRGBImage = ImageProcessing.getBufferedImageGivenArray(horizontalAverageRGBArray);
+
+		// Save the image for future reference
+		ImageIO.write(horizontalAverageRGBImage, "png", new File(outputHorizontalAverageRGBImage));
 
 		//////////////////////////
 		// INSERT INTO DATABASE //
@@ -284,15 +300,48 @@ public class ImageProcessingController {
 		model.put("MINIMIZEDGLOBALDIFFERENCEBINARYRGB_IMAGE_MESSAGE", "Minimized Global Difference Binary:");
 		// 7 to remove the substring 'public/'
 		Tools.println(
-				"Minimzed global difference binary RGB image directory:" + outputMinimizedGlobalDifferenceBinaryImage);
+				"Minimzed global difference binary image directory:" + outputMinimizedGlobalDifferenceBinaryImage);
 		model.put("MINIMIZEDGLOBALDIFFERENCEBINARYRGB_IMAGE_FILE", outputMinimizedGlobalDifferenceBinaryImage
 				.substring(7, outputMinimizedGlobalDifferenceBinaryImage.length()));
+
+		/**
+		 * Horizontal Average RGB
+		 */
+		model.put("HORIZONTALAVERAGERGB_IMAGE_MESSAGE", "Horizontal Average RGB:");
+		// 7 to remove the substring 'public/'
+		Tools.println("Horizontal average RGB image directory:" + outputHorizontalAverageRGBImage);
+		model.put("HORIZONTALAVERAGERGB_IMAGE_FILE",
+				outputHorizontalAverageRGBImage.substring(7, outputHorizontalAverageRGBImage.length()));
+
 		/**
 		 * BASIC HISTOGRAM HASHING
 		 */
 		String hashString = ImageHashing.basicHistogramHash(ImageHashing.getRGBHistogram(resizedImage));
 		Tools.println("Hash string:" + hashString);
 		model.put("BASIC_HASH_STRING", hashString);
+
+		/**
+		 * HORIZONTAL AVERAGE HASH
+		 */
+		int[] horizontalAverageHash = ImageHashing.horizontalBinaryHash(
+				ImageProcessing.getHorizontalAverage(ImageProcessing.resizeImage(originalImage, 1, 18)));
+
+		Tools.println("horizontalAverageHash");
+
+		for (int a = 0; a < horizontalAverageHash.length; a++) {
+			Tools.println(horizontalAverageHash[a]);
+		}
+
+		/**
+		 * PARTITION HASH
+		 */
+		int[] partitionHash = ImageHashing.partitionHash(partitioningArray);
+
+		Tools.println("partitionHash");
+
+		for (int a = 0; a < partitionHash.length; a++) {
+			Tools.println(partitionHash[a]);
+		}
 
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD,
 				Reference.CommonStrings.NAME_IMAGEPROCESSING, "OK");

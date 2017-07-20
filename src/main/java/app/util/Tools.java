@@ -69,7 +69,7 @@ public class Tools {
 	public static File IMAGES_INPUT_DIR, IMAGES_OTHER_DIR, IMAGES_OUTPUT_PARTITION_DIR, TEXT_OUTPUT_PARTITION_DIR,
 			IMAGES_OUTPUT_RESIZED_DIR, IMAGES_OUTPUT_GLOBALDIFFERENCE_DIR, TEXT_OUTPUT_GLOBALDIFFERENCE_DIR,
 			IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR, IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR,
-			IMAGES_OUTPUT_MINIMIZEDGLOBALDIFFERENCEBINARY_DIR;
+			IMAGES_OUTPUT_MINIMIZEDGLOBALDIFFERENCEBINARY_DIR, IMAGES_OUTPUT_HORIZONTALAVERAGERGB_DIR;
 
 	public static void createFolders() {
 
@@ -102,8 +102,12 @@ public class Tools {
 		/**
 		 * Minimized Global Difference
 		 */
-
 		IMAGES_OUTPUT_MINIMIZEDGLOBALDIFFERENCEBINARY_DIR = new File("public/images/minimizedglobaldifferencebinary");
+
+		/**
+		 * Horizontal Average RGB
+		 */
+		IMAGES_OUTPUT_HORIZONTALAVERAGERGB_DIR = new File("public/images/horizontalaveragergb");
 
 		IMAGES_OTHER_DIR.mkdirs();
 		IMAGES_OUTPUT_PARTITION_DIR.mkdirs();
@@ -113,5 +117,49 @@ public class Tools {
 		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARY_DIR.mkdirs();
 		IMAGES_OUTPUT_GLOBALDIFFERENCEBINARYRGB_DIR.mkdirs();
 		IMAGES_OUTPUT_MINIMIZEDGLOBALDIFFERENCEBINARY_DIR.mkdirs();
+		IMAGES_OUTPUT_HORIZONTALAVERAGERGB_DIR.mkdirs();
+	}
+
+	public static String toSixtyTwoRadix(int i) {
+
+		// means negative value, so just recursively call this function again
+		// but adding negative sign as prefix
+		if (i < 0) {
+			return "-" + toSixtyTwoRadix(-i - 1);
+		}
+
+		// find remainder
+		int quot = i / (26 + 26 + 10);
+		int rem = i % (26 + 26 + 10);
+
+		// if x < 10 i.e. is a number
+		if (rem < 10) {
+			char letter = Character.forDigit(rem, 10);
+			if (quot == 0) {
+				return "" + letter;
+			} else {
+				return toSixtyTwoRadix(quot) + letter;
+			}
+		} else if (rem < 36) {
+			char letter = (char) ((int) 'a' + (rem - 10));
+			if (quot == 0) {
+				return "" + letter;
+			} else {
+				return toSixtyTwoRadix(quot) + letter;
+			}
+		} else {
+			// if x > 26 i.e. is a lowercase letter
+			// if x > (26 + 10) i.e. is a capital letter
+			char letter = (char) ((int) 'A' + (rem - 10 - 26));
+			if (quot == 0) {
+				return "" + letter;
+			} else {
+				return toSixtyTwoRadix(quot) + letter;
+			}
+		}
+	}
+
+	public static void print(int i) {
+		print(Integer.toString(i));
 	}
 }

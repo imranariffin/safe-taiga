@@ -23,16 +23,16 @@ public class ImageProcessing {
 	/**
 	 * TODO: USE DATABASE TO ASSIGN THESE VALUES
 	 */
-	public static final int IMAGE_WIDTH = 500; // Determine the width of the
+	public static final int IMAGE_WIDTH = 300; // Determine the width of the
 												// parsed image, will also
 												// determine the resized width
 												// of
 												// any image uploaded
-	public static final int IMAGE_HEIGHT = 500; // Determine the height of the
+	public static final int IMAGE_HEIGHT = 300; // Determine the height of the
 												// parsed image,will also
 												// determine the resized height
 												// of any image uploaded
-	public static final int DIVISOR_VALUE = 5; // Determine the number of box
+	public static final int DIVISOR_VALUE = 3; // Determine the number of box
 												// (width and length)
 	public static final int BUFFER_VALUE = 5; // Determine the range to check
 												// for RGB values
@@ -275,46 +275,78 @@ public class ImageProcessing {
 		int width = givenImage.getWidth(); // Y-axis
 		int height = givenImage.getHeight(); // X-axis
 
-		int[][][] RGBArray = new int[height][width][3];
+		int[][][] ouputArray = new int[height][width][3];
 		int[] RGBglobalSum = new int[] { 0, 0, 0 };
 
+		Color colorAtXY;
 		for (int y = 0; y < height; y++) { // y-axis
 			for (int x = 0; x < width; x++) { // x-axis
-				Color colorAtXY = new Color(givenImage.getRGB(x, y));
+				colorAtXY = new Color(givenImage.getRGB(x, y));
 				RGBglobalSum[0] += colorAtXY.getRed();
 				RGBglobalSum[1] += colorAtXY.getGreen();
 				RGBglobalSum[2] += colorAtXY.getBlue();
-
-				RGBArray[y][x][0] = colorAtXY.getRed();
-				RGBArray[y][x][1] = colorAtXY.getGreen();
-				RGBArray[y][x][2] = colorAtXY.getBlue();
 			}
 		}
 
 		int[] globalAverage = new int[] { Math.round(RGBglobalSum[0] / (width * height)),
 				Math.round(RGBglobalSum[1] / (width * height)), Math.round(RGBglobalSum[2] / (width * height)) };
 
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				int[] localValue = new int[] { RGBArray[y][x][0], RGBArray[y][x][1], RGBArray[y][x][2] };
+		for (int y = 0; y < height; y++) { // y-axis
+			for (int x = 0; x < width; x++) { // x-axis
+				int[] localValue = new int[] { ouputArray[y][x][0], ouputArray[y][x][1], ouputArray[y][x][2] };
 				if (localValue[0] < globalAverage[0]) {
-					RGBArray[y][x][0] = 0;
+					ouputArray[y][x][0] = 0;
 				} else {
-					RGBArray[y][x][0] = 255;
+					ouputArray[y][x][0] = 255;
 				}
 				if (localValue[1] < globalAverage[1]) {
-					RGBArray[y][x][1] = 0;
+					ouputArray[y][x][1] = 0;
 				} else {
-					RGBArray[y][x][1] = 255;
+					ouputArray[y][x][1] = 255;
 				}
 				if (localValue[2] < globalAverage[2]) {
-					RGBArray[y][x][2] = 0;
+					ouputArray[y][x][2] = 0;
 				} else {
-					RGBArray[y][x][2] = 255;
+					ouputArray[y][x][2] = 255;
 				}
 			}
 		}
-		return RGBArray;
+		return ouputArray;
+
+	}
+
+	public static int[][][] getHorizontalAverage(BufferedImage givenImage) {
+		int height = givenImage.getHeight();
+		int width = givenImage.getWidth();
+
+		int[][][] outputArray = new int[height][width][3];
+
+		int localHorizontalSumRed;
+		int localHorizontalSumGreen;
+		int localHorizontalSumBlue;
+		Color colorAtXY;
+		for (int y = 0; y < height; y++) {
+			localHorizontalSumRed = 0;
+			localHorizontalSumGreen = 0;
+			localHorizontalSumBlue = 0;
+
+			// find the sum for the horizontal axis
+			for (int x = 0; x < width; x++) {
+				colorAtXY = new Color(givenImage.getRGB(x, y));
+				localHorizontalSumRed += colorAtXY.getRed();
+				localHorizontalSumGreen += colorAtXY.getGreen();
+				localHorizontalSumBlue += colorAtXY.getBlue();
+			}
+
+			// get the horizontal average and allocate throughout X-axis
+			for (int x = 0; x < width; x++) {
+				outputArray[y][x][0] = localHorizontalSumRed / width;
+				outputArray[y][x][1] = localHorizontalSumGreen / width;
+				outputArray[y][x][2] = localHorizontalSumBlue / width;
+			}
+		}
+
+		return outputArray;
 
 	}
 

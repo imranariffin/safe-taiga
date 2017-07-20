@@ -38,11 +38,11 @@ public class ImageHashing {
 
 	public static String basicHistogramHash(IntegerPair[][] histogram) {
 		/**
-		 * MOST BASIC CONVERSION, IMAGES WITH THE SAME PIXEL, EXCEPT MOVED
-		 * AROUND WILL COLLIDE
+		 * MOST BASIC CONVERSION, IMAGES WITH THE SAME PIXEL, EXCEPT MOVED AROUND WILL
+		 * COLLIDE
 		 * 
-		 * Apparently this hashing algorithm is GOD AWFUL because every frame
-		 * has the same value 'EX1' or something
+		 * Apparently this hashing algorithm is GOD AWFUL because every frame has the
+		 * same value 'EX1' or something
 		 */
 		int sum = 0;
 		for (int colorValueIndex = 0; colorValueIndex < histogram.length; colorValueIndex++) {
@@ -57,56 +57,43 @@ public class ImageHashing {
 			}
 		}
 		Tools.println("hash sum:" + sum);
-		String hashString = toSixtyTwoRadix(sum);
+		String hashString = Tools.toSixtyTwoRadix(sum);
 
 		return hashString;
 	}
 
-	public static String someOtherHashing() {
-		return "";
+	public static int[] horizontalBinaryHash(int[][][] array) {
+		int[] hashes = new int[3];
+		for (int y = 0; y < array.length; y++) {
+			for (int z = 0; z < array[0][0].length; z++) {
+				Tools.print(array[y][0][z] + " ");
+				if (array[y][0][z] > 127) {
+					hashes[z] += Math.pow((float) 2, (float) (y + 1));
+				}
+			}
+			Tools.println("");
+		}
+
+		return hashes;
 	}
 
-	public static String toSixtyTwoRadix(int i) {
+	public static int[] partitionHash(int[][][] array) {
+		int[] hashes = new int[3];
 
-		// means negative value, so just recursively call this function again
-		// but adding negative sign as prefix
-		if (i < 0) {
-			return "-" + toSixtyTwoRadix(-i - 1);
-		}
-
-		// find remainder
-		int quot = i / (26 + 26 + 10);
-		int rem = i % (26 + 26 + 10);
-
-		// if x < 10 i.e. is a number
-		if (rem < 10) {
-			char letter = Character.forDigit(rem, 10);
-			if (quot == 0) {
-
-				return "" + letter;
-			} else {
-
-				return toSixtyTwoRadix(quot) + letter;
-			}
-		} else if (rem < 36) {
-			char letter = (char) ((int) 'a' + (rem - 10));
-			if (quot == 0) {
-				return "" + letter;
-			} else {
-
-				return toSixtyTwoRadix(quot) + letter;
-			}
-		} else {
-			// if x > 26 i.e. is a lowercase letter
-			// if x > (26 + 10) i.e. is a capital letter
-			char letter = (char) ((int) 'A' + (rem - 10 - 26));
-			if (quot == 0) {
-
-				return "" + letter;
-			} else {
-
-				return toSixtyTwoRadix(quot) + letter;
+		for (int y = 0; y < array.length; y++) {
+			for (int x = 0; x < array[y].length; x++) {
+				for (int z = 0; z < array[y][x].length; z++) {
+					if (array[y][x][z] == 255) {
+						array[y][x][z] = array[y][x][z] - 1;
+					}
+					// 15 radix
+					int currentValue = (array[y][x][z] / 51) * ((int) (Math.pow(5f, (float) ((y * 3) + x))));
+					Tools.print(currentValue);
+					hashes[z] += currentValue;
+				}
+				Tools.println("");
 			}
 		}
+		return hashes;
 	}
 }
