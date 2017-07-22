@@ -17,13 +17,14 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.servlet.MultipartConfigElement;
 
+import app.managers.DatabaseManager;
 import app.util.Reference;
 import app.util.Tools;
 import app.util.ViewUtil;
@@ -193,6 +194,27 @@ public class ImageProcessingController {
 		// Save the image for future reference
 		ImageIO.write(horizontalAverageRGBImage, "png", new File(outputHorizontalAverageRGBImage));
 
+		/**
+		 * BASIC HISTOGRAM HASHING
+		 */
+		String hashString = ImageHashing.basicHistogramHash(ImageHashing.getRGBHistogram(resizedImage));
+		Tools.println("Hash string:" + hashString);
+
+		/**
+		 * HORIZONTAL AVERAGE HASH
+		 */
+		Tools.println("horizontalAverageHash");
+		ArrayList<Integer> horizontalAverageHash = Tools
+				.convertIntArrayToIntArrayList(ImageHashing.horizontalBinaryHash(
+						ImageProcessing.getHorizontalAverage(ImageProcessing.resizeImage(originalImage, 1, 18))));
+
+		/**
+		 * PARTITION HASH
+		 */
+		Tools.println("partitionHash");
+		ArrayList<Integer> partitionHash = Tools
+				.convertIntArrayToIntArrayList(ImageHashing.partitionHash(partitioningArray));
+
 		//////////////////////////
 		// INSERT INTO DATABASE //
 		//////////////////////////
@@ -247,6 +269,11 @@ public class ImageProcessingController {
 		// ImageProcessingManager.findMatchingImageDataBruteForce(model,
 		// partitioningArray);
 
+		/**
+		 * Partition Hash Search
+		 */
+
+		DatabaseManager.partitionSearch(partitionHash, model);
 		//////////////////////////////////
 		// PUT CREATED IMAGE TO WEBPAGE //
 		//////////////////////////////////
@@ -313,35 +340,9 @@ public class ImageProcessingController {
 		model.put("HORIZONTALAVERAGERGB_IMAGE_FILE",
 				outputHorizontalAverageRGBImage.substring(7, outputHorizontalAverageRGBImage.length()));
 
-		/**
-		 * BASIC HISTOGRAM HASHING
-		 */
-		String hashString = ImageHashing.basicHistogramHash(ImageHashing.getRGBHistogram(resizedImage));
-		Tools.println("Hash string:" + hashString);
-		model.put("BASIC_HASH_STRING", hashString);
-
-		/**
-		 * HORIZONTAL AVERAGE HASH
-		 */
-		int[] horizontalAverageHash = ImageHashing.horizontalBinaryHash(
-				ImageProcessing.getHorizontalAverage(ImageProcessing.resizeImage(originalImage, 1, 18)));
-
-		Tools.println("horizontalAverageHash");
-
-		for (int a = 0; a < horizontalAverageHash.length; a++) {
-			Tools.println(horizontalAverageHash[a]);
-		}
-
-		/**
-		 * PARTITION HASH
-		 */
-		int[] partitionHash = ImageHashing.partitionHash(partitioningArray);
-
-		Tools.println("partitionHash");
-
-		for (int a = 0; a < partitionHash.length; a++) {
-			Tools.println(partitionHash[a]);
-		}
+		model.put("basicHash", hashString);
+		model.put("horizontalAverageHash", horizontalAverageHash);
+		model.put("partitionHash", partitionHash);
 
 		return ViewUtil.render(request, model, Reference.Templates.IMAGE_UPLOAD,
 				Reference.CommonStrings.NAME_IMAGEPROCESSING, "OK");

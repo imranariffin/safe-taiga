@@ -229,7 +229,6 @@ public class DatabaseManager {
 					averageOfRGB += System.lineSeparator();
 				}
 			}
-			FileManager.log(averageOfRGB, "dev_output/averageOfRGB.txt");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
@@ -256,7 +255,54 @@ public class DatabaseManager {
 					minMaxOfRGB += System.lineSeparator();
 				}
 			}
-			FileManager.log(minMaxOfRGB, "dev_output/minMaxOfRGB.txt");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void insertPartitionHash(String animeName, int episode, int frame, int[] partitionHash) {
+		try (Connection connection = app.Application.getConnection()) {
+
+			String query = "INSERT INTO partition_hash (name, episode, frame, hash_red, hash_green, hash_blue) VALUES (?,?,?,?,?,?);";
+			PreparedStatement pstmt = connection.prepareStatement(query);
+
+			pstmt.setString(1, animeName);
+			pstmt.setInt(2, episode);
+			pstmt.setInt(3, frame);
+			pstmt.setInt(4, partitionHash[0]);
+			pstmt.setInt(5, partitionHash[1]);
+			pstmt.setInt(6, partitionHash[2]);
+
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			Tools.print("duplicate key ");
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void partitionSearch(ArrayList<Integer> partitionHash, Map<String, Object> model) {
+		try (Connection connection = app.Application.getConnection()) {
+
+			String query = "SELECT * FROM partition_hash WHERE hash_red = ? AND hash_green = ? AND hash_blue = ?;";
+			PreparedStatement pstmt = connection.prepareStatement(query);
+
+			pstmt.setInt(1, partitionHash.get(0));
+			pstmt.setInt(2, partitionHash.get(1));
+			pstmt.setInt(3, partitionHash.get(2));
+
+			ResultSet rs = pstmt.executeQuery();
+
+			ArrayList<String> partitionHashResult = new ArrayList<String>();
+			while (rs.next()) {
+				partitionHashResult
+						.add(rs.getString("name") + " " + rs.getString("episode") + " " + rs.getString("frame") + " "
+								+ rs.getInt("hash_red") + " " + rs.getInt("hash_green") + " " + rs.getInt("hash_blue"));
+			}
+
+			model.put("partitionHashResult", partitionHashResult);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (URISyntaxException e) {

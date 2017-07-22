@@ -61,21 +61,34 @@
 		</div>
 		
 		<div>
-		<h1>$HORIZONTALAVERAGERGB_IMAGE_MESSAGE</h1>
-		<br>
-		<img src='$HORIZONTALAVERAGERGB_IMAGE_FILE'>
+			<h1>$HORIZONTALAVERAGERGB_IMAGE_MESSAGE</h1>
+			<br>
+			<img src='$HORIZONTALAVERAGERGB_IMAGE_FILE'>
 		</div>
 		
 		<p>Image Basic Histogram Hash</p>
-		<p>$BASIC_HASH_STRING</p>
+		<p>$basicHash</p>
 		
+		<div>
+			<p>Vertical Average Hash</p>
+			#foreach( $hash in $horizontalAverageHash )
+				<p>$hash</p>
+			#end
+		</div>
 		
+		<div>
+			<p>Partition Hash</p>
+			#foreach( $hash in $partitionHash )
+				<p>$hash</p>
+			#end
+		</div>
 		
-		<h1>TEST 5 Brute Force</h1>
-		#if($test_5_boolean)
-			<p>Name: $test_5_result.getName() Episode: $test_5_result.getEpisode() @ $test_5_time</p>
-		#else
-			<p>None found</p>
-		#end
+		<div>
+			<p>Partition Hash Result</p>
+			#foreach( $result in $partitionHashResult )
+				<p>$result</p>
+			#end
+		</div>
+		
 	</body>
 </html>

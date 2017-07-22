@@ -23,76 +23,48 @@ import processing.ImageProcessing;
 public class SettingUp {
 
 	public static class CheckPanelDifference {
-		/**
-		 * Initiate triggers
-		 */
 		public static boolean activeBool = false;
 		public static boolean writeLogBool = false;
 
-		/**
-		 * Initiate required variables
-		 */
 		public static int[][][] oldArray;
 		public static int[][][] newArray;
-		public static boolean[][][] panelDifferenceArray;
 		public static int[][][] panelDifferenceCountArray;
+
+		public static boolean[][][] panelDifferenceArray;
 	}
 
 	public static class Partition {
-		/**
-		 * Initiate triggers
-		 */
 		public static boolean activeBool = true;
 		public static boolean writeLogBool = false;
-		public static boolean writeToDatabase = false;
+		public static boolean writeToDatabase = true;
 		public static boolean printBool = false;
 
-		/**
-		 * Initiate required variables
-		 */
-		public static int[][][] tripleArray; // float array for RGB
-		public static String imageDir; // name of the output partitioned
-		// image
-		public static String textDir; // name of the output partitioned
-		// text dump
+		public static int[][][] tripleArray;
+
+		public static String imageDir;
+		public static String textDir;
 	}
 
 	public static class GlobalDifference {
-		/**
-		 * Initiate triggers
-		 */
 		public static boolean activeBool = false;
 		public static boolean writeLogBool = false;
 
-		/**
-		 * Initiate required variables
-		 */
-		public static int[][][] tripleArray; // float array for RGB
-		public static String imageDir; // name of the output global difference
-										// image
-		public static String textDir; // name of the output global difference
-										// text dump
+		public static int[][][] tripleArray;
+
+		public static String imageDir;
+		public static String textDir;
 	}
 
 	public static class BasicHistogramHash {
-		/**
-		 * Initiate triggers
-		 */
 		public static boolean activeBool = false;
 		public static boolean writeLogBool = false;
 	}
 
 	public static class globalAverageRGB {
-		/**
-		 * Initiate triggers
-		 */
-
 		public static float[][][] average = new float[ImageProcessing.DIVISOR_VALUE][ImageProcessing.DIVISOR_VALUE][3];
 	}
 
-	public static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("yuruyuri-season1", 1),
-			new AnimeObject("yuruyuri-season2", 12), new AnimeObject("yuruyuri-season3", 12),
-			new AnimeObject("codegeass-season2", 25), new AnimeObject("codegeass-season1", 25) };
+	public static AnimeObject[] animeArray = new AnimeObject[] { new AnimeObject("eureka", 50) };
 
 	public static void insertPartitionDumpToDatabase() {
 
@@ -106,7 +78,6 @@ public class SettingUp {
 			try {
 				int[] tmpPanels = new int[animeArray[animeNumber].getNumberOfEpisodes()];
 				for (int a = 1; a <= animeArray[animeNumber].getNumberOfEpisodes(); a++) {
-					Tools.println("a:" + a);
 					tmpPanels[a - 1] = Integer.valueOf(FileManager.readFile(
 							"dev_output/description/" + animeArray[animeNumber].getName() + "_" + a + ".txt"));
 				}
@@ -149,7 +120,7 @@ public class SettingUp {
 		}
 	}
 
-	public static void createImageInfo(TextField[][] textField) {
+	public static void createImageInfo() {
 		try {
 			/**
 			 * Create required folders
@@ -158,7 +129,6 @@ public class SettingUp {
 			DEV_OUTPUT_IMAGES_OUTPUT_PARTITION.mkdirs();
 
 			String animeName = "";
-			int globalPanelCount = 1;
 			for (int animeNumber = 0; animeNumber < animeArray.length; animeNumber++) {
 				animeName = animeArray[animeNumber].getName();
 				for (int episode = 1; episode <= animeArray[animeNumber].getNumberOfEpisodes(); episode++) {
@@ -178,92 +148,34 @@ public class SettingUp {
 
 					while ((frame = g.grabImage()) != null) {
 						if ((frameIterator % ImageProcessing.FRAME_SKIP) == 0) {
-							// Get the BufferedImage from the frame
 							image = frameConverter.getBufferedImage(frame);
-
-							// resize image
 							image = ImageProcessing.resizeImage(image);
 
-							/**
-							 * PARTITION IMAGE
-							 */
 							if (Partition.activeBool) {
-								// Get the partition RGB array of the image
 								Partition.tripleArray = ImageProcessing.getPartitionArray(image);
 
-								// Calculate the average and display it to the
-								// GUI
-
-								globalAverageRGB.average = Tools.getNewAverage(globalAverageRGB.average,
-										Partition.tripleArray, globalPanelCount);
-
-								for (int y = 0; y < globalAverageRGB.average.length; y++) {
-									for (int x = 0; x < globalAverageRGB.average[y].length; x++) {
-										String textString = "";
-										for (int z = 0; z < 3; z++) {
-											textString += Float.toString(globalAverageRGB.average[y][x][z]) + " ";
-										}
-										textField[y][x].setText(textString);
-									}
-								}
 								if (Partition.writeToDatabase) {
-
-									Tools.println("inserting:" + animeName + ":" + episode + ":" + panelIterator,
-											Partition.printBool);
-									try (Connection connection = app.Application.getConnection()) {
-										Statement statement = connection.createStatement();
-										statement.executeUpdate(ScriptCreator.insertIntoImagedbAnimeRgbInteger(
-												animeName, episode, panelIterator, Partition.tripleArray));
-									} catch (SQLException e) {
-										e.printStackTrace();
-									} catch (URISyntaxException e) {
-										e.printStackTrace();
-									}
+									Tools.println(animeName + " " + episode + " " + frameIterator);
+									DatabaseManager.insertPartitionHash(animeName, episode, frameIterator,
+											ImageHashing.partitionHash(Partition.tripleArray));
 								}
 
 								if (Partition.writeLogBool) {
-
-									// Assign the location we want to save the
-									// image and the text file
 									Partition.imageDir = "dev_output/images/output/partition/" + animeName + "/"
 											+ animeName + "_" + episode + "_" + panelIterator + ".png";
 									Partition.textDir = "dev_output/text/partition/" + animeName + "/" + animeName + "_"
 											+ episode + "_" + panelIterator + ".txt";
-
-									// ImageIO.write(ImageProcessing.getPartitionedBufferedImage(Partition.tripleArray),
-									// "png", new File(Partition.imageDir));
-
-									// Write the text file
-									// FileManager.writeTripleArrayToString(Partition.tripleArray,
-									// Partition.textDir);
 								}
 							}
 
-							/**
-							 * GLOBAL DIFFERENCE
-							 */
 							if (GlobalDifference.activeBool) {
-								// Get the partition RGB array of the image
 								GlobalDifference.tripleArray = ImageProcessing.getGlobalDifferenceArray(image);
 
-								// Write the image based on the partition RGB
-								// array
-
 								if (GlobalDifference.writeLogBool) {
-
-									// Assign the location we want to save the
-									// image and the text file
 									GlobalDifference.imageDir = "dev_output/images/output/globaldifference/" + animeName
 											+ "/" + animeName + "_" + episode + "_" + panelIterator + ".png";
 									GlobalDifference.textDir = "dev_output/text/globaldifference/" + animeName + "/"
 											+ animeName + "_" + episode + "_" + panelIterator + ".txt";
-
-									// ImageIO.write(ImageProcessing.getBufferedImageGivenArray(GlobalDifference.tripleArray),
-									// "png", new File(GlobalDifference.imageDir));
-
-									// Write the text file
-									// FileManager.writeTripleArrayToString(GlobalDifference.tripleArray,
-									// GlobalDifference.textDir);
 								}
 							}
 
@@ -273,8 +185,6 @@ public class SettingUp {
 							if (BasicHistogramHash.activeBool) {
 								try (Connection connection = app.Application.getConnection()) {
 									Statement statement = connection.createStatement();
-									// statement.executeUpdate(ScriptManager.insertBasicHistogramHash(animeName,
-									// episode,panel,ImageHashing.basicHistogramHash(ImageHashing.getRGBHistogram(image))));
 									statement.executeUpdate("INSERT INTO imagedb_test (hash) VALUES ('"
 											+ ImageHashing.basicHistogramHash(ImageHashing.getRGBHistogram(image))
 											+ "');");
@@ -285,19 +195,18 @@ public class SettingUp {
 								}
 							}
 
+							/**
+							 * CHECK PANEL DIFFERENCE
+							 */
 							if (CheckPanelDifference.activeBool) {
 
-								if (panelIterator == 0) { // If this is the
-															// first panel, then
-															// simply assign the
-															// array
+								if (panelIterator == 0) {
 									CheckPanelDifference.oldArray = ImageProcessing.getArrayFromBufferedImage(image);
 									CheckPanelDifference.panelDifferenceCountArray = new int[CheckPanelDifference.oldArray.length][CheckPanelDifference.oldArray[0].length][3];
 								} else {
 									CheckPanelDifference.newArray = ImageProcessing.getArrayFromBufferedImage(image);
 									CheckPanelDifference.panelDifferenceArray = ImageProcessing.checkArrayDifference(
 											CheckPanelDifference.oldArray, CheckPanelDifference.newArray);
-									// Iterate through the boolean array
 									for (int y = 0; y < CheckPanelDifference.oldArray.length; y++) {
 										for (int x = 0; x < CheckPanelDifference.oldArray[y].length; x++) {
 											for (int z = 0; z < CheckPanelDifference.oldArray[y][x].length; z++) {
@@ -309,11 +218,9 @@ public class SettingUp {
 									}
 								}
 							}
-
-							globalPanelCount++; // move to the next panel iterator
-							panelIterator++; // move to the next panel value
+							panelIterator++;
 						}
-						frameIterator++; // move to the next frame
+						frameIterator++;
 					}
 					FileManager.log("" + panelIterator, "dev_output/description/" + animeName + "_" + episode + ".txt");
 					g.stop();

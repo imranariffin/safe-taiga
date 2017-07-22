@@ -1,6 +1,7 @@
 package app.util;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class Tools {
 
@@ -161,5 +162,14 @@ public class Tools {
 
 	public static void print(int i) {
 		print(Integer.toString(i));
+	}
+
+	public static ArrayList<Integer> convertIntArrayToIntArrayList(int[] array) {
+		ArrayList<Integer> arrayList = new ArrayList<Integer>();
+		for (int a = 0; a < array.length; a++) {
+			arrayList.add(array[a]);
+		}
+
+		return arrayList;
 	}
 }

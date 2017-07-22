@@ -2,6 +2,8 @@ package processing;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
 import app.structure.IntegerPair;
 import app.util.Tools;
 
@@ -56,7 +58,6 @@ public class ImageHashing {
 				sum += histogram[colorValueIndex][2].b;
 			}
 		}
-		Tools.println("hash sum:" + sum);
 		String hashString = Tools.toSixtyTwoRadix(sum);
 
 		return hashString;
@@ -66,12 +67,10 @@ public class ImageHashing {
 		int[] hashes = new int[3];
 		for (int y = 0; y < array.length; y++) {
 			for (int z = 0; z < array[0][0].length; z++) {
-				Tools.print(array[y][0][z] + " ");
 				if (array[y][0][z] > 127) {
 					hashes[z] += Math.pow((float) 2, (float) (y + 1));
 				}
 			}
-			Tools.println("");
 		}
 
 		return hashes;
@@ -83,15 +82,13 @@ public class ImageHashing {
 		for (int y = 0; y < array.length; y++) {
 			for (int x = 0; x < array[y].length; x++) {
 				for (int z = 0; z < array[y][x].length; z++) {
-					if (array[y][x][z] == 255) {
-						array[y][x][z] = array[y][x][z] - 1;
+					if (array[y][x][z] > 249) {
+						array[y][x][z] = 249;
 					}
 					// 15 radix
-					int currentValue = (array[y][x][z] / 51) * ((int) (Math.pow(5f, (float) ((y * 3) + x))));
-					Tools.print(currentValue);
+					int currentValue = (array[y][x][z] / 25) * ((int) (Math.pow(10f, (float) ((y * 3) + x))));
 					hashes[z] += currentValue;
 				}
-				Tools.println("");
 			}
 		}
 		return hashes;

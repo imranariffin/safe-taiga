@@ -293,18 +293,18 @@ public class ImageProcessing {
 
 		for (int y = 0; y < height; y++) { // y-axis
 			for (int x = 0; x < width; x++) { // x-axis
-				int[] localValue = new int[] { ouputArray[y][x][0], ouputArray[y][x][1], ouputArray[y][x][2] };
-				if (localValue[0] < globalAverage[0]) {
+				colorAtXY = new Color(givenImage.getRGB(x, y));
+				if (colorAtXY.getRed() < globalAverage[0]) {
 					ouputArray[y][x][0] = 0;
 				} else {
 					ouputArray[y][x][0] = 255;
 				}
-				if (localValue[1] < globalAverage[1]) {
+				if (colorAtXY.getGreen() < globalAverage[1]) {
 					ouputArray[y][x][1] = 0;
 				} else {
 					ouputArray[y][x][1] = 255;
 				}
-				if (localValue[2] < globalAverage[2]) {
+				if (colorAtXY.getBlue() < globalAverage[2]) {
 					ouputArray[y][x][2] = 0;
 				} else {
 					ouputArray[y][x][2] = 255;
