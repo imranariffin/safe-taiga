@@ -93,4 +93,23 @@ public class ImageHashing {
 		}
 		return hashes;
 	}
+
+	public static int[] distinctPartitionHash(int[][][] array) {
+		int[] hashes = new int[array.length * array[0].length];
+		int tmpValue = 0;
+
+		for (int y = 0; y < array.length; y++) {
+			for (int x = 0; x < array[y].length; x++) {
+				for (int z = 0; z < array[y][x].length; z++) {
+					if (array[y][x][z] > 249) {
+						tmpValue = 249;
+					} else {
+						tmpValue = array[y][x][z];
+					}
+					hashes[z] += (((tmpValue) / 25) * ((int) (Math.pow(10f, (float) ((y * 3) + x)))));
+				}
+			}
+		}
+		return hashes;
+	}
 }

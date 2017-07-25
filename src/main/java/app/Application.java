@@ -70,7 +70,7 @@ public class Application {
 		double elapsedSeconds = tDelta / 1000.0;
 
 		SettingUp.prepareDatabase();
-		SettingUp.createImageInfo();
+		// SettingUp.createImageInfo();
 		Tools.println("SERVER READY, it took " + elapsedSeconds + " seconds");
 	}
 
